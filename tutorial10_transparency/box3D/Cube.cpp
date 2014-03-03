@@ -78,14 +78,14 @@ public:
 		//อนุรักษ์พลังงานกล ศักย์
 		//อนุรักษ์โมเมนตัมเชิงมุม เส้น
 		isRender=false;
-		p000=rotate(vertex000);
-		p001=rotate(vertex001);
-		p010=rotate(vertex010);
-		p011=rotate(vertex011);
-		p100=rotate(vertex100);
-		p101=rotate(vertex101);
-		p110=rotate(vertex110);
-		p111=rotate(vertex111);
+		p000=rotate(cubeVertex000*size/2);
+		p001=rotate(cubeVertex001*size/2);
+		p010=rotate(cubeVertex010*size/2);
+		p011=rotate(cubeVertex011*size/2);
+		p100=rotate(cubeVertex100*size/2);
+		p101=rotate(cubeVertex101*size/2);
+		p110=rotate(cubeVertex110*size/2);
+		p111=rotate(cubeVertex111*size/2);
 	}
 	void addForce(vec3 force,float size){
 	}
@@ -100,6 +100,9 @@ public:
 	mat4 getTranslationMatrix(){
 		return mat4();
 	}
+	mat4 getScaleMatrix(){
+		return mat4();
+	}
 	void renderCube(vec3 color){
 		glBegin(GL_QUADS);{
 			//vec4 p000=vec4(-size/2,-size/2,-size/2,0);
@@ -108,11 +111,9 @@ public:
 			//indexed_rotates.push_back(mat4(2,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1));
 			//glRotatef(angularVelocity*0.1,rotation.x,rotation.y,rotation.z);
 			//front
-			glPushMatrix();
 			//glRotatef(1.0,1.0f,1.0f,1.0f);
 			//indexed_rotates.push_back(mat4(1.0f,0,0,0, 0,1.0f,0,0, 0,0,1.0f,0, 0,0,0,1.0f));
 			glColor3f(0,0,1);
-			glVertex3f(position.x-size/2,position.y-size/2,position.z+size/2);
 			glVertex3f(position.x+size/2,position.y-size/2,position.z+size/2);
 			glVertex3f(position.x+size/2,position.y+size/2,position.z+size/2);
 			glVertex3f(position.x-size/2,position.y+size/2,position.z+size/2);
@@ -146,7 +147,6 @@ public:
 			glVertex3f(position.x+size/2,position.y-size/2,position.z-size/2);
 			glVertex3f(position.x+size/2,position.y-size/2,position.z+size/2);
 			glVertex3f(position.x-size/2,position.y-size/2,position.z+size/2);
-			glPopMatrix();
 		}glEnd();
 	}
 	void derenderCube(std::vector<unsigned short> indices,

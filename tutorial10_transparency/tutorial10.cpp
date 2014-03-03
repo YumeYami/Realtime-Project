@@ -83,7 +83,9 @@ int main( void )
 	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 	GLuint ViewMatrixID = glGetUniformLocation(programID, "V");
 	GLuint ModelMatrixID = glGetUniformLocation(programID, "M");
-
+	GLuint ScaleMatrixID = glGetUniformLocation(programID, "Scale");
+	GLuint TranslateMatrixID = glGetUniformLocation(programID, "Translate");
+	GLuint RotateMatrixID = glGetUniformLocation(programID, "Rotate");
 	// Get a handle for our buffers
 	GLuint vertexPosition_modelspaceID = glGetAttribLocation(programID, "vertexPosition_modelspace");
 	GLuint vertexRotation_modelspaceID = glGetAttribLocation(programID, "vertexRotation_modelspace");
@@ -205,9 +207,15 @@ int main( void )
 			glm::mat4 ViewMatrix = getViewMatrix();
 			glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 			
+			glm::mat4 ScaleMatrix = mat4();
+			glm::mat4 RotateMatrix = mat4();
+			glm::mat4 TranslateMatrix = mat4();
 			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 			glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
 			glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
+			glUniformMatrix4fv(ScaleMatrixID, 1, GL_FALSE, &ScaleMatrix[0][0]);
+			glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);
+			glUniformMatrix4fv(TranslateMatrixID, 1, GL_FALSE, &TranslateMatrix[0][0]);
 			c3[i].renderCube(vec3(0,0,0));
 		}
 		
