@@ -59,14 +59,14 @@ private:
 	int begin_indexed_vertices;
 	int begin_indexed_uvs;
 	int begin_indexed_normals;
-	GLfloat p000[3];
-	GLfloat p001[3];
-	GLfloat p010[3];
-	GLfloat p011[3];
-	GLfloat p100[3];
-	GLfloat p101[3];
-	GLfloat p110[3];
-	GLfloat p111[3];
+	vec4 p000;
+	vec4 p001;
+	vec4 p010;
+	vec4 p011;
+	vec4 p100;
+	vec4 p101;
+	vec4 p110;
+	vec4 p111;
 public:
 	Cube(vec3 cubePosition,vec3 cubeRotation,vec3 cubeVelocity,float cubeSize,float m){
 		size=cubeSize;
@@ -78,75 +78,81 @@ public:
 		//อนุรักษ์พลังงานกล ศักย์
 		//อนุรักษ์โมเมนตัมเชิงมุม เส้น
 		isRender=false;
-		p000[0]=cubeVertex000.x*size; p000[1]=cubeVertex000.y*size; p000[2]=cubeVertex000.z*size;
-		p001[0]=cubeVertex001.x*size; p001[1]=cubeVertex001.y*size; p001[2]=cubeVertex001.z*size;
-		p010[0]=cubeVertex010.x*size; p010[1]=cubeVertex010.y*size; p010[2]=cubeVertex010.z*size;
-		p011[0]=cubeVertex011.x*size; p011[1]=cubeVertex011.y*size; p011[2]=cubeVertex011.z*size;
-		p100[0]=cubeVertex100.x*size; p100[1]=cubeVertex100.y*size; p100[2]=cubeVertex100.z*size;
-		p101[0]=cubeVertex101.x*size; p101[1]=cubeVertex101.y*size; p101[2]=cubeVertex101.z*size;
-		p110[0]=cubeVertex110.x*size; p110[1]=cubeVertex110.y*size; p110[2]=cubeVertex110.z*size;
-		p111[0]=cubeVertex111.x*size; p111[1]=cubeVertex111.y*size; p111[2]=cubeVertex111.z*size;
+		p000=rotate(cubeVertex000*size/2);
+		p001=rotate(cubeVertex001*size/2);
+		p010=rotate(cubeVertex010*size/2);
+		p011=rotate(cubeVertex011*size/2);
+		p100=rotate(cubeVertex100*size/2);
+		p101=rotate(cubeVertex101*size/2);
+		p110=rotate(cubeVertex110*size/2);
+		p111=rotate(cubeVertex111*size/2);
 	}
 	void addForce(vec3 force,float size){
 	}
-	vec4 rotate(vec4 vertex){
+	vec4 rotate(vec4 vertex){/*
+							 glTranslatef(xPos - scroll_x,yPos - scroll_y,0);			
+							 glRotatef(angle,0.0f,0.0f,1.0f);*/
 		return vec4(0,0,0,0);
 	}
 	mat4 getRotationMatrix(){
-		//cout<<rotation.x<<" "<<rotation.y<<" "<<rotation.z<<endl;
 		return eulerAngleYXZ(rotation.x,rotation.y,rotation.z);
 	}
 	mat4 getTranslationMatrix(){
-		return mat4(1,0,0,position.x, 0,1,0,position.y, 0,0,1,position.z, 0,0,0,1);
+		return mat4();
 	}
 	mat4 getScaleMatrix(){
-		return mat4(1);
+		return mat4();
 	}
 	void renderCube(vec3 color){
-		//rotation.x+=0.1f;
-		//rotation.y+=0.1f;
-		//rotation.z+=0.1f;
 		glBegin(GL_QUADS);{
+			//vec4 p000=vec4(-size/2,-size/2,-size/2,0);
+			//float* tp000=eulerAngleYXZ(rotation.x,rotation.y,rotation.z)*p000;
+			//float* pos;
+			//indexed_rotates.push_back(mat4(2,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1));
+			//glRotatef(angularVelocity*0.1,rotation.x,rotation.y,rotation.z);
 			//front
+			//glRotatef(1.0,1.0f,1.0f,1.0f);
+			//indexed_rotates.push_back(mat4(1.0f,0,0,0, 0,1.0f,0,0, 0,0,1.0f,0, 0,0,0,1.0f));
 			glColor3f(0,0,1);
-			glVertex3f(p100[0],p100[1],p100[2]);
-			glVertex3f(p101[0],p101[1],p101[2]);
-			glVertex3f(p111[0],p111[1],p111[2]);
-			glVertex3f(p110[0],p110[1],p110[2]);
-			glVertex3fv(p100);
-			glVertex3fv(p101);
-			glVertex3fv(p111);
-			glVertex3fv(p110);
+			glVertex3f(position.x+size/2,position.y-size/2,position.z+size/2);
+			glVertex3f(position.x+size/2,position.y+size/2,position.z+size/2);
+			glVertex3f(position.x-size/2,position.y+size/2,position.z+size/2);
 			//back
 			glColor3f(1,1,0);
-			glVertex3fv(p000);
-			glVertex3fv(p001);
-			glVertex3fv(p011);
-			glVertex3fv(p010);
+			glVertex3f(position.x-size/2,position.y-size/2,position.z-size/2);
+			glVertex3f(position.x+size/2,position.y-size/2,position.z-size/2);
+			glVertex3f(position.x+size/2,position.y+size/2,position.z-size/2);
+			glVertex3f(position.x-size/2,position.y+size/2,position.z-size/2);
 			//leaf
 			glColor3f(0,1,0);
-			glVertex3fv(p000);
-			glVertex3fv(p010);
-			glVertex3fv(p110);
-			glVertex3fv(p100);
+			glVertex3f(position.x+size/2,position.y-size/2,position.z-size/2);
+			glVertex3f(position.x+size/2,position.y+size/2,position.z-size/2);
+			glVertex3f(position.x+size/2,position.y+size/2,position.z+size/2);
+			glVertex3f(position.x+size/2,position.y-size/2,position.z+size/2);
 			//right
 			glColor3f(1,0,1);
-			glVertex3fv(p101);
-			glVertex3fv(p001);
-			glVertex3fv(p011);
-			glVertex3fv(p111);
+			glVertex3f(position.x-size/2,position.y-size/2,position.z-size/2);
+			glVertex3f(position.x-size/2,position.y+size/2,position.z-size/2);
+			glVertex3f(position.x-size/2,position.y+size/2,position.z+size/2);
+			glVertex3f(position.x-size/2,position.y-size/2,position.z+size/2);
 			//up
 			glColor3f(1,0,0);
-			glVertex3fv(p010);
-			glVertex3fv(p011);
-			glVertex3fv(p111);
-			glVertex3fv(p110);
+			glVertex3f(position.x-size/2,position.y+size/2,position.z-size/2);
+			glVertex3f(position.x+size/2,position.y+size/2,position.z-size/2);
+			glVertex3f(position.x+size/2,position.y+size/2,position.z+size/2);
+			glVertex3f(position.x-size/2,position.y+size/2,position.z+size/2);
 			//down
 			glColor3f(0,1,1);
-			glVertex3fv(p000);
-			glVertex3fv(p001);
-			glVertex3fv(p101);
-			glVertex3fv(p100);
+			glVertex3f(position.x-size/2,position.y-size/2,position.z-size/2);
+			glVertex3f(position.x+size/2,position.y-size/2,position.z-size/2);
+			glVertex3f(position.x+size/2,position.y-size/2,position.z+size/2);
+			glVertex3f(position.x-size/2,position.y-size/2,position.z+size/2);
 		}glEnd();
+	}
+	void derenderCube(std::vector<unsigned short> indices,
+		std::vector<glm::vec3> indexed_vertices,
+		std::vector<glm::vec2> indexed_uvs,
+		std::vector<glm::vec3> indexed_normals){
+
 	}
 };
