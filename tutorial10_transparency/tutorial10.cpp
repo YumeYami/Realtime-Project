@@ -24,6 +24,7 @@ using namespace std;
 #include <common/vboindexer.hpp>
 std::vector<unsigned short> indices;
 std::vector<glm::vec3> indexed_vertices;
+std::vector<glm::mat4> indexed_rotates;
 std::vector<glm::vec2> indexed_uvs;
 std::vector<glm::vec3> indexed_normals;
 
@@ -85,6 +86,7 @@ int main( void )
 
 	// Get a handle for our buffers
 	GLuint vertexPosition_modelspaceID = glGetAttribLocation(programID, "vertexPosition_modelspace");
+	GLuint vertexRotation_modelspaceID = glGetAttribLocation(programID, "vertexRotation_modelspace");
 	GLuint vertexUVID = glGetAttribLocation(programID, "vertexUV");
 	GLuint vertexNormal_modelspaceID = glGetAttribLocation(programID, "vertexNormal_modelspace");
 
@@ -94,16 +96,12 @@ int main( void )
 	// Get a handle for our "myTextureSampler" uniform
 	GLuint TextureID = glGetUniformLocation(programID, "myTextureSampler");
 
-	// Read our .obj file
-	std::vector<glm::vec3> vertices;
-	std::vector<glm::vec2> uvs;
-	std::vector<glm::vec3> normals;
-	bool res = loadOBJ("suzanne.obj", vertices, uvs, normals);
+	//// Read our .obj file
+	//std::vector<glm::vec3> vertices;
+	//std::vector<glm::vec2> uvs;
+	//std::vector<glm::vec3> normals;
+	//bool res = loadOBJ("suzanne.obj", vertices, uvs, normals);
 
-	std::vector<unsigned short> indices;
-	std::vector<glm::vec3> indexed_vertices;
-	std::vector<glm::vec2> indexed_uvs;
-	std::vector<glm::vec3> indexed_normals;
 	//indexVBO(vertices, uvs, normals, indices, indexed_vertices, indexed_uvs, indexed_normals);
 	//---------------------------------------------------------------------------------------------------------------
 	vector<Cube> c3;
@@ -148,7 +146,10 @@ int main( void )
 	glGenBuffers(1, &vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	glBufferData(GL_ARRAY_BUFFER, indexed_vertices.size() * sizeof(glm::vec3), &indexed_vertices[0], GL_STATIC_DRAW);
-
+	GLuint rotatebuffer;
+	glGenBuffers(1, &rotatebuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, rotatebuffer);
+	glBufferData(GL_ARRAY_BUFFER, indexed_rotates.size() * sizeof(glm::mat4), &indexed_rotates[0], GL_STATIC_DRAW);
 	GLuint uvbuffer;
 	glGenBuffers(1, &uvbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
@@ -196,11 +197,23 @@ int main( void )
 		glUseProgram(programID);
 
 		// Compute the MVP matrix from keyboard and mouse input
-
 		computeMatricesFromInputs();
+		for (int i = 0; i < c3.size(); i++)
+		{
+			glm::mat4 ModelMatrix = c3[i].getTranslationMatrix()*c3[i].getRotationMatrix();
+			glm::mat4 ProjectionMatrix = getProjectionMatrix();
+			glm::mat4 ViewMatrix = getViewMatrix();
+			glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+			
+			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+			glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
+			glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
+			c3[i].renderCube(vec3(0,0,0));
+		}
+		
+		glm::mat4 ModelMatrix = glm::mat4(1.0);
 		glm::mat4 ProjectionMatrix = getProjectionMatrix();
 		glm::mat4 ViewMatrix = getViewMatrix();
-		glm::mat4 ModelMatrix = glm::mat4(1.0);
 		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
 		// Send our transformation to the currently bound shader, 
@@ -229,7 +242,16 @@ int main( void )
 			0,                            // stride
 			(void*)0                      // array buffer offset
 			);
-
+		glEnableVertexAttribArray(vertexRotation_modelspaceID);
+		glBindBuffer(GL_ARRAY_BUFFER, rotatebuffer);
+		glVertexAttribPointer(
+			vertexRotation_modelspaceID,  // The attribute we want to configure
+			16,                            // size
+			GL_FLOAT,                     // type
+			GL_FALSE,                     // normalized?
+			0,                            // stride
+			(void*)0                      // array buffer offset
+			);
 		// 2nd attribute buffer : UVs
 		glEnableVertexAttribArray(vertexUVID);
 		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
@@ -266,12 +288,11 @@ int main( void )
 			);
 
 		glDisableVertexAttribArray(vertexPosition_modelspaceID);
+		glDisableVertexAttribArray(vertexRotation_modelspaceID);
 		glDisableVertexAttribArray(vertexUVID);
 		glDisableVertexAttribArray(vertexNormal_modelspaceID);
 
 		//glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-		glColorMaterial ( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
-		glEnable ( GL_COLOR_MATERIAL );
 		for (int i = 0; i < c3.size(); i++)
 		{
 			c3[i].renderCube(vec3(0,0,0));
@@ -292,6 +313,7 @@ int main( void )
 
 	// Cleanup VBO and shader
 	glDeleteBuffers(1, &vertexbuffer);
+	glDeleteBuffers(1, &rotatebuffer);
 	glDeleteBuffers(1, &uvbuffer);
 	glDeleteBuffers(1, &normalbuffer);
 	glDeleteBuffers(1, &elementbuffer);

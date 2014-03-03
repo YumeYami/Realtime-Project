@@ -116,7 +116,7 @@ int main( void )
 	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 	GLuint ViewMatrixID = glGetUniformLocation(programID, "V");
 	GLuint ModelMatrixID = glGetUniformLocation(programID, "M");
-
+	
 	// Get a handle for our buffers
 	GLuint vertexPosition_modelspaceID = glGetAttribLocation(programID, "vertexPosition_modelspace");
 	GLuint vertexUVID = glGetAttribLocation(programID, "vertexUV");
