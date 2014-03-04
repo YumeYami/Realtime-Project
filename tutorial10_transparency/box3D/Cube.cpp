@@ -99,7 +99,10 @@ public:
 	mat4 inline getScaleMatrix(){
 		return mat4();
 	}
-	void renderCube(vec3 color){
+	void inline renderCube(vec3 color){
+		rotation.x+=0.01f;
+		rotation.y+=0.001f;
+		rotation.z+=0.0001f;
 		glBegin(GL_QUADS);{
 			//front
 			glColor3f(0,0,1);

@@ -106,9 +106,9 @@ int main( void )
 	//indexVBO(vertices, uvs, normals, indices, indexed_vertices, indexed_uvs, indexed_normals);
 	//---------------------------------------------------------------------------------------------------------------
 	vector<Cube> c3;
-	Cube cube1= Cube(vec3(2.0f,2.0f,2.0f),vec3(0,0.0f,1.0f),vec3(0,0,0),1,1);
-	Cube cube2= Cube(vec3(-1.0f,1.0f,-1.0f),vec3(0,2.5f,1.0f),vec3(0,0,0),0.5f,1);
-	Cube cube3= Cube(vec3(1.0f,0.0f,0.0f),vec3(1,0,1),vec3(0,0,0),0.2f,1);
+	Cube cube1= Cube(vec3(2.0f,2.0f,2.0f),vec3(0.0f,0.0f,1.0f),vec3(0,0,0),1,1);
+	Cube cube2= Cube(vec3(-1.0f,1.0f,-1.0f),vec3(0.2f,2.5f,1.0f),vec3(0,0,0),0.5f,1);
+	Cube cube3= Cube(vec3(1.0f,0.0f,0.0f),vec3(1.0f,0.0f,1.0f),vec3(0,0,0),0.2f,1);
 	c3.push_back(cube1);
 	c3.push_back(cube2);
 	c3.push_back(cube3);
@@ -199,16 +199,15 @@ int main( void )
 
 		// Compute the MVP matrix from keyboard and mouse input
 		computeMatricesFromInputs();
-		for (int i = 0; i < c3.size(); i++)
+		for (int i = 0; i < 2; i++)
 		{
-			glm::mat4 ModelMatrix = c3[i].getTranslationMatrix()*c3[i].getRotationMatrix();
+			glm::mat4 ModelMatrix = mat4(1.0f);
 			glm::mat4 ProjectionMatrix = getProjectionMatrix();
 			glm::mat4 ViewMatrix = getViewMatrix();
 			glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
-			
-			glm::mat4 ScaleMatrix = mat4();
-			glm::mat4 RotateMatrix = mat4();
-			glm::mat4 TranslateMatrix = mat4();
+			glm::mat4 ScaleMatrix = mat4(1.0f);
+			glm::mat4 RotateMatrix = c3[i].getRotationMatrix();
+			glm::mat4 TranslateMatrix = c3[i].getTranslationMatrix();
 			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 			glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
 			glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
@@ -216,19 +215,23 @@ int main( void )
 			glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);
 			glUniformMatrix4fv(TranslateMatrixID, 1, GL_FALSE, &TranslateMatrix[0][0]);
 			c3[i].renderCube(vec3(0,0,0));
+			c3[i].renderCube(vec3(0,0,0));
 		}
-		
 		glm::mat4 ModelMatrix = glm::mat4(1.0);
 		glm::mat4 ProjectionMatrix = getProjectionMatrix();
 		glm::mat4 ViewMatrix = getViewMatrix();
 		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
-
+		glm::mat4 ScaleMatrix = mat4(1.0f);
+		glm::mat4 RotateMatrix = mat4(1.0f);
+		glm::mat4 TranslateMatrix = mat4(1.0f);
 		// Send our transformation to the currently bound shader, 
 		// in the "MVP" uniform
 		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 		glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
 		glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
-
+		glUniformMatrix4fv(ScaleMatrixID, 1, GL_FALSE, &ScaleMatrix[0][0]);
+		glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);
+		glUniformMatrix4fv(TranslateMatrixID, 1, GL_FALSE, &TranslateMatrix[0][0]);
 		glm::vec3 lightPos = glm::vec3(4,4,4);
 		glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
 
@@ -302,6 +305,8 @@ int main( void )
 		//glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 		glColor3f(0.0f,0.5f,0.0f);
 		gluCylinder(gluNewQuadric(),0.1,0.1,1,20,2);
+		glm::mat4 TranslateMatrix2 = mat4(1.0f,0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f,0.0f, 0.0f,0.0f,1.0f,0.0f ,-1.0f,0.0f,-1.0f,1.0f);
+		glUniformMatrix4fv(TranslateMatrixID, 1, GL_FALSE, &TranslateMatrix2[0][0]);
 		GLUquadric* sphere;
 		sphere=gluNewQuadric();
 		gluQuadricNormals(sphere, GL_SMOOTH);
