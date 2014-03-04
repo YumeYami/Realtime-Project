@@ -54,11 +54,6 @@ private:
 	float mass;
 
 	vec3 color;
-	bool isRender;
-	int begin_indices;
-	int begin_indexed_vertices;
-	int begin_indexed_uvs;
-	int begin_indexed_normals;
 	float p0[3];
 	float p1[3];
 	float p2[3];
@@ -77,7 +72,6 @@ public:
 		angularVelocity=1;
 		//อนุรักษ์พลังงานกล ศักย์
 		//อนุรักษ์โมเมนตัมเชิงมุม เส้น
-		isRender=false;
 		p0[0]=cubeVertex0.x*size; p0[1]=cubeVertex0.y*size; p0[2]=cubeVertex0.z*size;
 		p1[0]=cubeVertex1.x*size; p1[1]=cubeVertex1.y*size; p1[2]=cubeVertex1.z*size;
 		p2[0]=cubeVertex2.x*size; p2[1]=cubeVertex2.y*size; p2[2]=cubeVertex2.z*size;
@@ -87,24 +81,25 @@ public:
 		p6[0]=cubeVertex6.x*size; p6[1]=cubeVertex6.y*size; p6[2]=cubeVertex6.z*size;
 		p7[0]=cubeVertex7.x*size; p7[1]=cubeVertex7.y*size; p7[2]=cubeVertex7.z*size;
 	}
-	void addForce(vec3 force,float size){
+	void inline addForce(vec3 force,float size){
 	}
-	vec4 rotate(vec4 vertex){
+	vec4 inline rotate(vec4 vertex){
 		return vec4(0,0,0,0);
 	}
-	mat4 getRotationMatrix(){
+	mat4 inline getRotationMatrix(){
 		return eulerAngleYXZ(rotation.x,rotation.y,rotation.z);
 	}
 	mat4 getTranslationMatrix(){
-		return mat4();
+		//cout <<"position : "<< position.x<<" "<<position.y<<" "<<position.z<<endl;
+		return mat4(1.0f,0.0f,0.0f,0.0f,
+					0.0f,1.0f,0.0f,0.0f, 
+					0.0f,0.0f,1.0f,0.0f,
+					position.x,position.y,position.z,1.0f);
 	}
-	mat4 getScaleMatrix(){
+	mat4 inline getScaleMatrix(){
 		return mat4();
 	}
 	void renderCube(vec3 color){
-		rotation.x+=0.01;
-		rotation.y+=0.01;
-		rotation.z+=0.01;
 		glBegin(GL_QUADS);{
 			//front
 			glColor3f(0,0,1);
@@ -143,11 +138,5 @@ public:
 			glVertex3fv(p5);
 			glVertex3fv(p4);
 		}glEnd();
-	}
-	void derenderCube(std::vector<unsigned short> indices,
-		std::vector<glm::vec3> indexed_vertices,
-		std::vector<glm::vec2> indexed_uvs,
-		std::vector<glm::vec3> indexed_normals){
-
 	}
 };

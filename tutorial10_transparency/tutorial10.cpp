@@ -106,9 +106,9 @@ int main( void )
 	//indexVBO(vertices, uvs, normals, indices, indexed_vertices, indexed_uvs, indexed_normals);
 	//---------------------------------------------------------------------------------------------------------------
 	vector<Cube> c3;
-	Cube cube1= Cube(vec3(1,1,1),vec3(0,0,1),vec3(0,0,0),1,1);
-	Cube cube2= Cube(vec3(0,1,0),vec3(0,2.5f,1),vec3(0,0,0),0.5f,1);
-	Cube cube3= Cube(vec3(1,0,0),vec3(1,0,1),vec3(0,0,0),0.2f,1);
+	Cube cube1= Cube(vec3(2.0f,2.0f,2.0f),vec3(0,0.0f,1.0f),vec3(0,0,0),1,1);
+	Cube cube2= Cube(vec3(-1.0f,1.0f,-1.0f),vec3(0,2.5f,1.0f),vec3(0,0,0),0.5f,1);
+	Cube cube3= Cube(vec3(1.0f,0.0f,0.0f),vec3(1,0,1),vec3(0,0,0),0.2f,1);
 	c3.push_back(cube1);
 	c3.push_back(cube2);
 	c3.push_back(cube3);
@@ -300,10 +300,6 @@ int main( void )
 		glDisableVertexAttribArray(vertexNormal_modelspaceID);
 
 		//glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-		for (int i = 0; i < c3.size(); i++)
-		{
-			c3[i].renderCube(vec3(0,0,0));
-		}
 		glColor3f(0.0f,0.5f,0.0f);
 		gluCylinder(gluNewQuadric(),0.1,0.1,1,20,2);
 		GLUquadric* sphere;
