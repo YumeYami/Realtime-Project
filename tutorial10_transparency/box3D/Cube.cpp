@@ -47,7 +47,7 @@ private:
 	vec3 position;
 	vec3 rotation;
 	vec3 velocity;
-	float inertia;
+	float momentOfInertia;
 	float angularVelocity;
 	vec4 quaternionRotation;
 	float size;
@@ -63,13 +63,14 @@ private:
 	float p6[3];
 	float p7[3];
 public:
-	Cube(vec3 cubePosition,vec3 cubeRotation,vec3 cubeVelocity,float cubeSize,float m){
+	Cube(vec3 cubePosition,vec3 cubeRotation,vec3 cubeVelocity,float cubeSize,float m,vec3 c){
 		size=cubeSize;
 		velocity=cubeVelocity;
 		position=cubePosition;
 		rotation=cubeRotation;
 		mass=m;
 		angularVelocity=1;
+		color=c;
 		//อนุรักษ์พลังงานกล ศักย์
 		//อนุรักษ์โมเมนตัมเชิงมุม เส้น
 		p0[0]=cubeVertex0.x*size; p0[1]=cubeVertex0.y*size; p0[2]=cubeVertex0.z*size;
@@ -81,25 +82,20 @@ public:
 		p6[0]=cubeVertex6.x*size; p6[1]=cubeVertex6.y*size; p6[2]=cubeVertex6.z*size;
 		p7[0]=cubeVertex7.x*size; p7[1]=cubeVertex7.y*size; p7[2]=cubeVertex7.z*size;
 	}
-	void inline addForce(vec3 force,float size){
-	}
+
 	vec4 inline rotate(vec4 vertex){
 		return vec4(0,0,0,0);
 	}
 	mat4 inline getRotationMatrix(){
 		return eulerAngleYXZ(rotation.x,rotation.y,rotation.z);
 	}
-	mat4 getTranslationMatrix(){
-		//cout <<"position : "<< position.x<<" "<<position.y<<" "<<position.z<<endl;
+	mat4 inline getTranslationMatrix(){
 		return mat4(1.0f,0.0f,0.0f,0.0f,
-					0.0f,1.0f,0.0f,0.0f, 
-					0.0f,0.0f,1.0f,0.0f,
-					position.x,position.y,position.z,1.0f);
+			0.0f,1.0f,0.0f,0.0f, 
+			0.0f,0.0f,1.0f,0.0f,
+			position.x,position.y,position.z,1.0f);
 	}
-	mat4 inline getScaleMatrix(){
-		return mat4();
-	}
-	void inline renderCube(vec3 color){
+	void inline render(){
 		rotation.x+=0.01f;
 		rotation.y+=0.001f;
 		rotation.z+=0.0001f;

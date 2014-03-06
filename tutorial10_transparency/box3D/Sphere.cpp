@@ -1,4 +1,4 @@
-// Include standard headers
+﻿// Include standard headers
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
@@ -39,10 +39,40 @@ public:
 	vec3 position;
 	vec3 rotation;
 	vec3 velocity;
-	float inertia;
+	float momentOfInertia;
 	float angularVelocity;
 	vec4 quaternionRotation;
 	float size;
 	float mass;
 	vec3 color;
+	Sphere(vec3 spherePosition,vec3 sphereRotation,vec3 sphereVelocity,float sphereSize,float m,vec3 c){
+		size=sphereSize;
+		velocity=sphereVelocity;
+		position=spherePosition;
+		rotation=sphereRotation;
+		mass=m;
+		angularVelocity=1;
+		color=c;
+		//อนุรักษ์พลังงานกล ศักย์
+		//อนุรักษ์โมเมนตัมเชิงมุม เส้น
+	}
+	vec4 inline rotate(vec4 vertex){
+		return vec4(0,0,0,0);
+	}
+	mat4 inline getRotationMatrix(){
+		return eulerAngleYXZ(rotation.x,rotation.y,rotation.z);
+	}
+	mat4 inline getTranslationMatrix(){
+		return mat4(1.0f,0.0f,0.0f,0.0f,
+			0.0f,1.0f,0.0f,0.0f, 
+			0.0f,0.0f,1.0f,0.0f,
+			position.x,position.y,position.z,1.0f);
+	}
+	void inline render(){
+		glColor3f(color.r,color.g,color.b);
+		GLUquadric* sphere;
+		sphere=gluNewQuadric();
+		gluQuadricNormals(sphere, GL_SMOOTH);
+		gluSphere(sphere,0.2,10,10);
+	}
 };

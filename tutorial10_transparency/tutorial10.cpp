@@ -4,7 +4,7 @@
 #include <vector>
 #include <iostream>
 //Realtime-Project library
-#include "box3D/Cube.cpp"
+#include "box3D/box3DglobalRule.h"
 // Include GLEW
 #include <GL/glew.h>
 // Include GLFW
@@ -27,8 +27,9 @@ std::vector<glm::mat4> indexed_rotates;
 std::vector<glm::vec2> indexed_uvs;
 std::vector<glm::vec3> indexed_normals;
 
-void addCube(Cube cube){
-
+void addCube(vector<Cube> c3, Cube cube){
+	Cube cube1= Cube(vec3(1.0f,0.0f,0.0f),vec3(1.0f,0.0f,1.0f),vec3(0,0,0),0.4f,1,vec3());
+	c3.push_back(cube1);
 }
 int main( void )
 {
@@ -98,15 +99,23 @@ int main( void )
 
 	//---------------------------------------------------------------------------------------------------------------
 	vector<Cube> c3;
-	Cube cube1= Cube(vec3(2.0f,2.0f,2.0f),vec3(0.0f,0.0f,1.0f),vec3(0,0,0),1,1);
-	Cube cube2= Cube(vec3(-1.0f,1.0f,-1.0f),vec3(0.2f,2.5f,1.0f),vec3(0,0,0),0.5f,1);
-	Cube cube3= Cube(vec3(1.0f,0.0f,0.0f),vec3(1.0f,0.0f,1.0f),vec3(0,0,0),0.2f,1);
-	Cube cube4= Cube(vec3(1.0f,0.0f,0.0f),vec3(1.0f,0.0f,1.0f),vec3(0,0,0),0.0f,1);
+	Cube cube1= Cube(vec3(2.0f,2.0f,2.0f),vec3(0.0f,0.0f,1.0f),vec3(0,0,0),1,1,vec3());
+	Cube cube2= Cube(vec3(-1.0f,1.0f,-1.0f),vec3(0.2f,2.5f,1.0f),vec3(0,0,0),0.5f,1,vec3());
+	Cube cube3= Cube(vec3(1.0f,0.0f,0.0f),vec3(1.0f,0.0f,1.0f),vec3(0,0,0),0.2f,1,vec3());
+	Cube cube4= Cube(vec3(1.0f,0.0f,0.0f),vec3(1.0f,0.0f,1.0f),vec3(0,0,0),0.4f,1,vec3());
 	c3.push_back(cube1);
 	c3.push_back(cube2);
 	c3.push_back(cube3);
 	c3.push_back(cube4);
-
+	vector<Sphere> sph;
+	Sphere sphere0= Sphere(vec3(2.0f,0.0f,0.0f),vec3(1.0f,0.0f,1.0f),vec3(1,0,0),0.4f,1,vec3(0.5f,0.4f,0.2f));
+	Sphere sphere1= Sphere(vec3(1.0f,0.0f,1.0f),vec3(1.0f,0.0f,1.0f),vec3(1,0,0),0.4f,1,vec3(0.5f,0.4f,0.2f));
+	Sphere sphere2= Sphere(vec3(1.0f,-1.0f,0.0f),vec3(1.0f,1.0f,1.0f),vec3(0,1,0),0.5f,1,vec3(1,0,0));
+	Sphere sphere3= Sphere(vec3(0.0f,0.0f,2.0f),vec3(1.0f,0.0f,0.0f),vec3(0,0,1),0.3f,1,vec3(0,0,1.0f));
+	sph.push_back(sphere0);
+	sph.push_back(sphere1);
+	sph.push_back(sphere2);
+	sph.push_back(sphere3);
 	//---------------------------------------------------------------------------------------------------------------
 	// Load it into a VBO
 
@@ -179,16 +188,31 @@ int main( void )
 			glPushMatrix();
 			glUniformMatrix4fv(TranslateMatrixID, 1, GL_FALSE, &TranslateMatrix[0][0]);
 			glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);
-			c3[i].renderCube(vec3(0,0,0));
+			c3[i].render();
 			glPopMatrix();
 		}
-		// Send our transformation to the currently bound shader, 
-		// in the "MVP" uniform
-
+		for (int i = 0; i < sph.size(); i++)
+		{
+			glm::mat4 RotateMatrix = sph[i].getRotationMatrix();
+			glm::mat4 TranslateMatrix = sph[i].getTranslationMatrix();
+			glPushMatrix();
+			glUniformMatrix4fv(TranslateMatrixID, 1, GL_FALSE, &TranslateMatrix[0][0]);
+			glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);
+			sph[i].render();
+			glPopMatrix();
+		}
+		glm::mat4 RotateMatrix = mat4(1.0f);
+		glm::mat4 TranslateMatrix = mat4(1.0f);
+		glPushMatrix();
+		glUniformMatrix4fv(TranslateMatrixID, 1, GL_FALSE, &TranslateMatrix[0][0]);
+		glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);
+		//glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+		glColor3f(0.0f,0.5f,0.0f);
+		gluCylinder(gluNewQuadric(),0.1,0.1,1,20,2);
+		glPopMatrix();
 
 		glm::vec3 lightPos = glm::vec3(4,4,4);
 		glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
-
 		// Bind our texture in Texture Unit 0
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, Texture);
@@ -255,20 +279,7 @@ int main( void )
 		glDisableVertexAttribArray(vertexRotation_modelspaceID);
 		glDisableVertexAttribArray(vertexUVID);
 		glDisableVertexAttribArray(vertexNormal_modelspaceID);
-		glm::mat4 RotateMatrix = mat4(1.0f);
-		glm::mat4 TranslateMatrix = mat4(1.0f);
-		glPushMatrix();
-		glUniformMatrix4fv(TranslateMatrixID, 1, GL_FALSE, &TranslateMatrix[0][0]);
-		glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);
-		//glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-		glColor3f(0.0f,0.5f,0.0f);
-		gluCylinder(gluNewQuadric(),0.1,0.1,1,20,2);
-		GLUquadric* sphere;
-		sphere=gluNewQuadric();
-		gluQuadricNormals(sphere, GL_SMOOTH);
-		glColor3f(1,0,0);
-		gluSphere(sphere,0.2,10,10);
-		glPopMatrix();
+		
 		// Swap buffers
 		glfwSwapBuffers();
 
