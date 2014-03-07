@@ -151,3 +151,29 @@ tutorial10_transparency/tutorial.02B7DD4E.tlog/link.read.1.tlog
 tutorial10_transparency/tutorial.02B7DD4E.tlog/link.write.1.tlog
 tutorial10_transparency/tutorial.02B7DD4E.tlog/tutorial10_transparency.lastbuildstate
 tutorial10_transparency/tutorial.02B7DD4E.tlog/unsuccessfulbuild
+playground/playground.exe
+tutorial08_basic_shading/cube.obj
+tutorial08_basic_shading/suzanne.obj
+tutorial08_basic_shading/tutorial08_basic_shading.exe
+tutorial09_vbo_indexing - Copy/suzanne.obj
+tutorial09_vbo_indexing - Copy/tutorial09_AssImp.exe
+tutorial09_vbo_indexing - Copy/tutorial09_several_objects.exe
+tutorial09_vbo_indexing - Copy/tutorial09_vbo_indexing.exe
+tutorial09_vbo_indexing/suzanne.obj
+tutorial09_vbo_indexing/tutorial09_AssImp.exe
+tutorial09_vbo_indexing/tutorial09_several_objects.exe
+tutorial09_vbo_indexing/tutorial09_vbo_indexing.exe
+tutorial11_2d_fonts/suzanne.obj
+tutorial11_2d_fonts/tutorial11_2d_fonts.exe
+tutorial12_extensions/suzanne.obj
+tutorial12_extensions/tutorial12_extensions.exe
+tutorial13_normal_mapping/cylinder.obj
+tutorial13_normal_mapping/tutorial13_normal_mapping.exe
+tutorial14_render_to_texture/suzanne.obj
+tutorial14_render_to_texture/tutorial14_render_to_texture.exe
+tutorial15_lightmaps/room.obj
+tutorial15_lightmaps/tutorial15_lightmaps.exe
+tutorial16_shadowmaps/room.obj
+tutorial16_shadowmaps/room_thickwalls.obj
+tutorial16_shadowmaps/tutorial16_shadowmaps.exe
+tutorial16_shadowmaps/tutorial16_shadowmaps_simple.exe
