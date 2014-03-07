@@ -57,10 +57,6 @@ public:
 		mass=m;
 		angularVelocity=1;
 		color=c;
-		p0[0]=cubeVertex0.x*size; p0[1]=cubeVertex0.y*size; p0[2]=cubeVertex0.z*size;
-		p1[0]=cubeVertex1.x*size; p1[1]=cubeVertex1.y*size; p1[2]=cubeVertex1.z*size;
-		p2[0]=cubeVertex2.x*size; p2[1]=cubeVertex2.y*size; p2[2]=cubeVertex2.z*size;
-		p3[0]=cubeVertex3.x*size; p3[1]=cubeVertex3.y*size; p3[2]=cubeVertex3.z*size;
 		//อนุรักษ์พลังงานกล ศักย์
 		//อนุรักษ์โมเมนตัมเชิงมุม เส้น
 	}
@@ -80,7 +76,6 @@ public:
 		glColor3f(color.r,color.g,color.b);
 		GLUquadric* plane;
 		glBegin(GL_QUADS);{
-			glVertex3f();
 		}glEnd();
 	}
 
