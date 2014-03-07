@@ -201,6 +201,16 @@ int main( void )
 			sph[i].render();
 			glPopMatrix();
 		}
+		for (int i = 0; i < sph.size(); i++)
+		{
+			glm::mat4 RotateMatrix = sph[i].getRotationMatrix();
+			glm::mat4 TranslateMatrix = sph[i].getTranslationMatrix();
+			glPushMatrix();
+			glUniformMatrix4fv(TranslateMatrixID, 1, GL_FALSE, &TranslateMatrix[0][0]);
+			glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);
+			sph[i].render();
+			glPopMatrix();
+		}
 		glm::mat4 RotateMatrix = mat4(1.0f);
 		glm::mat4 TranslateMatrix = mat4(1.0f);
 		glPushMatrix();
