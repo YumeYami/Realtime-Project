@@ -11,25 +11,39 @@ void checkCollisionSphereCube(Sphere sp1,vector<Cube> cu){
 		Cube cu1 = cu.at(j);
 		vec3 d = cu1.getPos() - spPos;
 		vec3 point = normalize(d)*radius;
-		if(point.x>=cu1.getMin().x && point[0]<=cu1.getMax().x
-			&& point.y>=cu1.getMin().y && point[1]<=cu1.getMax().y
-			&& point.z>=cu1.getMin().z && point[2]<=cu1.getMax().z) {
-
+		if(point.x>=cu1.getMin().x && point.x<=cu1.getMax().x
+			&& point.y>=cu1.getMin().y && point.y<=cu1.getMax().y
+			&& point.z>=cu1.getMin().z && point.z<=cu1.getMax().z) {
+				//onCollision
 
 		}
 	}
 }
 void checkCollisionSphereCylinder(Sphere sp1,vector<Cylinder> cy){
+	vec3 spPos = sp1.getPos();
+	float radius = sp1.getRadius();
+	for(int j=0;j<cy.size();j++){
+		Cylinder cy1 = cy.at(j);
+		vec3 ep1 = cy1.getEndPoint1();
+		//vec3 ep2 = cy1.getEndPoint2();
+		//vec3 cyVector = ep2-ep1;
+		float distance = dot(spPos,ep1)-cy1.getRadius(); //ยังไม่เสร็จ
+		if(distance<=radius) {
+			//onCollision
 
+		}
+	}
 }
+
 void checkCollisionSpherePlane(Sphere sp1,vector<Plane> pl){
+	vec3 spPos = sp1.getPos();
 	float radius = sp1.getRadius();
 	for(int j=0;j<pl.size();j++){
 		Plane pl1 = pl.at(j);
-		vec3 d = sp1.getPos() - pl1.getPos();
-		float distance = d.length();
+		vec3 temp = spPos-pl1.getPos();
+		float distance = dot(temp,pl1.getNormal());
 		if(distance<=radius) {
-
+			//onCollision
 
 		}
 	}
@@ -44,25 +58,29 @@ void checkCollisionSphereSphere(Sphere sp1, vector<Sphere> sp, int i){
 		float distance = d.length();
 		float sumR = radius + sp2.getRadius();
 		if(distance<=sumR) {
-
+			//onCollision
 
 		}
 	}
 }
 void checkCollisionPlaneCube(Plane pl1,vector<Cube> cu){
-	float plPos = pl1.getPos()[1];
+	vec3 plPos = pl1.getPos();
+	vec3 plNormal = pl1.getNormal();
 	for(int j=0;j<cu.size();j++){
 		Cube cu1 = cu.at(j);
-		if(cu1.getMin()[1]<=plPos) {
+		vec3 temp = cu1.getPos()-plPos;
+		float distance = dot(temp,plNormal);
+		//if(distance<=) {
+			//onCollision
 
-
-		}
+		//}
 	}
 }
 void checkCollisionPlaneCylinder(Plane pl1,vector<Cylinder> cy){
 
 }
 void checkCollisionPlanePlane(Plane pl1,vector<Plane> pl,int i){
+
 }
 
 void checkCollisionCubeCube(Cube cu1,vector<Cube> cu,int i){
@@ -73,7 +91,7 @@ void checkCollisionCubeCube(Cube cu1,vector<Cube> cu,int i){
 		if(cu1Max.x>=cu2.getMin().x && cu1Min[0]<=cu2.getMax().x
 			&& cu1Max.y>=cu2.getMin().y && cu1Min[1]<=cu2.getMax().y
 			&& cu1Max.z>=cu2.getMin().z && cu1Min[2]<=cu2.getMax().z) {
-
+				//onCollision
 
 		}
 	}
