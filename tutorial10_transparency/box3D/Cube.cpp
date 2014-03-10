@@ -30,9 +30,9 @@ using namespace glm;
 
 
 #include "Cube.h"
-#include "iostream"
+#include <iostream>
 #include "box3DglobalRule.cpp"
-
+using namespace std;
 class Cube{
 private:
 	vec3 position;
@@ -54,6 +54,11 @@ private:
 	vec4 p101;
 	vec4 p110;
 	vec4 p111;
+
+	quat quaternionRotation;
+
+	bool gLookAtOther;
+
 public:
 	Cube(vec3 cubePosition,vec3 cubeRotation,vec3 cubeVelocity,float cubeSize,float m){
 		size=cubeSize;
@@ -72,6 +77,8 @@ public:
 		p111=rotate(cubeVertex111*size/2);
 		rotation=eulerAngleYXZ(cubeRotation.x,cubeRotation.y,cubeRotation.z);
 		position=cubePosition;
+		gLookAtOther=true;
+		quaternionRotation=quat();
 	}
 	void addForce(vec3 force,float size){
 	}
@@ -95,6 +102,14 @@ public:
 	void updatePosition(float time){
 		position+=velocity*time;
 		rotation=rotation;
+		vec3 desiredDir = vec3(rand(),rand(),rand());
+		vec3 desiredUp = vec3(rand(), rand(), rand()); // +Y
+		// Compute the desired orientation
+		quat targetOrientation = normalize(LookAt(desiredDir, desiredUp));
+		// And interpolate
+		quaternionRotation = RotateTowards(quaternionRotation, targetOrientation, 1.0f);
+		cout<<quaternionRotation.x<<" "<<quaternionRotation.y<<" "<<quaternionRotation.z<<" "<<quaternionRotation.w<<endl;
+		rotation = mat4_cast(quaternionRotation);
 	}
 	void renderCube(vec3 color){
 		glBegin(GL_QUADS);{
