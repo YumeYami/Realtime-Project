@@ -78,7 +78,8 @@ public:
 		gLookAtOther=true;
 		quaternionRotation=quat();
 	}
-	void inline addForce(vec3 force,float size){
+	vec3 getPos(){
+		return position;
 	}
 	mat4 inline getRotationMatrix(){
 		return eulerAngleYXZ(rotation.y,rotation.x,rotation.z);

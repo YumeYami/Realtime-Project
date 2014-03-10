@@ -59,7 +59,13 @@ public:
 		rotation=sphereRotation;
 		position=spherePosition;
 	}
-	void inline addForce(vec3 force,float size){
+	vec3 getPos(){
+		return position;
+	}
+	float getRadius(){
+		return size;
+	}
+	void addForce(vec3 force,float size){
 	}
 	vec4 inline rotate(vec4 vertex){/*
 							 glTranslatef(xPos - scroll_x,yPos - scroll_y,0);			

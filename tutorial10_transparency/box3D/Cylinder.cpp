@@ -62,6 +62,9 @@ public:
 		topRadius=cylinderRadiusTop;
 		length=cylinderLength;
 	}
+	vec3 getPos(){
+		return position;
+	}
 	void addForce(vec3 force,float size){
 	}
 	vec4 rotate(vec4 vertex){/*
