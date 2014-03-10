@@ -6,17 +6,30 @@
 
 
 void checkCollisionSphereCube(Sphere sp1,vector<Cube> cu){
-
+	vec3 spPos = sp1.getPos();
+	float radius = sp1.getRadius();
+	for(int j=0;j<cu.size;j+){
+			Cube cu1 = cu.at(j);
+			vec3 d = cu1.getPos() - spPos;
+			vec3 point = normalize(d)*radius;
+			if(point[0]>=cu1.getMin[0] && point[0]<=cu1.getMax[0]
+			&& point[1]>=cu1.getMin[1] && point[1]<=cu1.getMax[1]
+			&& point[2]>=cu1.getMin[2] && point[2]<=cu1.getMax[2]) {
+			
+			
+			}
+	}
 }
 void checkCollisionSphereCylinder(Sphere sp1,vector<Cylinder> cy){
 
 }
 void checkCollisionSpherePlane(Sphere sp1,vector<Plane> pl){
+	float radius = sp1.getRadius();
 	for(int j=0;j<pl.size;j+){
 			Plane pl1 = pl.at(j);
 			vec3 d = sp1.getPos() - pl1.getPos();
 			float distance = d.length;
-			if(distance<=sp1.getRadius()) {
+			if(distance<=radius) {
 			
 			
 			}
@@ -24,11 +37,13 @@ void checkCollisionSpherePlane(Sphere sp1,vector<Plane> pl){
 }
 
 void checkCollisionSphereSphere(Sphere sp1, vector<Sphere> sp, int i){
+	vec3 spPos = sp1.getPos();
+	float radius = sp1.getRadius();
 	for(int j=i;j<sp.size;j++){
 			Sphere sp2 = sp.at(j);
-			vec3 d = sp1.getPos() - sp2.getPos();
+			vec3 d = spPos - sp2.getPos();
 			float distance = d.length;
-			float sumR = sp1.getRadius() + sp2.getRadius();
+			float sumR = radius + sp2.getRadius();
 			if(distance<=sumR) {
 			
 			
@@ -52,11 +67,13 @@ void checkCollisionPlanePlane(Plane pl1,vector<Plane> pl,int i){
 }
 
 void checkCollisionCubeCube(Cube cu1,vector<Cube> cu,int i){
+	vec3 cu1Max = cu1.getMax();
+	vec3 cu1Min = cu1.getMin();
 	for(int j=i;j<cu.size;j++){
 			Cube cu2 = cu.at(j);
-			if(cu1.getMax()[0]>=cu2.getMin[0] && cu1.getMin()[0]>=cu2.getMax[0]
-			&& cu1.getMax()[1]>=cu2.getMin[1] && cu1.getMin()[1]>=cu2.getMax[1]
-			&& cu1.getMax()[2]>=cu2.getMin[2] && cu1.getMin()[2]>=cu2.getMax[2]) {
+			if(cu1Max[0]>=cu2.getMin[0] && cu1Min[0]<=cu2.getMax[0]
+			&& cu1Max[1]>=cu2.getMin[1] && cu1Min[1]<=cu2.getMax[1]
+			&& cu1Max[2]>=cu2.getMin[2] && cu1Min[2]<=cu2.getMax[2]) {
 			
 			
 			}
