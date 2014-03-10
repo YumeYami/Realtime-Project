@@ -10,6 +10,7 @@
 #include "box3D/Sphere.cpp"
 #include "box3D/Cylinder.cpp"
 #include "box3D/Plane.cpp"
+#include "box3D/Cone.cpp"
 // Include GLEW
 #include <GL/glew.h>
 // Include GLFW

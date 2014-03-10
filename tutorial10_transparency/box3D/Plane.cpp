@@ -36,11 +36,11 @@ class Plane{
 private:
 	vec3 position;
 	mat4 rotationMatrix;
-	vec3 rotation;
+	vec3 orientation;
 	vec3 velocity;
 	float inertia;
 	float angularVelocity;
-	mat4 rotationAxis;
+	mat4 orientationAxis;
 	float size;
 	float mass;
 
@@ -72,7 +72,7 @@ public:
 		p1[0] = planeVertex1.x*size/2; p1[1] = planeVertex1.y*size/2; p1[2] = planeVertex1.z*size/2;
 		p2[0] = planeVertex2.x*size/2; p2[1] = planeVertex2.y*size/2; p2[2] = planeVertex2.z*size/2;
 		p3[0] = planeVertex3.x*size/2; p3[1] = planeVertex3.y*size/2; p3[2] = planeVertex3.z*size/2;
-		rotation=planeRotation;
+		orientation=planeRotation;
 		rotationMatrix=eulerAngleYXZ(planeRotation.x,planeRotation.y,planeRotation.z);
 		position=planePosition;
 		gLookAtOther=true;
@@ -81,8 +81,11 @@ public:
 	vec3 getPos(){
 		return position;
 	}
+	vec3 getOrientation(){
+		return orientation;
+	}
 	mat4 inline getRotationMatrix(){
-		return eulerAngleYXZ(rotation.y,rotation.x,rotation.z);
+		return eulerAngleYXZ(orientation.y,orientation.x,orientation.z);
 	}
 	mat4 inline getTranslationMatrix(){
 		return mat4(1.0f,0.0f,0.0f,0.0f,
@@ -92,9 +95,9 @@ public:
 	}
 	void inline updatePosition(float time){
 		position+=velocity*time;
-		rotation.x+=0.0001f;
-		rotation.y+=0.001f;
-		rotation.z+=0.00001f;
+		orientation.x+=0.0001f;
+		orientation.y+=0.001f;
+		orientation.z+=0.00001f;
 	}
 	void inline render(){
 		glBegin(GL_QUADS);{
