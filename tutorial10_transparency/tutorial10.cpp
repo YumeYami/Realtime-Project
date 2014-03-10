@@ -4,7 +4,12 @@
 #include <vector>
 #include <iostream>
 //Realtime-Project library
-#include "box3D/box3Dcollision.cpp"
+#include "box3D/box3Dcollision.h"
+#include "box3D/box3DglobalRule.h"
+#include "box3D/Cube.cpp"
+#include "box3D/Sphere.cpp"
+#include "box3D/Cylinder.cpp"
+#include "box3D/Plane.cpp"
 // Include GLEW
 #include <GL/glew.h>
 // Include GLFW

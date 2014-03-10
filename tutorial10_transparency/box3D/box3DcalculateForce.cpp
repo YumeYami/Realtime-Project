@@ -12,7 +12,6 @@
 // Include GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "box3Dcollision.cpp"
 using namespace glm;
 using namespace std;
 #include <common/shader.hpp>
@@ -20,7 +19,3 @@ using namespace std;
 #include <common/controls.hpp>
 #include <common/objloader.hpp>
 #include <common/vboindexer.hpp>
-#include <common/quaternion_utils.hpp>
-void calculateSphere_Sphere(Sphere sph1,Sphere sph2){
-	
-}

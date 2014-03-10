@@ -88,10 +88,10 @@ public:
 		return position;
 	}
 	vec3 getMin(){
-		return ;
+		return vec3(0,0,0);
 	}
 	vec3 getMax(){
-		return ;
+		return vec3(0,0,0);
 	}
 
 	void addForce(vec3 force,float size){
