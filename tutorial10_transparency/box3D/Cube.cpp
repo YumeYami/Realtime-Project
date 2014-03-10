@@ -103,17 +103,13 @@ public:
 	mat4 getScaleMatrix(){
 		return mat4();
 	}
+	void updatePosition(float time){
+		
+	}
 	void renderCube(vec3 color){
 		glBegin(GL_QUADS);{
-			//vec4 p000=vec4(-size/2,-size/2,-size/2,0);
-			//float* tp000=eulerAngleYXZ(rotation.x,rotation.y,rotation.z)*p000;
-			//float* pos;
-			//indexed_rotates.push_back(mat4(2,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1));
-			//glRotatef(angularVelocity*0.1,rotation.x,rotation.y,rotation.z);
-			//front
-			//glRotatef(1.0,1.0f,1.0f,1.0f);
-			//indexed_rotates.push_back(mat4(1.0f,0,0,0, 0,1.0f,0,0, 0,0,1.0f,0, 0,0,0,1.0f));
 			glColor3f(0,0,1);
+			glVertex3f(position.x-size/2,position.y-size/2,position.z+size/2);
 			glVertex3f(position.x+size/2,position.y-size/2,position.z+size/2);
 			glVertex3f(position.x+size/2,position.y+size/2,position.z+size/2);
 			glVertex3f(position.x-size/2,position.y+size/2,position.z+size/2);
