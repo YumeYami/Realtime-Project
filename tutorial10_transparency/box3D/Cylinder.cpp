@@ -65,6 +65,15 @@ public:
 	vec3 getPos(){
 		return position;
 	}
+	vec3 getEndPoint1(){
+		return vec3(0,0,0);
+	}
+	vec3 getEndPoint2(){
+		return vec3(0,0,0);
+	}
+	float getRadius(){
+		return 0;
+	}
 	void addForce(vec3 force,float size){
 	}
 	vec4 rotate(vec4 vertex){/*

@@ -84,6 +84,9 @@ public:
 	vec3 getOrientation(){
 		return orientation;
 	}
+	vec3 getNormal(){
+		return vec3(0,1,0);
+	}
 	mat4 inline getRotationMatrix(){
 		return eulerAngleYXZ(orientation.y,orientation.x,orientation.z);
 	}
