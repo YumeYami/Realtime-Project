@@ -38,24 +38,29 @@ class Cylinder
 public:
 private:
 	vec3 position;
-	mat4 rotation;
+	vec3 rotation;
 	vec3 velocity;
 	float inertia;
 	float angularVelocity;
 	quat quaternionRotation;
 	float size;
 	float mass;
-
+	float baseRadius;
+	float topRadius;
+	float length;
 	vec3 color;
 public:
-	Cylinder(vec3 cylinderPosition,vec3 cylinderRotation,vec3 cylinderVelocity,float cylinderSize,float m){
+	Cylinder(vec3 cylinderPosition,vec3 cylinderRotation,vec3 cylinderVelocity,float cylinderRadiusBase,float cylinderRadiusTop,float cylinderLength,float cylinderSize,float m){
 		size=cylinderSize;
 		mass=m;
 		angularVelocity=1;
 		//อนุรักษ์พลังงานกล ศักย์
 		//อนุรักษ์โมเมนตัมเชิงมุม เส้น
-		rotation=eulerAngleYXZ(cylinderRotation.x,cylinderRotation.y,cylinderRotation.z);
+		rotation=cylinderRotation;
 		position=cylinderPosition;
+		baseRadius=cylinderRadiusBase;
+		topRadius=cylinderRadiusTop;
+		length=cylinderLength;
 	}
 	void addForce(vec3 force,float size){
 	}
@@ -65,7 +70,7 @@ public:
 		return vec4(0,0,0,0);
 	}
 	mat4 getRotationMatrix(){
-		return rotation;
+		return eulerAngleYXZ(rotation.y,rotation.x,rotation.z);
 	}
 	mat4 getTranslationMatrix(){
 		return mat4(1.0f,0.0f,0.0f,0.0f,
@@ -73,31 +78,17 @@ public:
 			0.0f,0.0f,1.0f,0.0f,
 			position.x,position.y,position.z,1.0f);
 	}
-	mat4 getScaleMatrix(){
-		return mat4(1.0f);
-	}
 	void updatePosition(float time){
 		position+=velocity*time;
-		rotation;
-		vec3 desiredDir = vec3(1.0f);
-		vec3 desiredUp = vec3(0.0f, 1.0f, 0.0f); // +Y
-		// Compute the desired orientation
-		quat targetOrientation = normalize(LookAt(desiredDir, desiredUp));
-		// And interpolate
-		
-		quaternionRotation = RotateTowards(quaternionRotation, targetOrientation, time);
-		//glm::mat4 RotationMatrix = mat4_cast(quaternionRotation);
+		rotation.x+=0.0001f;
+		rotation.y+=0.001f;
+		rotation.z+=0.00001f;
 	}
-	void renderCylinder(vec3 color){
+	void render(){
 		glColor3f(color.r,color.g,color.b);
-		GLUquadric* cylinder;
-		cylinder=gluNewQuadric();
-		gluQuadricNormals(gluNewQuadric(),GL_SMOOTH);
-	}
-	void derenderCylinder(std::vector<unsigned short> indices,
-		std::vector<glm::vec3> indexed_vertices,
-		std::vector<glm::vec2> indexed_uvs,
-		std::vector<glm::vec3> indexed_normals){
-
+		GLUquadric* cyl;
+		cyl=gluNewQuadric();
+		gluQuadricNormals(cyl,GL_SMOOTH);
+		gluCylinder(cyl,baseRadius,topRadius,length,20,1);
 	}
 };
