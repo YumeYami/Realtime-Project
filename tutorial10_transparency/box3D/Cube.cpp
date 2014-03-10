@@ -108,7 +108,7 @@ public:
 		quat targetOrientation = normalize(LookAt(desiredDir, desiredUp));
 		// And interpolate
 		quaternionRotation = RotateTowards(quaternionRotation, targetOrientation, 1.0f);
-		cout<<quaternionRotation.x<<" "<<quaternionRotation.y<<" "<<quaternionRotation.z<<" "<<quaternionRotation.w<<endl;
+		//cout<<quaternionRotation.x<<" "<<quaternionRotation.y<<" "<<quaternionRotation.z<<" "<<quaternionRotation.w<<endl;
 		rotation = mat4_cast(quaternionRotation);
 	}
 	void renderCube(vec3 color){

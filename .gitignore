@@ -178,3 +178,12 @@ tutorial16_shadowmaps/room_thickwalls.obj
 tutorial16_shadowmaps/tutorial16_shadowmaps.exe
 tutorial16_shadowmaps/tutorial16_shadowmaps_simple.exe
 tutorial10_transparency/tutorial10_transparency.exe
+tutorial10_transparency/controls.obj
+tutorial10_transparency/objloader.obj
+tutorial10_transparency/shader.obj
+tutorial10_transparency/suzanne.obj
+tutorial10_transparency/texture.obj
+tutorial10_transparency/tutorial10_transparency.log
+tutorial10_transparency/vboindexer.obj
+tutorial17_rotations/suzanne.obj
+tutorial17_rotations/tutorial17_rotations.exe
