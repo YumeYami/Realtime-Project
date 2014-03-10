@@ -57,6 +57,9 @@ public:
 		rotation=eulerAngleYXZ(cylinderRotation.x,cylinderRotation.y,cylinderRotation.z);
 		position=cylinderPosition;
 	}
+	vec3 getPos(){
+		return position;
+	}
 	void addForce(vec3 force,float size){
 	}
 	vec4 rotate(vec4 vertex){/*

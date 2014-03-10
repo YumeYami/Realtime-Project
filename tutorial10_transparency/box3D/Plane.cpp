@@ -58,6 +58,9 @@ public:
 		//อนุรักษ์พลังงานกล ศักย์
 		//อนุรักษ์โมเมนตัมเชิงมุม เส้น
 	}
+	vec3 getPos(){
+		return position;
+	}
 	vec4 inline rotate(vec4 vertex){
 		return vec4(0,0,0,0);
 	}

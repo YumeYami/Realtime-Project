@@ -57,6 +57,12 @@ public:
 		rotation=eulerAngleYXZ(sphereRotation.x,sphereRotation.y,sphereRotation.z);
 		position=spherePosition;
 	}
+	vec3 getPos(){
+		return position;
+	}
+	float getRadius(){
+		return size;
+	}
 	void addForce(vec3 force,float size){
 	}
 	vec4 rotate(vec4 vertex){/*

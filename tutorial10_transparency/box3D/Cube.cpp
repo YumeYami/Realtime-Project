@@ -82,6 +82,16 @@ public:
 		gLookAtOther=true;
 		quaternionRotation=quat();
 	}
+	vec3 getPos(){
+		return position;
+	}
+	vec3 getMin(){
+		return ;
+	}
+	vec3 getMax(){
+		return ;
+	}
+
 	void addForce(vec3 force,float size){
 	}
 	mat4 getRotationMatrix(){
