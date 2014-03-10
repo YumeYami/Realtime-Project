@@ -2,14 +2,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
-
-//for realtime project
-#include "Cube.h"
-#include <iostream>
 // Include GLEW
 #include <GL/glew.h>
+
 // Include GLFW
 #include <GL/glfw.h>
+
 // Include GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -21,6 +19,8 @@ using namespace glm;
 
 // Include AntTweakBar
 #include <AntTweakBar.h>
+
+
 #include <common/shader.hpp>
 #include <common/texture.hpp>
 #include <common/controls.hpp>
@@ -29,16 +29,9 @@ using namespace glm;
 #include <common/quaternion_utils.hpp> // See quaternion_utils.cpp for RotationBetweenVectors, LookAt and RotateTowards
 
 
-using namespace glm;
-using namespace std;
-#include <common/shader.hpp>
-#include <common/texture.hpp>
-#include <common/controls.hpp>
-#include <common/objloader.hpp>
-#include <common/vboindexer.hpp>
+#include "Cube.h"
+#include "iostream"
 #include "box3DglobalRule.cpp"
-
-
 
 class Cube{
 private:
@@ -47,7 +40,7 @@ private:
 	vec3 velocity;
 	float inertia;
 	float angularVelocity;
-	quat quaternionRotation;
+	mat4 rotationAxis;
 	float size;
 	float mass;
 
@@ -66,6 +59,7 @@ public:
 		size=cubeSize;
 		mass=m;
 		angularVelocity=1;
+		velocity=cubeVelocity;
 		//อนุรักษ์พลังงานกล ศักย์
 		//อนุรักษ์โมเมนตัมเชิงมุม เส้น
 		p000=rotate(cubeVertex000*size/2);
@@ -100,17 +94,7 @@ public:
 	}
 	void updatePosition(float time){
 		position+=velocity*time;
-		rotation;
-		vec3 desiredDir = vec3(1.0f);
-		vec3 desiredUp = vec3(0.0f, 1.0f, 0.0f); // +Y
-
-		// Compute the desired orientation
-		quat targetOrientation = normalize(LookAt(desiredDir, desiredUp));
-
-		// And interpolate
-		quaternionRotation = RotateTowards(quaternionRotation, targetOrientation, time);
-
-		glm::mat4 RotationMatrix = mat4_cast(quaternionRotation);
+		rotation=rotation;
 	}
 	void renderCube(vec3 color){
 		glBegin(GL_QUADS);{

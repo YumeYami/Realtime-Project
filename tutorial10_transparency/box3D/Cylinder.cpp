@@ -81,14 +81,12 @@ public:
 		rotation;
 		vec3 desiredDir = vec3(1.0f);
 		vec3 desiredUp = vec3(0.0f, 1.0f, 0.0f); // +Y
-
 		// Compute the desired orientation
 		quat targetOrientation = normalize(LookAt(desiredDir, desiredUp));
-
 		// And interpolate
+		
 		quaternionRotation = RotateTowards(quaternionRotation, targetOrientation, time);
-
-		glm::mat4 RotationMatrix = mat4_cast(quaternionRotation);
+		//glm::mat4 RotationMatrix = mat4_cast(quaternionRotation);
 	}
 	void renderCylinder(vec3 color){
 		glColor3f(color.r,color.g,color.b);
