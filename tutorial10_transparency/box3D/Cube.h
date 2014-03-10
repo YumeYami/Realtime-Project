@@ -1,11 +1,11 @@
 #pragma once
 
 #define friction 0.05;
-#define cubeVertex000 vec4(-1/2, -1/2, -1/2, 1)
-#define cubeVertex001 vec4(-1/2, -1/2, 1/2, 1)
-#define cubeVertex010 vec4(-1/2, 1/2, -1/2, 1)
-#define cubeVertex011 vec4(-1/2, 1/2, 1/2, 1)
-#define cubeVertex100 vec4(1/2, -1/2, -1/2, 1)
-#define cubeVertex101 vec4(1/2, -1/2, 1/2, 1)
-#define cubeVertex110 vec4(1/2, 1/2, -1/2, 1)
-#define cubeVertex111 vec4(1/2, 1/2, 1/2, 1)
+#define cubeVertex0 vec4(-1.0f/2, -1.0f/2, -1.0f/2, 1)
+#define cubeVertex1 vec4(-1.0f/2, -1.0f/2,  1.0f/2, 1)
+#define cubeVertex2 vec4(-1.0f/2,  1.0f/2, -1.0f/2, 1)
+#define cubeVertex3 vec4(-1.0f/2,  1.0f/2,  1.0f/2, 1)
+#define cubeVertex4 vec4( 1.0f/2, -1.0f/2, -1.0f/2, 1)
+#define cubeVertex5 vec4( 1.0f/2, -1.0f/2,  1.0f/2, 1)
+#define cubeVertex6 vec4( 1.0f/2,  1.0f/2, -1.0f/2, 1)
+#define cubeVertex7 vec4( 1.0f/2,  1.0f/2,  1.0f/2, 1)
