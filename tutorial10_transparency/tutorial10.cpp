@@ -4,7 +4,7 @@
 #include <vector>
 #include <iostream>
 //Realtime-Project library
-#include "box3D/Cube.cpp"
+#include "box3D/box3Dcollision.cpp"
 // Include GLEW
 #include <GL/glew.h>
 // Include GLFW
@@ -98,13 +98,6 @@ int main( void )
 	// Get a handle for our "myTextureSampler" uniform
 	GLuint TextureID = glGetUniformLocation(programID, "myTextureSampler");
 
-	//// Read our .obj file
-	//std::vector<glm::vec3> vertices;
-	//std::vector<glm::vec2> uvs;
-	//std::vector<glm::vec3> normals;
-	//bool res = loadOBJ("suzanne.obj", vertices, uvs, normals);
-
-	//indexVBO(vertices, uvs, normals, indices, indexed_vertices, indexed_uvs, indexed_normals);
 	//---------------------------------------------------------------------------------------------------------------
 	vector<Cube> c3;
 	Cube cube1= Cube(vec3(1,1,1),vec3(0,0,1),vec3(0,0,0),1,1);
@@ -113,37 +106,14 @@ int main( void )
 	c3.push_back(cube1);
 	c3.push_back(cube2);
 	c3.push_back(cube3);
-	//cout<<"cube"<<endl;
-	//cubetest.renderCube(indices,indexed_vertices,indexed_uvs,indexed_normals);
-	//vec4 test=vec4(1,2,3,4);
-	//vec3 v=vec3(test);
-	//cout<<v.x<<v.y<<v.z<<endl;
-	//int n = 101;
-	//double w =2;
-	//for(int j=0;j<n;j++){
-	//	for(int i=0;i<n;i++){
-	//		indexed_vertices.push_back(vec3(w*2.0f * i / n - w, -1, w*2.0f * j / n - w));
-	//		//indexed_uvs.push_back(vec2(1.0f * i / n, 1.0f * j / n));
-	//		indexed_uvs.push_back(vec2(0.5f,0.5f));
-	//		indexed_normals.push_back(vec3(0.0f, 1.0f, 0.0f));
-	//	}
-	//}
-	//for(int j=0;j<n-1;j++){
-	//	for(int i=0;i<n-1;i++){
-	//		indices.push_back(i+j*n);
-	//		indices.push_back(i+(j+1)*n);
-	//		indices.push_back(i+1+j*n);
 
-	//		indices.push_back(i+1+j*n);
-	//		indices.push_back(i+(j+1)*n);
-	//		indices.push_back(i+1+n*(j+1));
-	//	}
-	//}
-
-
-	//---------------------------------------------------------------------------------------------------------------
-	// Load it into a VBO
-
+	vector<Sphere> sph;
+	Sphere sphere1= Sphere(vec3(1,1,1),vec3(0,0,1),vec3(0,0,0),1,1);
+	Sphere sphere2= Sphere(vec3(0,1,0),vec3(0,2.5f,1),vec3(0,0,0),0.5f,1);
+	Sphere sphere3= Sphere(vec3(1,0,0),vec3(1,0,1),vec3(0,0,0),0.2f,1);
+	sph.push_back(sphere1);
+	sph.push_back(sphere2);
+	sph.push_back(sphere3);
 	GLuint vertexbuffer;
 	glGenBuffers(1, &vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -200,30 +170,31 @@ int main( void )
 
 		// Compute the MVP matrix from keyboard and mouse input
 		computeMatricesFromInputs();
+		glm::mat4 ModelMatrix = mat4(1.0f);
+		glm::mat4 ProjectionMatrix = getProjectionMatrix();
+		glm::mat4 ViewMatrix = getViewMatrix();
+		glm::mat4 MVP = ProjectionMatrix * ViewMatrix;
+		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+		glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
+		glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
 		for (int i = 0; i < c3.size(); i++)
 		{
-			glm::mat4 ModelMatrix = c3[i].getTranslationMatrix()*c3[i].getRotationMatrix();
-			glm::mat4 ProjectionMatrix = getProjectionMatrix();
-			glm::mat4 ViewMatrix = getViewMatrix();
-			glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
-			
 			glm::mat4 ScaleMatrix = mat4();
 			glm::mat4 RotateMatrix = mat4();
 			glm::mat4 TranslateMatrix = mat4();
-			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-			glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
-			glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
+			glPushMatrix();
 			glUniformMatrix4fv(ScaleMatrixID, 1, GL_FALSE, &ScaleMatrix[0][0]);
 			glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);
 			glUniformMatrix4fv(TranslateMatrixID, 1, GL_FALSE, &TranslateMatrix[0][0]);
 			c3[i].renderCube(vec3(0,0,0));
+			glPopMatrix();
 		}
-		
-		glm::mat4 ModelMatrix = glm::mat4(1.0);
-		glm::mat4 ProjectionMatrix = getProjectionMatrix();
-		glm::mat4 ViewMatrix = getViewMatrix();
-		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
-
+		glm::mat4 ScaleMatrix = mat4();
+		glm::mat4 RotateMatrix = mat4();
+		glm::mat4 TranslateMatrix = mat4();
+		glUniformMatrix4fv(ScaleMatrixID, 1, GL_FALSE, &ScaleMatrix[0][0]);
+		glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);
+		glUniformMatrix4fv(TranslateMatrixID, 1, GL_FALSE, &TranslateMatrix[0][0]);
 		// Send our transformation to the currently bound shader, 
 		// in the "MVP" uniform
 		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
@@ -301,10 +272,6 @@ int main( void )
 		glDisableVertexAttribArray(vertexNormal_modelspaceID);
 
 		//glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-		for (int i = 0; i < c3.size(); i++)
-		{
-			c3[i].renderCube(vec3(0,0,0));
-		}
 		glColor3f(0.0f,0.5f,0.0f);
 		gluCylinder(gluNewQuadric(),0.1,0.1,1,20,2);
 		GLUquadric* sphere;

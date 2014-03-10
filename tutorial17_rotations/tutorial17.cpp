@@ -257,7 +257,6 @@ int main( void )
 			glm::mat4 TranslationMatrix = translate(mat4(), gPosition1); // A bit to the left
 			glm::mat4 ScalingMatrix = scale(mat4(), vec3(1.0f, 1.0f, 1.0f));
 			glm::mat4 ModelMatrix = TranslationMatrix * RotationMatrix * ScalingMatrix;
-
 			glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 			
 			// Send our transformation to the currently bound shader, 

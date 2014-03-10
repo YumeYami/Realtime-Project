@@ -21,8 +21,6 @@ using namespace glm;
 
 // Include AntTweakBar
 #include <AntTweakBar.h>
-
-
 #include <common/shader.hpp>
 #include <common/texture.hpp>
 #include <common/controls.hpp>
@@ -45,20 +43,16 @@ using namespace std;
 class Cube{
 private:
 	vec3 position;
-	vec3 rotation;
+	mat4 rotation;
 	vec3 velocity;
 	float inertia;
 	float angularVelocity;
-	vec4 quaternionRotation;
+	quat quaternionRotation;
 	float size;
 	float mass;
 
 	vec3 color;
-	bool isRender;
-	int begin_indices;
-	int begin_indexed_vertices;
-	int begin_indexed_uvs;
-	int begin_indexed_normals;
+
 	vec4 p000;
 	vec4 p001;
 	vec4 p010;
@@ -70,14 +64,10 @@ private:
 public:
 	Cube(vec3 cubePosition,vec3 cubeRotation,vec3 cubeVelocity,float cubeSize,float m){
 		size=cubeSize;
-		velocity=cubeVelocity;
-		position=cubePosition;
-		rotation=cubeRotation;
 		mass=m;
 		angularVelocity=1;
 		//อนุรักษ์พลังงานกล ศักย์
 		//อนุรักษ์โมเมนตัมเชิงมุม เส้น
-		isRender=false;
 		p000=rotate(cubeVertex000*size/2);
 		p001=rotate(cubeVertex001*size/2);
 		p010=rotate(cubeVertex010*size/2);
@@ -86,6 +76,8 @@ public:
 		p101=rotate(cubeVertex101*size/2);
 		p110=rotate(cubeVertex110*size/2);
 		p111=rotate(cubeVertex111*size/2);
+		rotation=eulerAngleYXZ(cubeRotation.x,cubeRotation.y,cubeRotation.z);
+		position=cubePosition;
 	}
 	void addForce(vec3 force,float size){
 	}
@@ -95,16 +87,30 @@ public:
 		return vec4(0,0,0,0);
 	}
 	mat4 getRotationMatrix(){
-		return eulerAngleYXZ(rotation.x,rotation.y,rotation.z);
+		return rotation;
 	}
 	mat4 getTranslationMatrix(){
-		return mat4();
+		return mat4(1.0f,0.0f,0.0f,0.0f,
+			0.0f,1.0f,0.0f,0.0f,
+			0.0f,0.0f,1.0f,0.0f,
+			position.x,position.y,position.z,1.0f);
 	}
 	mat4 getScaleMatrix(){
-		return mat4();
+		return mat4(1.0f);
 	}
 	void updatePosition(float time){
-		
+		position+=velocity*time;
+		rotation;
+		vec3 desiredDir = vec3(1.0f);
+		vec3 desiredUp = vec3(0.0f, 1.0f, 0.0f); // +Y
+
+		// Compute the desired orientation
+		quat targetOrientation = normalize(LookAt(desiredDir, desiredUp));
+
+		// And interpolate
+		quaternionRotation = RotateTowards(quaternionRotation, targetOrientation, time);
+
+		glm::mat4 RotationMatrix = mat4_cast(quaternionRotation);
 	}
 	void renderCube(vec3 color){
 		glBegin(GL_QUADS);{
