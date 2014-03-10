@@ -31,7 +31,6 @@ using namespace glm;
 
 #include "Cube.h"
 #include <iostream>
-#include "box3DglobalRule.cpp"
 using namespace std;
 class Cube{
 private:
@@ -61,9 +60,10 @@ private:
 	bool gLookAtOther;
 
 public:
-	Cube(vec3 cubePosition,vec3 cubeRotation,vec3 cubeVelocity,float cubeSize,float m){
+	Cube(vec3 cubePosition,vec3 cubeRotation,vec3 cubeVelocity,float cubeSize,float cubeMass,vec3 cubeColor){
 		size=cubeSize;
-		mass=m;
+		mass=cubeMass;
+		color=cubeColor;
 		angularVelocity=1;
 		velocity=cubeVelocity;
 		//อนุรักษ์พลังงานกล ศักย์
@@ -78,37 +78,29 @@ public:
 		p7[0] = cubeVertex7.x*size/2; p7[1] = cubeVertex7.y*size/2; p7[2] = cubeVertex7.z*size/2;
 		rotation=cubeRotation;
 		rotationMatrix=eulerAngleYXZ(cubeRotation.x,cubeRotation.y,cubeRotation.z);
+		
 		position=cubePosition;
 		gLookAtOther=true;
 		quaternionRotation=quat();
 	}
-	void addForce(vec3 force,float size){
+	void inline addForce(vec3 force,float size){
 	}
-	mat4 getRotationMatrix(){
-		return eulerAngleYXZ(rotation.x,rotation.y,rotation.z);
+	mat4 inline getRotationMatrix(){
+		return eulerAngleYXZ(rotation.y,rotation.x,rotation.z);
 	}
-	mat4 getTranslationMatrix(){
+	mat4 inline getTranslationMatrix(){
 		return mat4(1.0f,0.0f,0.0f,0.0f,
 			0.0f,1.0f,0.0f,0.0f,
 			0.0f,0.0f,1.0f,0.0f,
 			position.x,position.y,position.z,1.0f);
 	}
-	void updatePosition(float time){
-		//position+=velocity*time;
-		vec3 desiredDir = vec3(rand(),rand(),rand());
-		vec3 desiredUp = vec3(rand(), rand(), rand()); // +Y
-		// Compute the desired orientation
-		quat targetOrientation = normalize(LookAt(desiredDir, desiredUp));
-		// And interpolate
-		quaternionRotation = RotateTowards(quaternionRotation, targetOrientation, 1.0f);
-		quaternionRotation.x+=rand()*0.0001f;
-		quaternionRotation=normalize(quaternionRotation);
-		//rotation = mat4_cast(quaternionRotation);
+	void inline updatePosition(float time){
+		position+=velocity*time;
 		rotation.x+=0.0001f;
-		rotation.x+=0.001f;
-		rotation.x+=0.00001f;
+		rotation.y+=0.001f;
+		rotation.z+=0.00001f;
 	}
-	void renderCube(vec3 color){
+	void inline render(vec3 color){
 		glBegin(GL_QUADS);{
 			//back
 			glColor3f(1,1,0);
@@ -141,11 +133,5 @@ public:
 			glVertex3fv(p5);
 			glVertex3fv(p4);
 		}glEnd();
-	}
-	void derenderCube(std::vector<unsigned short> indices,
-		std::vector<glm::vec3> indexed_vertices,
-		std::vector<glm::vec2> indexed_uvs,
-		std::vector<glm::vec3> indexed_normals){
-
 	}
 };

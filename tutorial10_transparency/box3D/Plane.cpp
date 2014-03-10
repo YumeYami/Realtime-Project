@@ -1,77 +1,108 @@
-﻿#include "plane.h"
-// Include standard headers
+﻿// Include standard headers
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
-//for realtime project
-#include <iostream>
+// Include GLEW
 #include <GL/glew.h>
+
+// Include GLFW
 #include <GL/glfw.h>
+
+// Include GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/norm.hpp>
-#include <AntTweakBar.h>
-#include <common/shader.hpp>
-#include <common/texture.hpp>
-#include <common/controls.hpp>
-#include <common/objloader.hpp>
-#include <common/vboindexer.hpp>
-#include <common/shader.hpp>
-#include <common/texture.hpp>
-#include <common/controls.hpp>
-#include <common/objloader.hpp>
-#include <common/vboindexer.hpp>
-#include "box3DglobalRule.h"
 using namespace glm;
+
+// Include AntTweakBar
+#include <AntTweakBar.h>
+
+
+#include <common/shader.hpp>
+#include <common/texture.hpp>
+#include <common/controls.hpp>
+#include <common/objloader.hpp>
+#include <common/vboindexer.hpp>
+#include <common/quaternion_utils.hpp> // See quaternion_utils.cpp for RotationBetweenVectors, LookAt and RotateTowards
+
+
+#include "Plane.h"
+#include <iostream>
 using namespace std;
-class Plane
-{
-public:
+class Plane{
+private:
 	vec3 position;
+	mat4 rotationMatrix;
 	vec3 rotation;
 	vec3 velocity;
-	float momentOfInertia;
+	float inertia;
 	float angularVelocity;
-	vec4 quaternionRotation;
-	float planeBaseRadius;
-	float planeTopRadius;
-	float planeLength;
+	mat4 rotationAxis;
+	float size;
 	float mass;
+
 	vec3 color;
+
 	float p0[3];
 	float p1[3];
 	float p2[3];
 	float p3[3];
-	Plane(vec3 planePosition,vec3 planeRotation,vec3 planeVelocity,float baseRadius,float topRadius,float length,float m,vec3 c){
-		planeBaseRadius =baseRadius;
-		planeTopRadius =topRadius;
-		planeLength =length;
-		velocity=planeVelocity;
-		position=planePosition;
-		rotation=planeRotation;
-		mass=m;
+	float p4[3];
+	float p5[3];
+	float p6[3];
+	float p7[3];
+
+	quat quaternionRotation;
+
+	bool gLookAtOther;
+
+public:
+	Plane(vec3 planePosition,vec3 planeRotation,vec3 planeVelocity,float planeSize,float planeMass,vec3 planeColor){
+		size=planeSize;
+		mass=planeMass;
+		color=planeColor;
 		angularVelocity=1;
-		color=c;
+		velocity=planeVelocity;
 		//อนุรักษ์พลังงานกล ศักย์
 		//อนุรักษ์โมเมนตัมเชิงมุม เส้น
+		p0[0] = planeVertex0.x*size/2; p0[1] = planeVertex0.y*size/2; p0[2] = planeVertex0.z*size/2;
+		p1[0] = planeVertex1.x*size/2; p1[1] = planeVertex1.y*size/2; p1[2] = planeVertex1.z*size/2;
+		p2[0] = planeVertex2.x*size/2; p2[1] = planeVertex2.y*size/2; p2[2] = planeVertex2.z*size/2;
+		p3[0] = planeVertex3.x*size/2; p3[1] = planeVertex3.y*size/2; p3[2] = planeVertex3.z*size/2;
+		rotation=planeRotation;
+		rotationMatrix=eulerAngleYXZ(planeRotation.x,planeRotation.y,planeRotation.z);
+		position=planePosition;
+		gLookAtOther=true;
+		quaternionRotation=quat();
 	}
-	vec4 inline rotate(vec4 vertex){
-		return vec4(0,0,0,0);
+	void inline addForce(vec3 force,float size){
 	}
 	mat4 inline getRotationMatrix(){
-		return eulerAngleYXZ(rotation.x,rotation.y,rotation.z);
+		return eulerAngleYXZ(rotation.y,rotation.x,rotation.z);
 	}
 	mat4 inline getTranslationMatrix(){
 		return mat4(1.0f,0.0f,0.0f,0.0f,
-			0.0f,1.0f,0.0f,0.0f, 
+			0.0f,1.0f,0.0f,0.0f,
 			0.0f,0.0f,1.0f,0.0f,
 			position.x,position.y,position.z,1.0f);
 	}
-	void inline render(){
-		glColor3f(color.r,color.g,color.b);
+	void inline updatePosition(float time){
+		position+=velocity*time;
+		rotation.x+=0.0001f;
+		rotation.y+=0.001f;
+		rotation.z+=0.00001f;
 	}
-
+	void inline render(vec3 color){
+		glBegin(GL_QUADS);{
+			//back
+			glColor3f(color.r,color.g,color.b);
+			glVertex3fv(p0);
+			glVertex3fv(p1);
+			glVertex3fv(p3);
+			glVertex3fv(p2);
+		}glEnd();
+	}
 };

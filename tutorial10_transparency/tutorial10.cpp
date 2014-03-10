@@ -35,6 +35,13 @@ vec3 gPosition2( 1.5f, 0.0f, 0.0f);
 quat gOrientation2;
  
 bool gLookAtOther = true;
+
+vector<Cube> c3;
+vector<Sphere> sphere;
+vector<Cylinder> cylinder;
+vector<Plane> plane;
+
+
 void addCube(Cube cube){
 
 }
@@ -105,21 +112,22 @@ int main( void )
 	GLuint TextureID = glGetUniformLocation(programID, "myTextureSampler");
 
 	//---------------------------------------------------------------------------------------------------------------
-	vector<Cube> c3;
-	Cube cube1= Cube(vec3(1,1,1),vec3(0,0,1),vec3(1,0,0),1,1);
-	Cube cube2= Cube(vec3(0,1,0),vec3(0,2.5f,1),vec3(0,1,0),0.5f,1);
-	Cube cube3= Cube(vec3(1,0,0),vec3(1,0,1),vec3(0,0,1),0.2f,1);
+	
+	Cube cube1= Cube(vec3(1,1,1),vec3(0,0,1),vec3(1,0,0),1,1,vec3(0.5f,0.2f,0.3f));
+	Cube cube2= Cube(vec3(0,1,0),vec3(0,2.5f,1),vec3(0,1,0),0.5f,1,vec3(0.5f,0.2f,0.3f));
+	Cube cube3= Cube(vec3(1,0,0),vec3(1,0,1),vec3(0,0,1),0.2f,1,vec3(0.5f,0.2f,0.3f));
 	c3.push_back(cube1);
 	c3.push_back(cube2);
 	c3.push_back(cube3);
 
-	vector<Sphere> sph;
-	Sphere sphere1= Sphere(vec3(1,1,1),vec3(0,0,1),vec3(0,0,0),1,1);
-	Sphere sphere2= Sphere(vec3(0,1,0),vec3(0,2.5f,1),vec3(0,0,0),0.5f,1);
-	Sphere sphere3= Sphere(vec3(1,0,0),vec3(1,0,1),vec3(0,0,0),0.2f,1);
-	sph.push_back(sphere1);
-	sph.push_back(sphere2);
-	sph.push_back(sphere3);
+	Sphere sphere1= Sphere(vec3(1,1,1),vec3(0,0,1),vec3(0,0,0),1,1,vec3(0.5f,0.2f,0.3f));
+	Sphere sphere2= Sphere(vec3(0,1,0),vec3(0,2.5f,1),vec3(0,0,0),0.5f,1,vec3(0.0f,0.4f,0.3f));
+	Sphere sphere3= Sphere(vec3(1,0,0),vec3(1,0,1),vec3(0,0,0),0.2f,1,vec3(0.1f,0.2f,0.8f));
+	sphere.push_back(sphere1);
+	sphere.push_back(sphere2);
+	sphere.push_back(sphere3);
+
+
 	GLuint vertexbuffer;
 	glGenBuffers(1, &vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -185,7 +193,7 @@ int main( void )
 		glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
 		for (int i = 0; i < c3.size(); i++)
 		{
-			c3[i].updatePosition(0.01f);
+			c3[i].updatePosition(timeStep);
 			glm::mat4 ScaleMatrix = mat4();
 			glm::mat4 RotateMatrix = c3[i].getRotationMatrix();
 			glm::mat4 TranslateMatrix = c3[i].getTranslationMatrix();
@@ -193,7 +201,46 @@ int main( void )
 			glUniformMatrix4fv(ScaleMatrixID, 1, GL_FALSE, &ScaleMatrix[0][0]);
 			glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);
 			glUniformMatrix4fv(TranslateMatrixID, 1, GL_FALSE, &TranslateMatrix[0][0]);
-			c3[i].renderCube(vec3(0,0,0));
+			c3[i].render(vec3(0,0,0));
+			glPopMatrix();
+		}
+		for (int i = 0; i < sphere.size(); i++)
+		{
+			sphere[i].updatePosition(timeStep);
+			glm::mat4 ScaleMatrix = mat4();
+			glm::mat4 RotateMatrix = sphere[i].getRotationMatrix();
+			glm::mat4 TranslateMatrix = sphere[i].getTranslationMatrix();
+			glPushMatrix();
+			glUniformMatrix4fv(ScaleMatrixID, 1, GL_FALSE, &ScaleMatrix[0][0]);
+			glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);
+			glUniformMatrix4fv(TranslateMatrixID, 1, GL_FALSE, &TranslateMatrix[0][0]);
+			sphere[i].render(vec3(0,0,0));
+			glPopMatrix();
+		}
+		for (int i = 0; i < cylinder.size(); i++)
+		{
+			cylinder[i].updatePosition(0.01f);
+			glm::mat4 ScaleMatrix = mat4();
+			glm::mat4 RotateMatrix = cylinder[i].getRotationMatrix();
+			glm::mat4 TranslateMatrix = cylinder[i].getTranslationMatrix();
+			glPushMatrix();
+			glUniformMatrix4fv(ScaleMatrixID, 1, GL_FALSE, &ScaleMatrix[0][0]);
+			glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);
+			glUniformMatrix4fv(TranslateMatrixID, 1, GL_FALSE, &TranslateMatrix[0][0]);
+			cylinder[i].render(vec3(0,0,0));
+			glPopMatrix();
+		}
+		for (int i = 0; i < plane.size(); i++)
+		{
+			plane[i].updatePosition(0.01f);
+			glm::mat4 ScaleMatrix = mat4();
+			glm::mat4 RotateMatrix = plane[i].getRotationMatrix();
+			glm::mat4 TranslateMatrix = plane[i].getTranslationMatrix();
+			glPushMatrix();
+			glUniformMatrix4fv(ScaleMatrixID, 1, GL_FALSE, &ScaleMatrix[0][0]);
+			glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);
+			glUniformMatrix4fv(TranslateMatrixID, 1, GL_FALSE, &TranslateMatrix[0][0]);
+			plane[i].render(vec3(0,0,0));
 			glPopMatrix();
 		}
 		glm::mat4 ScaleMatrix = mat4();

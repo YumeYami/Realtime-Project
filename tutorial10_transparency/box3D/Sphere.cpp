@@ -38,7 +38,8 @@ class Sphere
 public:
 private:
 	vec3 position;
-	mat4 rotation;
+	vec3 rotation;
+	mat4 rotationMatrix;
 	vec3 velocity;
 	float inertia;
 	float angularVelocity;
@@ -48,58 +49,43 @@ private:
 
 	vec3 color;
 public:
-	Sphere(vec3 spherePosition,vec3 sphereRotation,vec3 sphereVelocity,float sphereSize,float m){
+	Sphere(vec3 spherePosition,vec3 sphereRotation,vec3 sphereVelocity,float sphereSize,float sphereMass,vec3 sphereColor){
 		size=sphereSize;
-		mass=m;
+		mass=sphereMass;
+		color=sphereColor;
 		angularVelocity=1;
 		//อนุรักษ์พลังงานกล ศักย์
 		//อนุรักษ์โมเมนตัมเชิงมุม เส้น
-		rotation=eulerAngleYXZ(sphereRotation.x,sphereRotation.y,sphereRotation.z);
+		rotation=sphereRotation;
 		position=spherePosition;
 	}
-	void addForce(vec3 force,float size){
+	void inline addForce(vec3 force,float size){
 	}
-	vec4 rotate(vec4 vertex){/*
+	vec4 inline rotate(vec4 vertex){/*
 							 glTranslatef(xPos - scroll_x,yPos - scroll_y,0);			
 							 glRotatef(angle,0.0f,0.0f,1.0f);*/
 		return vec4(0,0,0,0);
 	}
-	mat4 getRotationMatrix(){
-		return rotation;
+	mat4 inline getRotationMatrix(){
+		return eulerAngleYXZ(rotation.y,rotation.x,rotation.z);
 	}
-	mat4 getTranslationMatrix(){
+	mat4 inline getTranslationMatrix(){
 		return mat4(1.0f,0.0f,0.0f,0.0f,
 			0.0f,1.0f,0.0f,0.0f,
 			0.0f,0.0f,1.0f,0.0f,
 			position.x,position.y,position.z,1.0f);
 	}
-	mat4 getScaleMatrix(){
-		return mat4(1.0f);
-	}
-	void updatePosition(float time){
+	void inline updatePosition(float time){
 		position+=velocity*time;
-		rotation;
-		vec3 desiredDir = vec3(1.0f);
-		vec3 desiredUp = vec3(0.0f, 1.0f, 0.0f); // +Y
-
-		// Compute the desired orientation
-		quat targetOrientation = normalize(LookAt(desiredDir, desiredUp));
-
-		// And interpolate
-		quaternionRotation = RotateTowards(quaternionRotation, targetOrientation, time);
-
-		glm::mat4 RotationMatrix = mat4_cast(quaternionRotation);
+		rotation.x+=0.0001f;
+		rotation.y+=0.001f;
+		rotation.z+=0.00001f;
 	}
-	void renderSphere(vec3 color){
+	void inline render(vec3 color){
 		glColor3f(color.r,color.g,color.b);
 		GLUquadric* sphere;
 		sphere=gluNewQuadric();
-		gluQuadricNormals(gluNewQuadric(),GL_SMOOTH);
-	}
-	void derenderSphere(std::vector<unsigned short> indices,
-		std::vector<glm::vec3> indexed_vertices,
-		std::vector<glm::vec2> indexed_uvs,
-		std::vector<glm::vec3> indexed_normals){
-
+		gluQuadricNormals(sphere,GL_SMOOTH);
+		gluSphere(sphere,size,10,10);
 	}
 };
