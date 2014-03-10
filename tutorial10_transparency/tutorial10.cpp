@@ -66,7 +66,6 @@ int main( void )
 	}
 
 	glfwSetWindowTitle( "Tutorial 10" );
-
 	// Ensure we can capture the escape key being pressed below
 	glfwEnable( GLFW_STICKY_KEYS );
 	glfwSetMousePos(1024/2, 768/2);
@@ -112,7 +111,9 @@ int main( void )
 	c3.push_back(cube1);
 	c3.push_back(cube2);
 	c3.push_back(cube3);
-
+	
+	//cout<<"type = "<<typeid(cube1).name();
+	
 	vector<Sphere> sph;
 	Sphere sphere1= Sphere(vec3(1,1,1),vec3(0,0,1),vec3(0,0,0),1,1);
 	Sphere sphere2= Sphere(vec3(0,1,0),vec3(0,2.5f,1),vec3(0,0,0),0.5f,1);
