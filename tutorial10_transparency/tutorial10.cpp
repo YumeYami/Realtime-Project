@@ -187,8 +187,8 @@ int main( void )
 		{
 			c3[i].updatePosition(0.01f);
 			glm::mat4 ScaleMatrix = mat4();
-			glm::mat4 RotateMatrix = mat4();
-			glm::mat4 TranslateMatrix = mat4();
+			glm::mat4 RotateMatrix = c3[i].getRotationMatrix();
+			glm::mat4 TranslateMatrix = c3[i].getTranslationMatrix();
 			glPushMatrix();
 			glUniformMatrix4fv(ScaleMatrixID, 1, GL_FALSE, &ScaleMatrix[0][0]);
 			glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);
