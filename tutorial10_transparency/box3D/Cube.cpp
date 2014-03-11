@@ -35,17 +35,17 @@ using namespace std;
 class Cube{
 private:
 	vec3 position;
-	mat4 rotationMatrix;
-	vec3 orientation;
 	vec3 velocity;
-	float inertia;
-	float angularVelocity;
-	mat4 rotationAxis;
-	float size;
 	float mass;
+	
+	vec3 orientation;
+	vec3 angularVelocity;
+	float inertia;
 
+	float size;
 	vec3 color;
 
+	float vertex[8][3];
 	float p0[3];
 	float p1[3];
 	float p2[3];
@@ -55,17 +55,16 @@ private:
 	float p6[3];
 	float p7[3];
 
-	quat quaternionRotation;
-
-	bool gLookAtOther;
-
 public:
 	Cube(vec3 cubePosition,vec3 cubeRotation,vec3 cubeVelocity,float cubeSize,float cubeMass,vec3 cubeColor){
+		orientation=cubeRotation;
+		position=cubePosition;
+		velocity=cubeVelocity;
+		angularVelocity=vec3(0,0,0);
 		size=cubeSize;
 		mass=cubeMass;
 		color=cubeColor;
-		angularVelocity=1;
-		velocity=cubeVelocity;
+		inertia=1;
 		//อนุรักษ์พลังงานกล ศักย์
 		//อนุรักษ์โมเมนตัมเชิงมุม เส้น
 		p0[0] = cubeVertex0.x*size/2; p0[1] = cubeVertex0.y*size/2; p0[2] = cubeVertex0.z*size/2;
@@ -76,30 +75,31 @@ public:
 		p5[0] = cubeVertex5.x*size/2; p5[1] = cubeVertex5.y*size/2; p5[2] = cubeVertex5.z*size/2;
 		p6[0] = cubeVertex6.x*size/2; p6[1] = cubeVertex6.y*size/2; p6[2] = cubeVertex6.z*size/2;
 		p7[0] = cubeVertex7.x*size/2; p7[1] = cubeVertex7.y*size/2; p7[2] = cubeVertex7.z*size/2;
-		orientation=cubeRotation;
-		rotationMatrix=eulerAngleYXZ(cubeRotation.x,cubeRotation.y,cubeRotation.z);
 		
-		position=cubePosition;
-		gLookAtOther=true;
-		quaternionRotation=quat();
 	}
 
-	vec3 getPos(){
+	vec3 inline getPos(){
 		return position;
 	}
-	vec3 getMin(){
-		return vec3(0,0,0);
-	}
-	vec3 getMax(){
-		return vec3(0,0,0);
-	}
-	vec3 getSkin(){
-		return vec3();
-	}
-	vec3 getVelocity(){
+	vec3 inline getVelocity(){
 		return velocity;
 	}
-	void addForce(vec3 force,float size){
+	void inline setVelocity(vec3 newvelo){
+		velocity=newvelo;
+	}
+	vec3 inline getMin(){
+		return vec3(0,0,0);
+	}
+	vec3 inline getMax(){
+		return vec3(0,0,0);
+	}
+	vec3 inline getSkin(){
+		return vec3();
+	}
+	void inline addForce(vec3 force,float size){
+	}
+	vec3 inline getNormal(){
+		return vec3();
 	}
 	mat4 inline getRotationMatrix(){
 		return eulerAngleYXZ(orientation.y,orientation.x,orientation.z);
@@ -115,9 +115,7 @@ public:
 	}
 	void inline updatePosition(float time){
 		position+=velocity*time;
-		orientation.x+=0.0001f;
-		orientation.y+=0.001f;
-		orientation.z+=0.00001f;
+		orientation+=angularVelocity*time;
 	}
 	void inline render(){
 		glBegin(GL_QUADS);{

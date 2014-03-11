@@ -38,51 +38,56 @@ class Sphere
 public:
 private:
 	vec3 position;
-	vec3 rotation;
-	mat4 rotationMatrix;
 	vec3 velocity;
-	float inertia;
-	float angularVelocity;
-	quat quaternionRotation;
-	float size;
 	float mass;
+	
+	vec3 orientation;
+	vec3 angularVelocity;
+	float inertia;
 
+	float size;
 	vec3 color;
+
 public:
 	Sphere(vec3 spherePosition,vec3 sphereRotation,vec3 sphereVelocity,float sphereSize,float sphereMass,vec3 sphereColor){
-		size=sphereSize;
+		size=sphereSize/2;
 		mass=sphereMass;
 		color=sphereColor;
-		angularVelocity=1;
-		//อนุรักษ์พลังงานกล ศักย์
-		//อนุรักษ์โมเมนตัมเชิงมุม เส้น
-		rotation=sphereRotation;
+		angularVelocity=vec3(0,0,0);
+		orientation=sphereRotation;
 		position=spherePosition;
 	}
-	vec3 getPos(){
-		return position;
-	}
-	float getRadius(){
+	float inline getRadius(){
 		return size;
 	}
-	void addForce(vec3 force,float size){
+	vec3 inline getPos(){
+		return position;
 	}
-	vec3 getVelocity(){
+	vec3 inline getVelocity(){
 		return velocity;
 	}
-	void setVelocity(vec3 newVelocity){
-		velocity=newVelocity;
+	void inline setVelocity(vec3 newvelo){
+		velocity=newvelo;
 	}
-	vec4 inline rotate(vec4 vertex){/*
-							 glTranslatef(xPos - scroll_x,yPos - scroll_y,0);			
-							 glRotatef(angle,0.0f,0.0f,1.0f);*/
-		return vec4(0,0,0,0);
+	vec3 inline getMin(){
+		return vec3(0,0,0);
+	}
+	vec3 inline getMax(){
+		return vec3(0,0,0);
+	}
+	vec3 inline getSkin(){
+		return vec3();
+	}
+	void inline addForce(vec3 force,float size){
+	}
+	vec3 inline getNormal(){
+		return vec3();
 	}
 	mat4 inline getRotationMatrix(){
-		return eulerAngleYXZ(rotation.y,rotation.x,rotation.z);
+		return eulerAngleYXZ(orientation.y,orientation.x,orientation.z);
 	}
-	mat4 inline getInverseRotationMatrix(){
-		return eulerAngleYXZ(-rotation.y,-rotation.x,-rotation.z);
+	mat4 inline getInverseRatationMatrix(){
+		return eulerAngleYXZ(-orientation.y,-orientation.x,-orientation.z);
 	}
 	mat4 inline getTranslationMatrix(){
 		return mat4(1.0f,0.0f,0.0f,0.0f,
@@ -92,9 +97,7 @@ public:
 	}
 	void inline updatePosition(float time){
 		position+=velocity*time;
-		rotation.x+=0.0001f;
-		rotation.y+=0.001f;
-		rotation.z+=0.00001f;
+		orientation+=angularVelocity*time;
 	}
 	void inline render(){
 		GLUquadric* sphere;

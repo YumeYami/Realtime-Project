@@ -35,36 +35,27 @@ using namespace std;
 class Plane{
 private:
 	vec3 position;
-	mat4 rotationMatrix;
-	vec3 orientation;
 	vec3 velocity;
-	float inertia;
-	float angularVelocity;
-	mat4 orientationAxis;
-	float size;
 	float mass;
+	
+	vec3 orientation;
+	vec3 angularVelocity;
+	float inertia;
 
+	float size;
 	vec3 color;
 
 	float p0[3];
 	float p1[3];
 	float p2[3];
 	float p3[3];
-	float p4[3];
-	float p5[3];
-	float p6[3];
-	float p7[3];
-
-	quat quaternionRotation;
-
-	bool gLookAtOther;
 
 public:
 	Plane(vec3 planePosition,vec3 planeRotation,vec3 planeVelocity,float planeSize,float planeMass,vec3 planeColor){
 		size=planeSize;
 		mass=planeMass;
 		color=planeColor;
-		angularVelocity=1;
+		angularVelocity=vec3(0,0,0);
 		velocity=planeVelocity;
 		//อนุรักษ์พลังงานกล ศักย์
 		//อนุรักษ์โมเมนตัมเชิงมุม เส้น
@@ -73,22 +64,36 @@ public:
 		p2[0] = planeVertex2.x*size/2; p2[1] = planeVertex2.y*size/2; p2[2] = planeVertex2.z*size/2;
 		p3[0] = planeVertex3.x*size/2; p3[1] = planeVertex3.y*size/2; p3[2] = planeVertex3.z*size/2;
 		orientation=planeRotation;
-		rotationMatrix=eulerAngleYXZ(planeRotation.x,planeRotation.y,planeRotation.z);
 		position=planePosition;
-		gLookAtOther=true;
-		quaternionRotation=quat();
 	}
-	vec3 getPos(){
+	vec3 inline getPos(){
 		return position;
 	}
-	vec3 getOrientation(){
-		return orientation;
+	vec3 inline getVelocity(){
+		return velocity;
 	}
-	vec3 getNormal(){
-		return vec3(0,1,0);
+	void inline setVelocity(vec3 newvelo){
+		velocity=newvelo;
+	}
+	vec3 inline getMin(){
+		return vec3(0,0,0);
+	}
+	vec3 inline getMax(){
+		return vec3(0,0,0);
+	}
+	vec3 inline getSkin(){
+		return vec3();
+	}
+	void inline addForce(vec3 force,float size){
+	}
+	vec3 inline getNormal(){
+		return vec3();
 	}
 	mat4 inline getRotationMatrix(){
 		return eulerAngleYXZ(orientation.y,orientation.x,orientation.z);
+	}
+	mat4 inline getInverseRatationMatrix(){
+		return eulerAngleYXZ(-orientation.y,-orientation.x,-orientation.z);
 	}
 	mat4 inline getTranslationMatrix(){
 		return mat4(1.0f,0.0f,0.0f,0.0f,
@@ -98,9 +103,7 @@ public:
 	}
 	void inline updatePosition(float time){
 		position+=velocity*time;
-		orientation.x+=0.0001f;
-		orientation.y+=0.001f;
-		orientation.z+=0.00001f;
+		orientation+=angularVelocity*time;
 	}
 	void inline render(){
 		glBegin(GL_QUADS);{
