@@ -94,6 +94,12 @@ public:
 	}
 	void inline addForce(vec3 force,float size){
 	}
+	void inline addMomentum(vec3 momentum){
+		velocity+=momentum;
+	}
+	void inline addAngularMomentum(vec3 angularMomentum){
+		angularVelocity+=angularMomentum;
+	}
 	vec3 inline getNormal(){
 		return vec3();
 	}
