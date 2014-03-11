@@ -40,7 +40,6 @@ void inline colSphere_Plane(Sphere sph1, Plane plane2){
 }
 void inline colSphere_Cube(Sphere sph1, Cube cube2,vec3 pointCollisionModelCube){
 	
-	
 }
 void inline colSphere_Cylinder(Sphere sph1, Cylinder cy2){
 }
