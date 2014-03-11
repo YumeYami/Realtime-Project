@@ -2,7 +2,6 @@
 #include "box3DglobalRule.h"
 #include "box3DcalculateForce.cpp"
 
-
 float minn(float x, float y){
 	return (x < y ?  x : y) ;
 }
@@ -124,6 +123,3 @@ void checkCollision_(vector<Cube> cu, vector<Cylinder> cylinder, vector<Plane> p
 
 	}
 }
-
-
-
