@@ -99,7 +99,9 @@ void checkCollisionCubeCube(Cube cu1,vector<Cube> cu,int i){
 void checkCollisionCubeCylinder(Cube cu1,vector<Cylinder> cy){
 
 }
-void checkCollisionCylinderCylinder(Cylinder cy1,vector<Cylinder> cy,int i){
+void checkCollisionCylinderCylinder(Cylinder cy1,Cylinder cy2){
+	vec3 ep1cy1 = cy1.getEndPoint1();
+	vec3 ep1cy2 = cy2.getEndPoint1();
 
 }
 
@@ -121,9 +123,12 @@ void checkCollision(vector<Cube> cu, vector<Cylinder> cy, vector<Plane> pl, vect
 		checkCollisionCubeCube(cu1,cu,i+1);
 		checkCollisionCubeCylinder(cu1,cy);
 	}
-	for(int i=0;i<cy.size();i++){
+	for(int i=0;i<cy.size()-1;i++){
 		Cylinder cy1 = cy.at(i);
-		checkCollisionCylinderCylinder(cy1,cy,i+1);
+		for(int j=i+1;j<cy.size();j++){
+			Cylinder cy2 = cy.at(j);
+			checkCollisionCylinderCylinder(cy1,cy2);
+		}
 	}
 }
 
