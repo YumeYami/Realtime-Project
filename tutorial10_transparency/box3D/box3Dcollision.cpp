@@ -14,7 +14,7 @@ void checkCollisionSphereCube(Sphere sp1,Cube cube){
 	vec3 cubeSkin = cube.getSkin();
 	if(abs(point.x)<=cubeSkin.x && abs(point.y)<=cubeSkin.y && abs(point.z)<=cubeSkin.z) {
 			//onCollision
-		colSphere_Cube(sp1,cube,vec3(point));
+		colSphere_Cube(sp1,cube);
 	}
 
 }

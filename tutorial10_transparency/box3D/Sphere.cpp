@@ -56,6 +56,7 @@ public:
 		angularVelocity=vec3(0,0,0);
 		orientation=sphereRotation;
 		position=spherePosition;
+		velocity=sphereVelocity;
 	}
 	float inline getRadius(){
 		return size;
