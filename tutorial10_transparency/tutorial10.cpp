@@ -50,7 +50,7 @@ vector<Plane> plane;
 void addSphere(){
 	vec3 position = vec3(1,1,1);
 	vec3 rotation = vec3(0,0,1);
-	vec3 velocity = vec3(1,0,0);
+	vec3 velocity = vec3(0,-1,0);
 	float size = 1;
 	float mass = 1;
 	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
@@ -60,7 +60,7 @@ void addSphere(){
 void addCube(){
 	vec3 position = vec3(1,1,1);
 	vec3 rotation = vec3(0,0,1);
-	vec3 velocity = vec3(1,0,0);
+	vec3 velocity = vec3(0,-1,0);
 	float size = 1;
 	float mass = 1;
 	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
@@ -70,7 +70,7 @@ void addCube(){
 void addCylinder(){
 	vec3 position = vec3(1,1,1);
 	vec3 rotation = vec3(0,0,1);
-	vec3 velocity = vec3(1,0,0);
+	vec3 velocity = vec3(0,-1,0);
 	float radius = 0.5;
 	float length = 2;
 	float mass = 1;
@@ -91,7 +91,11 @@ void addPlane(){
 		Plane pl= Plane(position,rotation,velocity,size,mass,color);
 		plane.push_back(pl);
 	}
-	
+}
+void removePlane(){
+	for(int i=0;i<5;i++){
+		plane.pop_back();
+	}
 }
 
 int lastKey1=GLFW_RELEASE;
@@ -126,16 +130,18 @@ void onKeyboard(){
 	else if (glfwGetKey('3') == GLFW_RELEASE){
 		lastKey3 = GLFW_RELEASE;
 	}
-	/*
+	
 	//plane
 	if (glfwGetKey('4') == GLFW_PRESS){
-		if(lastKey4 == GLFW_RELEASE) addPlane();
+		if(lastKey4 == GLFW_RELEASE) 
+			if(plane.size()==0)addPlane();
+			else removePlane();
 		lastKey4 = GLFW_PRESS;
 	}
 	else if (glfwGetKey('4') == GLFW_RELEASE){
 		lastKey4 = GLFW_RELEASE;
 	}
-	*/
+	
 
 }
 void keyboard (unsigned char key,int x,int y){
