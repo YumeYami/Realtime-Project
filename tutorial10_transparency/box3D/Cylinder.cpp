@@ -38,32 +38,29 @@ class Cylinder
 public:
 private:
 	vec3 position;
-	vec3 rotation;
 	vec3 velocity;
-	float inertia;
-	float angularVelocity;
-	quat quaternionRotation;
-	float size;
 	float mass;
+	
+	vec3 orientation;
+	vec3 angularVelocity;
+	float inertia;
+
+	vec3 color;
+
 	float baseRadius;
 	float topRadius;
 	float length;
-	vec3 color;
 public:
-	Cylinder(vec3 cylinderPosition,vec3 cylinderRotation,vec3 cylinderVelocity,float cylinderRadiusBase,float cylinderRadiusTop,float cylinderLength,float cylinderSize,float m){
-		size=cylinderSize;
+	Cylinder(vec3 cylinderPosition,vec3 cylinderRotation,vec3 cylinderVelocity,float cylinderRadiusBase,float cylinderRadiusTop,float cylinderLength,float m){
 		mass=m;
-		angularVelocity=1;
+		angularVelocity=vec3(0,0,0);
 		//อนุรักษ์พลังงานกล ศักย์
 		//อนุรักษ์โมเมนตัมเชิงมุม เส้น
-		rotation=cylinderRotation;
+		orientation=cylinderRotation;
 		position=cylinderPosition;
 		baseRadius=cylinderRadiusBase;
 		topRadius=cylinderRadiusTop;
 		length=cylinderLength;
-	}
-	vec3 getPos(){
-		return position;
 	}
 	vec3 getEndPoint1(){
 		return vec3(0,0,0);
@@ -71,33 +68,50 @@ public:
 	vec3 getEndPoint2(){
 		return vec3(0,0,0);
 	}
-	vec3 getNormal(){
+	float getRadius(){
+		return baseRadius;
+	}
+	float getLength(){
+		return length;
+	}
+	vec3 inline getPos(){
+		return position;
+	}
+	vec3 inline getVelocity(){
+		return velocity;
+	}
+	void inline setVelocity(vec3 newvelo){
+		velocity=newvelo;
+	}
+	vec3 inline getMin(){
 		return vec3(0,0,0);
 	}
-	float getRadius(){
-		return 0;
+	vec3 inline getMax(){
+		return vec3(0,0,0);
 	}
-	void addForce(vec3 force,float size){
+	vec3 inline getSkin(){
+		return vec3();
 	}
-	vec4 rotate(vec4 vertex){/*
-							 glTranslatef(xPos - scroll_x,yPos - scroll_y,0);			
-							 glRotatef(angle,0.0f,0.0f,1.0f);*/
-		return vec4(0,0,0,0);
+	void inline addForce(vec3 force,float size){
 	}
-	mat4 getRotationMatrix(){
-		return eulerAngleYXZ(rotation.y,rotation.x,rotation.z);
+	vec3 inline getNormal(){
+		return vec3();
 	}
-	mat4 getTranslationMatrix(){
+	mat4 inline getRotationMatrix(){
+		return eulerAngleYXZ(orientation.y,orientation.x,orientation.z);
+	}
+	mat4 inline getInverseRatationMatrix(){
+		return eulerAngleYXZ(-orientation.y,-orientation.x,-orientation.z);
+	}
+	mat4 inline getTranslationMatrix(){
 		return mat4(1.0f,0.0f,0.0f,0.0f,
 			0.0f,1.0f,0.0f,0.0f,
 			0.0f,0.0f,1.0f,0.0f,
 			position.x,position.y,position.z,1.0f);
 	}
-	void updatePosition(float time){
+	void inline updatePosition(float time){
 		position+=velocity*time;
-		rotation.x+=0.0001f;
-		rotation.y+=0.001f;
-		rotation.z+=0.00001f;
+		orientation+=angularVelocity*time;
 	}
 	void render(){
 		glColor3f(color.r,color.g,color.b);
