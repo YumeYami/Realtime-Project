@@ -36,8 +36,8 @@ using namespace std;
 class Cylinder
 {
 public:
-	vec3 position;
-	vec3 velocity;
+	vec4 position;
+	vec4 velocity;
 	float mass;
 	
 	vec3 orientation;
@@ -51,11 +51,9 @@ public:
 	float length;
 	Cylinder(vec3 cylinderPosition,vec3 cylinderRotation,vec3 cylinderVelocity,float cylinderRadius,float cylinderLength,float cylinderMass,vec3 cylinderColor){
 		mass=cylinderMass;
-		angularVelocity=vec3(0,0,0);
-		//อนุรักษ์พลังงานกล ศักย์
-		//อนุรักษ์โมเมนตัมเชิงมุม เส้น
+		position=vec4(cylinderPosition,1);
+		velocity=vec4(cylinderVelocity,0);
 		orientation=cylinderRotation;
-		position=cylinderPosition;
 		radius=cylinderRadius;
 		length=cylinderLength;
 		color=cylinderColor;
@@ -77,14 +75,14 @@ public:
 	}
 	void inline addForce(vec3 force,float size){
 	}
-	void inline addMomentum(vec3 momentum){
+	void inline addMomentum(vec4 momentum){
 		velocity+=momentum;
 	}
 	void inline addAngularMomentum(vec3 angularMomentum){
 		angularVelocity+=angularMomentum;
 	}
-	vec3 inline getNormal(){
-		return vec3(getRotationMatrix()*vec4(0,1,0,1));
+	vec4 inline getNormal(){
+		return normalize(getRotationMatrix()*vec4(0,1,0,0));
 	}
 	mat4 inline getRotationMatrix(){
 		return eulerAngleYXZ(orientation.y,orientation.x,orientation.z);

@@ -36,8 +36,8 @@ using namespace std;
 class Sphere
 {
 public:
-	vec3 position;
-	vec3 velocity;
+	vec4 position;
+	vec4 velocity;
 	float mass;
 	
 	vec3 orientation;
@@ -52,9 +52,10 @@ public:
 		color=sphereColor;
 		angularVelocity=vec3(0,0,0);
 		orientation=sphereRotation;
-		position=spherePosition;
+		position=vec4(spherePosition,1);
+		velocity=vec4(sphereVelocity,0);
 	}
-	void inline setVelocity(vec3 newvelo){
+	void inline setVelocity(vec4 newvelo){
 		velocity=newvelo;
 	}
 	vec3 inline getMin(){
@@ -68,14 +69,14 @@ public:
 	}
 	void inline addForce(vec3 force,float size){
 	}
-	void inline addMomentum(vec3 momentum){
+	void inline addMomentum(vec4 momentum){
 		velocity+=momentum;
 	}
 	void inline addAngularMomentum(vec3 angularMomentum){
 		angularVelocity+=angularMomentum;
 	}
-	vec3 inline getNormal(){
-		return vec3(getRotationMatrix()*vec4(0,1,0,1));
+	vec4 inline getNormal(){
+		return normalize(getRotationMatrix()*vec4(0,1,0,0));
 	}
 	mat4 inline getRotationMatrix(){
 		return eulerAngleYXZ(orientation.y,orientation.x,orientation.z);
