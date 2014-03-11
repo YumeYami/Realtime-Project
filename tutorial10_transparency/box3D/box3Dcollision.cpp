@@ -19,8 +19,18 @@ void checkCollision_SphereCube(Sphere sp1,Cube cube){
 	}
 
 }
-void checkCollision_SphereCylinder(Sphere sp1,Cylinder cylinder1){
-
+void checkCollision_SphereCylinder(Sphere sph,Cylinder cyl){
+	vec4 spherePos = cyl.getInverseRatationMatrix()*(sph.position-cyl.position);
+	vec4 cylNormal = vec4(0,1,0,0);
+	float projectDist = dot(spherePos,cylNormal);
+	vec4 minDist = projectDist*cylNormal-spherePos;
+	if(minDist.length() >= cyl.radius + sph.radius) return;
+	if(minDist.length() < cyl.radius){
+		if(projectDist <= cyl.length + sph.radius) return;
+		else colSphere_Cylinder(sph,cyl);
+	} else {
+		
+	}
 }
 //completed
 void checkCollision_SpherePlane(Sphere sp1,Plane pl1){
@@ -90,7 +100,6 @@ void checkCollision_CylinderCylinder(Cylinder cylinder1,Cylinder cylinder2){
 	//}
 
 }
-
 void checkCollision_(vector<Cube> cu, vector<Cylinder> cylinder, vector<Plane> pl, vector<Sphere> sp){
 	for(int i=0;i<sp.size();i++){
 		Sphere sp1 = sp.at(i);
