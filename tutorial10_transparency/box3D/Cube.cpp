@@ -120,35 +120,42 @@ public:
 	void inline render(){
 		glBegin(GL_QUADS);{
 			//back
-			glColor3f(1,1,0);
+			//glColor3f(1,1,0);
+			glColor3f(color.r,color.g,color.b);
 			glVertex3fv(p0);
 			glVertex3fv(p1);
 			glVertex3fv(p3);
 			glVertex3fv(p2);
 			//left
-			glColor3f(0,1,0);
+			//glColor3f(0,1,0);
+			//glColor3f(color.r,color.g,color.b);
 			glVertex3fv(p4);
 			glVertex3fv(p0);
 			glVertex3fv(p2);
 			glVertex3fv(p6);
 			//right
-			glColor3f(1,0,1);
+			//glColor3f(1,0,1);
+			//glColor3f(color.r,color.g,color.b);
 			glVertex3fv(p5);
 			glVertex3fv(p1);
 			glVertex3fv(p3);
 			glVertex3fv(p7);
 			//up
-			glColor3f(1,0,0);
+			//glColor3f(1,0,0);
+			//glColor3f(color.r,color.g,color.b);
 			glVertex3fv(p6);
 			glVertex3fv(p7);
 			glVertex3fv(p3);
 			glVertex3fv(p2);
 			//down
-			glColor3f(0,1,1);
+			//glColor3f(0,1,1);
+			//glColor3f(color.r,color.g,color.b);
 			glVertex3fv(p0);
 			glVertex3fv(p1);
 			glVertex3fv(p5);
 			glVertex3fv(p4);
+
+
 		}glEnd();
 	}
 };

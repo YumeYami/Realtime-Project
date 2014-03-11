@@ -51,7 +51,7 @@ private:
 	float topRadius;
 	float length;
 public:
-	Cylinder(vec3 cylinderPosition,vec3 cylinderRotation,vec3 cylinderVelocity,float cylinderRadiusBase,float cylinderRadiusTop,float cylinderLength,float m){
+	Cylinder(vec3 cylinderPosition,vec3 cylinderRotation,vec3 cylinderVelocity,float cylinderRadiusBase,float cylinderRadiusTop,float cylinderLength,float m,vec3 cylinderColor){
 		mass=m;
 		angularVelocity=vec3(0,0,0);
 		//อนุรักษ์พลังงานกล ศักย์
@@ -61,6 +61,7 @@ public:
 		baseRadius=cylinderRadiusBase;
 		topRadius=cylinderRadiusTop;
 		length=cylinderLength;
+		color = cylinderColor;
 	}
 	vec3 getEndPoint1(){
 		return vec3(0,0,0);

@@ -17,7 +17,6 @@
 #include <GL/glfw.h>
 // Include GLU
 #include <GL/GLU.h>
-
 // Include GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -36,10 +35,10 @@ std::vector<glm::vec2> indexed_uvs;
 std::vector<glm::vec3> indexed_normals;
 vec3 gPosition1(-1.5f, 0.0f, 0.0f);
 vec3 gOrientation1;
- 
+
 vec3 gPosition2( 1.5f, 0.0f, 0.0f);
 quat gOrientation2;
- 
+
 bool gLookAtOther = true;
 
 vector<Cube> c3;
@@ -48,9 +47,95 @@ vector<Cylinder> cylinder;
 vector<Plane> plane;
 
 
-void addCube(Cube cube){
+void addSphere(){
+	vec3 position = vec3(1,1,1);
+	vec3 rotation = vec3(0,0,1);
+	vec3 velocity = vec3(1,0,0);
+	float size = 1;
+	float mass = 1;
+	vec3 color = vec3(0.5f,0.2f,0.3f);
+	Sphere sp= Sphere(position,rotation,velocity,size,mass,color);
+	sphere.push_back(sp);
+}
+void addCube(){
+	vec3 position = vec3(1,1,1);
+	vec3 rotation = vec3(0,0,1);
+	vec3 velocity = vec3(1,0,0);
+	float size = 1;
+	float mass = 1;
+	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
+	Cube cube= Cube(position,rotation,velocity,size,mass,color);
+	c3.push_back(cube);
+}
+void addCylinder(){
+	vec3 position = vec3(1,1,1);
+	vec3 rotation = vec3(0,0,1);
+	vec3 velocity = vec3(1,0,0);
+	float radiusBase = 1;
+	float radiusTop = 1;
+	float length = 2;
+	float mass = 1;
+	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
+	Cylinder cy= Cylinder(position,rotation,velocity,radiusBase,radiusTop,length,mass,color);
+	cylinder.push_back(cy);
+}
+void addPlane(){
+	vec3 position = vec3(1,1,1);
+	vec3 rotation = vec3(0,0,1);
+	vec3 velocity = vec3(1,0,0);
+	float size = 1;
+	float mass = 1;
+	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
+	Plane pl= Plane(position,rotation,velocity,size,mass,color);
+	plane.push_back(pl);
+}
+
+int lastKey1=GLFW_RELEASE;
+int lastKey2=GLFW_RELEASE;
+int lastKey3=GLFW_RELEASE;
+int lastKey4=GLFW_RELEASE;
+
+void onKeyboard(){
+	//sphere
+	if (glfwGetKey('1') == GLFW_PRESS){
+		if(lastKey1 == GLFW_RELEASE) addSphere();
+		lastKey1 = GLFW_PRESS;
+	}
+	else if (glfwGetKey('1') == GLFW_RELEASE){
+		lastKey1 = GLFW_RELEASE;
+	}
+
+	//cube
+	if (glfwGetKey('2') == GLFW_PRESS){
+		if(lastKey2 == GLFW_RELEASE) addCube();
+		lastKey2 = GLFW_PRESS;
+	}
+	else if (glfwGetKey('2') == GLFW_RELEASE){
+		lastKey2 = GLFW_RELEASE;
+	}
+
+	//cylinder
+	if (glfwGetKey('3') == GLFW_PRESS){
+		if(lastKey3 == GLFW_RELEASE) addCylinder();
+		lastKey3 = GLFW_PRESS;
+	}
+	else if (glfwGetKey('3') == GLFW_RELEASE){
+		lastKey3 = GLFW_RELEASE;
+	}
+	//plane
+	if (glfwGetKey('4') == GLFW_PRESS){
+		if(lastKey4 == GLFW_RELEASE) addPlane();
+		lastKey4 = GLFW_PRESS;
+	}
+	else if (glfwGetKey('4') == GLFW_RELEASE){
+		lastKey4 = GLFW_RELEASE;
+	}
 
 }
+void keyboard (unsigned char key,int x,int y){
+	if(key == 'x') addCube();
+}
+
 int main( void )
 {
 	// Initialise GLFW
@@ -59,7 +144,7 @@ int main( void )
 		fprintf( stderr, "Failed to initialize GLFW\n" );
 		return -1;
 	}
-
+	GLUTkeyboardfun(keyboard);
 	glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);
 	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 2);
 	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 1);
@@ -117,14 +202,15 @@ int main( void )
 	GLuint TextureID = glGetUniformLocation(programID, "myTextureSampler");
 
 	//---------------------------------------------------------------------------------------------------------------
-	
+
+
 	Cube cube1= Cube(vec3(1,1,1),vec3(0,0,1),vec3(1,0,0),1,1,vec3(0.5f,0.2f,0.3f));
 	Cube cube2= Cube(vec3(0,1,0),vec3(0,2.5f,1),vec3(0,1,0),0.5f,1,vec3(0.5f,0.2f,0.3f));
 	Cube cube3= Cube(vec3(1,0,0),vec3(1,0,1),vec3(0,0,1),0.2f,1,vec3(0.5f,0.2f,0.3f));
 	c3.push_back(cube1);
 	c3.push_back(cube2);
 	c3.push_back(cube3);
-	
+
 	Sphere sphere1= Sphere(vec3(1,1,1),vec3(0,0,1),vec3(0,0,0),1,1,vec3(0.5f,0.2f,0.3f));
 	Sphere sphere2= Sphere(vec3(0,1,0),vec3(0,2.5f,1),vec3(0,0,0),0.5f,1,vec3(0.0f,0.4f,0.3f));
 	Sphere sphere3= Sphere(vec3(1,0,0),vec3(1,0,1),vec3(0,0,0),0.2f,1,vec3(0.1f,0.2f,0.8f));
@@ -189,6 +275,8 @@ int main( void )
 
 		// Compute the MVP matrix from keyboard and mouse input
 		computeMatricesFromInputs();
+		onKeyboard();
+
 		glm::mat4 ModelMatrix = mat4(1.0f);
 		glm::mat4 ProjectionMatrix = getProjectionMatrix();
 		glm::mat4 ViewMatrix = getViewMatrix();
