@@ -36,7 +36,6 @@ using namespace std;
 class Sphere
 {
 public:
-private:
 	vec3 position;
 	vec3 velocity;
 	float mass;
@@ -45,27 +44,16 @@ private:
 	vec3 angularVelocity;
 	float inertia;
 
-	float size;
+	float radius;
 	vec3 color;
-
-public:
 	Sphere(vec3 spherePosition,vec3 sphereRotation,vec3 sphereVelocity,float sphereSize,float sphereMass,vec3 sphereColor){
-		size=sphereSize/2;
+		radius=sphereSize/2;
 		mass=sphereMass;
 		color=sphereColor;
 		angularVelocity=vec3(0,0,0);
 		orientation=sphereRotation;
 		position=spherePosition;
 		velocity=sphereVelocity;
-	}
-	float inline getRadius(){
-		return size;
-	}
-	vec3 inline getPos(){
-		return position;
-	}
-	vec3 inline getVelocity(){
-		return velocity;
 	}
 	void inline setVelocity(vec3 newvelo){
 		velocity=newvelo;
@@ -88,7 +76,7 @@ public:
 		angularVelocity+=angularMomentum;
 	}
 	vec3 inline getNormal(){
-		return vec3();
+		return vec3(getRotationMatrix()*vec4(0,1,0,1));
 	}
 	mat4 inline getRotationMatrix(){
 		return eulerAngleYXZ(orientation.y,orientation.x,orientation.z);
@@ -111,6 +99,6 @@ public:
 		sphere=gluNewQuadric();
 		gluQuadricNormals(sphere,GL_SMOOTH);
 		glColor3f(color.r,color.g,color.b);
-		gluSphere(sphere,size,10,10);
+		gluSphere(sphere,radius,10,10);
 	}
 };

@@ -36,7 +36,6 @@ using namespace std;
 class Cylinder
 {
 public:
-private:
 	vec3 position;
 	vec3 velocity;
 	float mass;
@@ -47,43 +46,27 @@ private:
 
 	vec3 color;
 
-	float baseRadius;
+	float radius;
 	float topRadius;
 	float length;
-public:
-	Cylinder(vec3 cylinderPosition,vec3 cylinderRotation,vec3 cylinderVelocity,float cylinderRadiusBase,float cylinderRadiusTop,float cylinderLength,float m,vec3 cylinderColor){
-		mass=m;
+	Cylinder(vec3 cylinderPosition,vec3 cylinderRotation,vec3 cylinderVelocity,float cylinderRadius,float cylinderLength,float cylinderMass,vec3 cylinderColor){
+		mass=cylinderMass;
 		angularVelocity=vec3(0,0,0);
 		//อนุรักษ์พลังงานกล ศักย์
 		//อนุรักษ์โมเมนตัมเชิงมุม เส้น
 		orientation=cylinderRotation;
 		position=cylinderPosition;
-		baseRadius=cylinderRadiusBase;
-		topRadius=cylinderRadiusTop;
+		radius=cylinderRadius;
 		length=cylinderLength;
 		color = cylinderColor;
 		velocity = cylinderVelocity;
+
 	}
 	vec3 getEndPoint1(){
 		return vec3(0,0,0);
 	}
 	vec3 getEndPoint2(){
 		return vec3(0,0,0);
-	}
-	float getRadius(){
-		return baseRadius;
-	}
-	float getLength(){
-		return length;
-	}
-	vec3 inline getPos(){
-		return position;
-	}
-	vec3 inline getVelocity(){
-		return velocity;
-	}
-	void inline setVelocity(vec3 newvelo){
-		velocity=newvelo;
 	}
 	vec3 inline getMin(){
 		return vec3(0,0,0);
@@ -103,7 +86,7 @@ public:
 		angularVelocity+=angularMomentum;
 	}
 	vec3 inline getNormal(){
-		return vec3();
+		return vec3(getRotationMatrix()*vec4(0,1,0,1));
 	}
 	mat4 inline getRotationMatrix(){
 		return eulerAngleYXZ(orientation.y,orientation.x,orientation.z);
@@ -126,6 +109,6 @@ public:
 		GLUquadric* cyl;
 		cyl=gluNewQuadric();
 		gluQuadricNormals(cyl,GL_SMOOTH);
-		gluCylinder(cyl,baseRadius,topRadius,length,20,1);
+		gluCylinder(cyl,radius,topRadius,length,20,1);
 	}
 };
