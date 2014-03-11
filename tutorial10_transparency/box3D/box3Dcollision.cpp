@@ -10,7 +10,7 @@ void checkCollisionSphereCube(Sphere sp1,vector<Cube> cu){
 	for(int j=0;j<cu.size();j++){
 		Cube cu1 = cu.at(j);
 		vec3 d = cu1.getPos() - spPos;
-		vec3 point = normalize(d)*radius;
+		vec3 point = normalize(d)*radius + spPos;
 		if(point.x>=cu1.getMin().x && point.x<=cu1.getMax().x
 			&& point.y>=cu1.getMin().y && point.y<=cu1.getMax().y
 			&& point.z>=cu1.getMin().z && point.z<=cu1.getMax().z) {
@@ -43,7 +43,7 @@ void checkCollisionSpherePlane(Sphere sp1,vector<Plane> pl){
 	for(int j=0;j<pl.size();j++){
 		Plane pl1 = pl.at(j);
 		vec3 centerVec = spPos-pl1.getPos();
-		float distance = dot(centerVec,pl1.getNormal());
+		float distance = dot(centerVec,normalize(pl1.getNormal()));
 		if(distance<=radius) {
 			//onCollision
 
@@ -88,9 +88,9 @@ void checkCollisionCubeCube(Cube cu1,vector<Cube> cu,int i){
 	vec3 cu1Min = cu1.getMin();
 	for(int j=i;j<cu.size();j++){
 		Cube cu2 = cu.at(j);
-		if(cu1Max.x>=cu2.getMin().x && cu1Min[0]<=cu2.getMax().x
-			&& cu1Max.y>=cu2.getMin().y && cu1Min[1]<=cu2.getMax().y
-			&& cu1Max.z>=cu2.getMin().z && cu1Min[2]<=cu2.getMax().z) {
+		if(cu1Max.x>=cu2.getMin().x && cu1Min.x<=cu2.getMax().x
+			&& cu1Max.y>=cu2.getMin().y && cu1Min.y<=cu2.getMax().y
+			&& cu1Max.z>=cu2.getMin().z && cu1Min.z<=cu2.getMax().z) {
 				//onCollision
 
 		}
