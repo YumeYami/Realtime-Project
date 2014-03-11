@@ -27,7 +27,9 @@ void checkCollisionSphereCylinder(Sphere sp1,vector<Cylinder> cy){
 		vec3 ep1 = cy1.getEndPoint1();
 		//vec3 ep2 = cy1.getEndPoint2();
 		//vec3 cyVector = ep2-ep1;
-		float distance = dot(spPos,ep1)-cy1.getRadius(); //ยังไม่เสร็จ
+		vec3 centerVec = spPos-ep1;
+		float distance = dot(centerVec,cy1.getNormal());
+		if(distance!=0) distance=distance-cy1.getRadius();
 		if(distance<=radius) {
 			//onCollision
 
@@ -40,8 +42,8 @@ void checkCollisionSpherePlane(Sphere sp1,vector<Plane> pl){
 	float radius = sp1.getRadius();
 	for(int j=0;j<pl.size();j++){
 		Plane pl1 = pl.at(j);
-		vec3 temp = spPos-pl1.getPos();
-		float distance = dot(temp,pl1.getNormal());
+		vec3 centerVec = spPos-pl1.getPos();
+		float distance = dot(centerVec,pl1.getNormal());
 		if(distance<=radius) {
 			//onCollision
 
@@ -79,9 +81,7 @@ void checkCollisionPlaneCube(Plane pl1,vector<Cube> cu){
 void checkCollisionPlaneCylinder(Plane pl1,vector<Cylinder> cy){
 
 }
-void checkCollisionPlanePlane(Plane pl1,vector<Plane> pl,int i){
 
-}
 
 void checkCollisionCubeCube(Cube cu1,vector<Cube> cu,int i){
 	vec3 cu1Max = cu1.getMax();
@@ -115,7 +115,6 @@ void checkCollision(vector<Cube> cu, vector<Cylinder> cy, vector<Plane> pl, vect
 		Plane pl1 = pl.at(i);
 		checkCollisionPlaneCube(pl1,cu);
 		checkCollisionPlaneCylinder(pl1,cy);
-		checkCollisionPlanePlane(pl1,pl,i+1);
 	}
 	for(int i=0;i<cu.size();i++){
 		Cube cu1 = cu.at(i);

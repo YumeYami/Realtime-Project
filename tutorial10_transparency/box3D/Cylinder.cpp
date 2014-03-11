@@ -71,6 +71,9 @@ public:
 	vec3 getEndPoint2(){
 		return vec3(0,0,0);
 	}
+	vec3 getNormal(){
+		return vec3(0,0,0);
+	}
 	float getRadius(){
 		return 0;
 	}
