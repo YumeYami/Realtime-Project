@@ -1,6 +1,12 @@
 #include "box3Dcollision.h"
 #include "box3DglobalRule.h"
 #include "box3DcalculateForce.cpp"
+
+
+float minn(float x, float y){
+	return (x < y ?  x : y) ;
+}
+
 void checkCollisionSphereCube(Sphere sp1,Cube cube){
 	vec3 dist = sp1.getPos()-cube.getPos();
 	vec3 surfaceSp1 = dist*( (dist.length()-sp1.getRadius()) / dist.length() );
@@ -15,18 +21,14 @@ void checkCollisionSphereCube(Sphere sp1,Cube cube){
 void checkCollisionSphereCylinder(Sphere sp1,Cylinder cy1){
 	vec3 spPos = sp1.getPos();
 	float radius = sp1.getRadius();
-	
-	
-		vec3 ep1 = cy1.getEndPoint1();
-		//vec3 ep2 = cy1.getEndPoint2();
-		//vec3 cyVector = ep2-ep1;
-		vec3 centerVec = spPos-ep1;
-		float distance = dot(centerVec,cy1.getNormal());
-		if(distance!=0) distance=distance-cy1.getRadius();
-		if(distance<=radius) {
-			//onCollision
-
-		}
+	vec3 ep1 = cy1.getEndPoint1();
+	vec3 ep2 = cy1.getEndPoint2();
+	vec3 centerVec1 = ep1-spPos;
+	vec3 centerVec2 = ep2-spPos;
+	//float distance = minn(centerVec1.length(),center); 
+	//if(distance<=radius) {
+		//onCollision
+	//}
 	
 }
 
@@ -69,29 +71,45 @@ void checkCollisionPlaneCube(Plane pl1,Cube cu1){
 		//}
 	
 }
-void checkCollisionPlaneCylinder(Plane pl1,Cylinder cy){
-
+void checkCollisionPlaneCylinder(Plane pl,Cylinder cy){
+	vec3 plNormal = pl.getNormal();
+	vec3 plCenter = pl.getPos();
+	vec3 ep1 = cy.getEndPoint1();
+	vec3 ep2 = cy.getEndPoint2();
+	vec3 centerVec1 = ep1 - plCenter;
+	vec3 centerVec2 = ep2 - plCenter;
+	float distance = minn(dot(centerVec1,plNormal),dot(centerVec2,plNormal));
+	if(distance<=cy.getRadius()){
+		//oncollision
+	}
 }
 
 
 void checkCollisionCubeCube(Cube cu1,Cube cu2){
 	vec3 cu1Max = cu1.getMax();
 	vec3 cu1Min = cu1.getMin();
+	if(cu1Max.x>=cu2.getMin().x && cu1Min.x<=cu2.getMax().x
+		&& cu1Max.y>=cu2.getMin().y && cu1Min.y<=cu2.getMax().y
+		&& cu1Max.z>=cu2.getMin().z && cu1Min.z<=cu2.getMax().z) {
+			//onCollision
 
-		if(cu1Max.x>=cu2.getMin().x && cu1Min.x<=cu2.getMax().x
-			&& cu1Max.y>=cu2.getMin().y && cu1Min.y<=cu2.getMax().y
-			&& cu1Max.z>=cu2.getMin().z && cu1Min.z<=cu2.getMax().z) {
-				//onCollision
-
-		}
+	}
 	
 }
 void checkCollisionCubeCylinder(Cube cu1,Cylinder cy){
 
 }
 void checkCollisionCylinderCylinder(Cylinder cy1,Cylinder cy2){
-	vec3 ep1cy1 = cy1.getEndPoint1();
-	vec3 ep1cy2 = cy2.getEndPoint1();
+	vec3 cy1Normal = cy1.getNormal();
+	vec3 cy1Center = cy1.getPos();
+	vec3 ep1 = cy2.getEndPoint1();
+	vec3 ep2 = cy2.getEndPoint2();
+	vec3 centerVec1 = ep1 - cy1Center;
+	vec3 centerVec2 = ep2 - cy1Center;
+	float distance = minn(dot(centerVec1,cy1Normal),dot(centerVec2,cy1Normal));
+	if(distance<=cy1.getRadius()+cy2.getRadius()){
+		//oncollision
+	}
 
 }
 
