@@ -96,6 +96,9 @@ public:
 	vec3 getSkin(){
 		return vec3();
 	}
+	vec3 getVelocity(){
+		return velocity;
+	}
 	void addForce(vec3 force,float size){
 	}
 	mat4 inline getRotationMatrix(){

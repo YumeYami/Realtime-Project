@@ -1,6 +1,8 @@
 #include "box3Dcollision.h"
 #include "box3DglobalRule.h"
 #include "box3DcalculateForce.cpp"
+
+//com
 void checkCollisionSphereCube(Sphere sp1,Cube cube){
 	vec3 dist = sp1.getPos()-cube.getPos();
 	vec3 surfaceSp1 = dist*( (dist.length()-sp1.getRadius()) / dist.length() );

@@ -77,6 +77,9 @@ public:
 	float getRadius(){
 		return 0;
 	}
+	vec3 getVelocity(){
+		return velocity;
+	}
 	void addForce(vec3 force,float size){
 	}
 	vec4 rotate(vec4 vertex){/*

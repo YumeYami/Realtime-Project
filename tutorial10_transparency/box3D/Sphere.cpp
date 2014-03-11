@@ -81,6 +81,9 @@ public:
 	mat4 inline getRotationMatrix(){
 		return eulerAngleYXZ(rotation.y,rotation.x,rotation.z);
 	}
+	mat4 inline getInverseRotationMatrix(){
+		return eulerAngleYXZ(-rotation.y,-rotation.x,-rotation.z);
+	}
 	mat4 inline getTranslationMatrix(){
 		return mat4(1.0f,0.0f,0.0f,0.0f,
 			0.0f,1.0f,0.0f,0.0f,

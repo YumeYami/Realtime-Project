@@ -30,15 +30,16 @@ using namespace std;
 //Sphere
 void inline colSphere_Sphere(Sphere sph1, Sphere sph2){
 	vec3 velo1 = sph1.getVelocity();
-	sph1.setVelocity(sph2.getVelocity());
-	sph2.setVelocity(velo1);
+	sph1.setVelocity(sph2.getVelocity()*globalElasticConst);
+	sph2.setVelocity(velo1*globalElasticConst);
 }
 void inline colSphere_Plane(Sphere sph1, Plane plane2){
 	vec4 planeNormal = plane2.getRotationMatrix()*vec4(0.0f,1.0f,0.0f,0.0f);
 	vec3 newVelo = reflect(sph1.getVelocity(),vec3(planeNormal));
-	sph1.setVelocity(newVelo);
+	sph1.setVelocity(newVelo*globalElasticConst);
 }
 void inline colSphere_Cube(Sphere sph1, Cube cube2,vec3 pointCollisionModelCube){
+	vec3 relateVelocity = sph1.getVelocity()-cube2.getVelocity();//velo sph ref from cube
 	
 }
 void inline colSphere_Cylinder(Sphere sph1, Cylinder cy2){
