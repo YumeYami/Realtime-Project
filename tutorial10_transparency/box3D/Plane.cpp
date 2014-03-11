@@ -103,8 +103,8 @@ public:
 			glColor3f(color.r,color.g,color.b);
 			glVertex3fv(p0);
 			glVertex3fv(p1);
-			glVertex3fv(p3);
 			glVertex3fv(p2);
+			glVertex3fv(p3);
 		}glEnd();
 	}
 };

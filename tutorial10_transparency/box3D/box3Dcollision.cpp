@@ -13,6 +13,7 @@ void checkCollisionSphereCube(Sphere sp1,Cube cube){
 	vec4 point = cube.getInverseRatationMatrix()*surfaceSp1;
 	vec3 cubeSkin = cube.getSkin();
 	if(abs(point.x)<=cubeSkin.x && abs(point.y)<=cubeSkin.y && abs(point.z)<=cubeSkin.z) {
+
 		//onCollision
 		colSphere_Cube(sp1,cube);
 	}

@@ -56,7 +56,9 @@ public:
 		orientation=cylinderRotation;
 		radius=cylinderRadius;
 		length=cylinderLength;
-		color=cylinderColor;
+		color = cylinderColor;
+		velocity = cylinderVelocity;
+
 	}
 	vec3 getEndPoint1(){
 		return vec3(0,0,0);
