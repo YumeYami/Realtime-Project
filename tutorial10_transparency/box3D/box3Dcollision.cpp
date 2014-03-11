@@ -1,13 +1,9 @@
 #include "box3Dcollision.h"
 #include "box3DglobalRule.h"
-#include "Cube.cpp"
-#include "Sphere.cpp"
-#include "Cylinder.cpp"
-#include "Plane.cpp"
 #include "box3DcalculateForce.cpp"
 void checkCollisionSphereCube(Sphere sp1,Cube cube){
 	vec3 dist = sp1.getPos()-cube.getPos();
-	vec3 surfaceSp1 = dist*(dist.length()-sp1.getRadius)/dist.length();
+	vec3 surfaceSp1 = dist*( (dist.length()-sp1.getRadius()) / dist.length() );
 	vec4 point = cube.getInverseRatationMatrix()*vec4(surfaceSp1,1.0f);
 	vec3 cubeSkin = cube.getSkin();
 	if(abs(point.x)<=cubeSkin.x && abs(point.y)<=cubeSkin.y && abs(point.z)<=cubeSkin.z) {
@@ -16,11 +12,11 @@ void checkCollisionSphereCube(Sphere sp1,Cube cube){
 	}
 
 }
-void checkCollisionSphereCylinder(Sphere sp1,vector<Cylinder> cy){
+void checkCollisionSphereCylinder(Sphere sp1,Cylinder cy1){
 	vec3 spPos = sp1.getPos();
 	float radius = sp1.getRadius();
-	for(int j=0;j<cy.size();j++){
-		Cylinder cy1 = cy.at(j);
+	
+	
 		vec3 ep1 = cy1.getEndPoint1();
 		//vec3 ep2 = cy1.getEndPoint2();
 		//vec3 cyVector = ep2-ep1;
@@ -31,28 +27,27 @@ void checkCollisionSphereCylinder(Sphere sp1,vector<Cylinder> cy){
 			//onCollision
 
 		}
-	}
+	
 }
 
-void checkCollisionSpherePlane(Sphere sp1,vector<Plane> pl){
+void checkCollisionSpherePlane(Sphere sp1,Plane pl1){
 	vec3 spPos = sp1.getPos();
 	float radius = sp1.getRadius();
-	for(int j=0;j<pl.size();j++){
-		Plane pl1 = pl.at(j);
+	
+		
 		vec3 centerVec = spPos-pl1.getPos();
 		float distance = dot(centerVec,normalize(pl1.getNormal()));
 		if(distance<=radius) {
 			//onCollision
 
 		}
-	}
+	
 }
 
-void checkCollisionSphereSphere(Sphere sp1, vector<Sphere> sp, int i){
+void checkCollisionSphereSphere(Sphere sp1, Sphere sp2){
 	vec3 spPos = sp1.getPos();
 	float radius = sp1.getRadius();
-	for(int j=i;j<sp.size();j++){
-		Sphere sp2 = sp.at(j);
+
 		vec3 d = spPos - sp2.getPos();
 		float distance = d.length();
 		float sumR = radius + sp2.getRadius();
@@ -60,40 +55,38 @@ void checkCollisionSphereSphere(Sphere sp1, vector<Sphere> sp, int i){
 			//onCollision
 
 		}
-	}
+	
 }
-void checkCollisionPlaneCube(Plane pl1,vector<Cube> cu){
+void checkCollisionPlaneCube(Plane pl1,Cube cu1){
 	vec3 plPos = pl1.getPos();
 	vec3 plNormal = pl1.getNormal();
-	for(int j=0;j<cu.size();j++){
-		Cube cu1 = cu.at(j);
+
 		vec3 temp = cu1.getPos()-plPos;
 		float distance = dot(temp,plNormal);
 		//if(distance<=) {
 		//onCollision
 
 		//}
-	}
+	
 }
-void checkCollisionPlaneCylinder(Plane pl1,vector<Cylinder> cy){
+void checkCollisionPlaneCylinder(Plane pl1,Cylinder cy){
 
 }
 
 
-void checkCollisionCubeCube(Cube cu1,vector<Cube> cu,int i){
+void checkCollisionCubeCube(Cube cu1,Cube cu2){
 	vec3 cu1Max = cu1.getMax();
 	vec3 cu1Min = cu1.getMin();
-	for(int j=i;j<cu.size();j++){
-		Cube cu2 = cu.at(j);
+
 		if(cu1Max.x>=cu2.getMin().x && cu1Min.x<=cu2.getMax().x
 			&& cu1Max.y>=cu2.getMin().y && cu1Min.y<=cu2.getMax().y
 			&& cu1Max.z>=cu2.getMin().z && cu1Min.z<=cu2.getMax().z) {
 				//onCollision
 
 		}
-	}
+	
 }
-void checkCollisionCubeCylinder(Cube cu1,vector<Cylinder> cy){
+void checkCollisionCubeCylinder(Cube cu1,Cylinder cy){
 
 }
 void checkCollisionCylinderCylinder(Cylinder cy1,Cylinder cy2){
@@ -105,27 +98,25 @@ void checkCollisionCylinderCylinder(Cylinder cy1,Cylinder cy2){
 void checkCollision(vector<Cube> cu, vector<Cylinder> cy, vector<Plane> pl, vector<Sphere> sp){
 	for(int i=0;i<sp.size();i++){
 		Sphere sp1 = sp.at(i);
-		checkCollisionSphereCube(sp1,cu);
-		checkCollisionSphereCylinder(sp1,cy);
-		checkCollisionSpherePlane(sp1,pl);
-		checkCollisionSphereSphere(sp1,sp,i+1);
+		for(int j=0;j<cu.size();j++) checkCollisionSphereCube(sp1,cu.at(j));
+		for(int j=0;j<cy.size();j++) checkCollisionSphereCylinder(sp1,cy.at(j));
+		for(int j=0;j<pl.size();j++) checkCollisionSpherePlane(sp1,pl.at(j));
+		for(int j=i+1;j<sp.size();j++) checkCollisionSphereSphere(sp1,sp.at(j));
 	}
 	for(int i=0;i<pl.size();i++){
 		Plane pl1 = pl.at(i);
-		checkCollisionPlaneCube(pl1,cu);
-		checkCollisionPlaneCylinder(pl1,cy);
+		for(int j=0;j<cu.size();j++) checkCollisionPlaneCube(pl1,cu.at(j));
+		for(int j=0;j<cu.size();j++) checkCollisionPlaneCylinder(pl1,cy.at(j));
 	}
 	for(int i=0;i<cu.size();i++){
 		Cube cu1 = cu.at(i);
-		checkCollisionCubeCube(cu1,cu,i+1);
-		checkCollisionCubeCylinder(cu1,cy);
+		for(int j=i+1;j<cu.size();j++) checkCollisionCubeCube(cu1,cu.at(j));
+		for(int j=0;j<cu.size();j++) checkCollisionCubeCylinder(cu1,cy.at(j));
 	}
 	for(int i=0;i<cy.size()-1;i++){
 		Cylinder cy1 = cy.at(i);
-		for(int j=i+1;j<cy.size();j++){
-			Cylinder cy2 = cy.at(j);
-			checkCollisionCylinderCylinder(cy1,cy2);
-		}
+		for(int j=i+1;j<cy.size();j++) checkCollisionCylinderCylinder(cy1,cy.at(j));
+		
 	}
 }
 
