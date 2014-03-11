@@ -36,7 +36,7 @@ class Cube{
 private:
 	vec3 position;
 	mat4 rotationMatrix;
-	vec3 rotation;
+	vec3 orientation;
 	vec3 velocity;
 	float inertia;
 	float angularVelocity;
@@ -76,7 +76,7 @@ public:
 		p5[0] = cubeVertex5.x*size/2; p5[1] = cubeVertex5.y*size/2; p5[2] = cubeVertex5.z*size/2;
 		p6[0] = cubeVertex6.x*size/2; p6[1] = cubeVertex6.y*size/2; p6[2] = cubeVertex6.z*size/2;
 		p7[0] = cubeVertex7.x*size/2; p7[1] = cubeVertex7.y*size/2; p7[2] = cubeVertex7.z*size/2;
-		rotation=cubeRotation;
+		orientation=cubeRotation;
 		rotationMatrix=eulerAngleYXZ(cubeRotation.x,cubeRotation.y,cubeRotation.z);
 		
 		position=cubePosition;
@@ -93,11 +93,16 @@ public:
 	vec3 getMax(){
 		return vec3(0,0,0);
 	}
-
+	vec3 getSkin(){
+		return vec3();
+	}
 	void addForce(vec3 force,float size){
 	}
 	mat4 inline getRotationMatrix(){
-		return eulerAngleYXZ(rotation.y,rotation.x,rotation.z);
+		return eulerAngleYXZ(orientation.y,orientation.x,orientation.z);
+	}
+	mat4 inline getInverseRatationMatrix(){
+		return eulerAngleYXZ(-orientation.y,-orientation.x,-orientation.z);
 	}
 	mat4 inline getTranslationMatrix(){
 		return mat4(1.0f,0.0f,0.0f,0.0f,
@@ -107,9 +112,9 @@ public:
 	}
 	void inline updatePosition(float time){
 		position+=velocity*time;
-		rotation.x+=0.0001f;
-		rotation.y+=0.001f;
-		rotation.z+=0.00001f;
+		orientation.x+=0.0001f;
+		orientation.y+=0.001f;
+		orientation.z+=0.00001f;
 	}
 	void inline render(){
 		glBegin(GL_QUADS);{

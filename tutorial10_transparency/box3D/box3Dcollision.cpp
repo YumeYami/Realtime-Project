@@ -4,20 +4,17 @@
 #include "Sphere.cpp"
 #include "Cylinder.cpp"
 #include "Plane.cpp"
-void checkCollisionSphereCube(Sphere sp1,vector<Cube> cu){
-	vec3 spPos = sp1.getPos();
-	float radius = sp1.getRadius();
-	for(int j=0;j<cu.size();j++){
-		Cube cu1 = cu.at(j);
-		vec3 d = cu1.getPos() - spPos;
-		vec3 point = normalize(d)*radius + spPos;
-		if(point.x>=cu1.getMin().x && point.x<=cu1.getMax().x
-			&& point.y>=cu1.getMin().y && point.y<=cu1.getMax().y
-			&& point.z>=cu1.getMin().z && point.z<=cu1.getMax().z) {
-				//onCollision
-
-		}
+#include "box3DcalculateForce.cpp"
+void checkCollisionSphereCube(Sphere sp1,Cube cube){
+	vec3 dist = sp1.getPos()-cube.getPos();
+	vec3 surfaceSp1 = dist*(dist.length()-sp1.getRadius)/dist.length();
+	vec4 point = cube.getInverseRatationMatrix()*vec4(surfaceSp1,1.0f);
+	vec3 cubeSkin = cube.getSkin();
+	if(abs(point.x)<=cubeSkin.x && abs(point.y)<=cubeSkin.y && abs(point.z)<=cubeSkin.z) {
+			//onCollision
+		colSphere_Cube(sp1,cube,vec3(point));
 	}
+
 }
 void checkCollisionSphereCylinder(Sphere sp1,vector<Cylinder> cy){
 	vec3 spPos = sp1.getPos();
@@ -73,7 +70,7 @@ void checkCollisionPlaneCube(Plane pl1,vector<Cube> cu){
 		vec3 temp = cu1.getPos()-plPos;
 		float distance = dot(temp,plNormal);
 		//if(distance<=) {
-			//onCollision
+		//onCollision
 
 		//}
 	}
