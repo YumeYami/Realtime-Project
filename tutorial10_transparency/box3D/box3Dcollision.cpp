@@ -8,9 +8,9 @@ float minn(float x, float y){
 }
 //completed with intersection
 void checkCollisionSphereCube(Sphere sp1,Cube cube){
-	vec3 dist = sp1.position-cube.position;
-	vec3 surfaceSp1 = dist*( (dist.length()-sp1.radius) / dist.length() );
-	vec4 point = cube.getInverseRatationMatrix()*vec4(surfaceSp1,1.0f);
+	vec4 dist = sp1.position-cube.position;
+	vec4 surfaceSp1 = dist*( (dist.length()-sp1.radius) / dist.length() );
+	vec4 point = cube.getInverseRatationMatrix()*surfaceSp1;
 	vec3 cubeSkin = cube.getSkin();
 	if(abs(point.x)<=cubeSkin.x && abs(point.y)<=cubeSkin.y && abs(point.z)<=cubeSkin.z) {
 
@@ -20,13 +20,13 @@ void checkCollisionSphereCube(Sphere sp1,Cube cube){
 
 }
 void checkCollisionSphereCylinder(Sphere sp1,Cylinder cy1){
-	vec3 spPos = sp1.position;
-	float radius = sp1.radius;
-	vec3 ep1 = cy1.getEndPoint1();
-	vec3 ep2 = cy1.getEndPoint2();
-	vec3 centerVec1 = ep1-spPos;
-	vec3 centerVec2 = ep2-spPos;
-	//float distance = minn(centerVec1.length(),center); 
+	//vec4 spPos = sp1.position;
+	//float radius = sp1.radius;
+	//vec4 ep1 = cy1.getEndPoint1();
+	//vec4 ep2 = cy1.getEndPoint2();
+	//vec4 centerVec1 = ep1-spPos;
+	//vec4 centerVec2 = ep2-spPos;
+	////float distance = minn(centerVec1.length(),center); 
 	//if(distance<=radius) {
 	//onCollision
 	//}
@@ -34,10 +34,10 @@ void checkCollisionSphereCylinder(Sphere sp1,Cylinder cy1){
 }
 //completed
 void checkCollisionSpherePlane(Sphere sp1,Plane pl1){
-	vec3 spPos = sp1.position;
+	vec4 spPos = sp1.position;
 	float radius = sp1.radius;
-	vec3 centerVec = spPos-pl1.position;
-	float distance = dot(centerVec,normalize(pl1.getNormal()));
+	vec4 centerVec = spPos-pl1.position;
+	float distance = dot(centerVec,pl1.getNormal());
 	if(distance<=radius) {
 		//onCollision
 		colSphere_Plane(sp1,pl1);
@@ -46,9 +46,9 @@ void checkCollisionSpherePlane(Sphere sp1,Plane pl1){
 }
 //completed
 void checkCollisionSphereSphere(Sphere sp1, Sphere sp2){
-	vec3 spPos = sp1.position;
+	vec4 spPos = sp1.position;
 	float radius = sp1.radius;
-	vec3 d = spPos - sp2.position;
+	vec4 d = spPos - sp2.position;
 	float distance = d.length();
 	float sumR = radius + sp2.radius;
 	if(distance<=sumR) {
@@ -57,14 +57,16 @@ void checkCollisionSphereSphere(Sphere sp1, Sphere sp2){
 	}
 }
 void checkCollisionPlaneCube(Plane pl1,Cube cu1){
-	vec3 plPos = pl1.position;
-	vec3 plNormal = pl1.getNormal();
-	vec3 temp = cu1.position-plPos;
+	vec4 plPos = pl1.position;
+	vec4 plNormal = pl1.getNormal();
+	vec4 temp = cu1.position-pl1.position;
 	float distance = dot(temp,plNormal);
 }
 void checkCollisionPlaneCylinder(Plane pl,Cylinder cy){
-	vec3 dist = cy.position-pl.position;
-
+	vec4 dist = cy.position-pl.position;
+	vec4 cyPositionPlaneModel = pl.getInverseRatationMatrix()*dist;
+	vec4 cyNormalPlaneModel = pl.getInverseRatationMatrix()*cy.getRotationMatrix()*vec4(0,1,0,0);
+	float height = dot(vec3(cyNormalPlaneModel),vec3(0,1,0));
 }
 
 void checkCollisionCubeCube(Cube cu1,Cube cu2){
@@ -82,16 +84,16 @@ void checkCollisionCubeCylinder(Cube cu1,Cylinder cy){
 	
 }
 void checkCollisionCylinderCylinder(Cylinder cy1,Cylinder cy2){
-	vec3 cy1Normal = cy1.getNormal();
-	vec3 cy1Center = cy1.position;
-	vec3 ep1 = cy2.getEndPoint1();
-	vec3 ep2 = cy2.getEndPoint2();
-	vec3 centerVec1 = ep1 - cy1Center;
-	vec3 centerVec2 = ep2 - cy1Center;
-	float distance = minn(dot(centerVec1,cy1Normal),dot(centerVec2,cy1Normal));
-	if(distance<=cy1.radius+cy2.radius){
-		//oncollision
-	}
+	vec4 cy1Normal = cy1.getNormal();
+	vec4 cy1Center = cy1.position;
+	//vec4 ep1 = cy2.getEndPoint1();
+	//vec4 ep2 = cy2.getEndPoint2();
+	//vec4 centerVec1 = ep1 - cy1Center;
+	//vec4 centerVec2 = ep2 - cy1Center;
+	//float distance = minn(dot(centerVec1,cy1Normal),dot(centerVec2,cy1Normal));
+	//if(distance<=cy1.radius+cy2.radius){
+	//	//oncollision
+	//}
 
 }
 

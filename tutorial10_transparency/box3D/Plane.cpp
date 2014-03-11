@@ -34,8 +34,8 @@ using namespace glm;
 using namespace std;
 class Plane{
 public:
-	vec3 position;
-	vec3 velocity;
+	vec4 position;
+	vec4 velocity;
 	float mass;
 	
 	vec3 orientation;
@@ -54,7 +54,6 @@ public:
 		mass=planeMass;
 		color=planeColor;
 		angularVelocity=vec3(0,0,0);
-		velocity=planeVelocity;
 		//อนุรักษ์พลังงานกล ศักย์
 		//อนุรักษ์โมเมนตัมเชิงมุม เส้น
 		p0[0] = planeVertex0.x*size/2; p0[1] = planeVertex0.y*size/2; p0[2] = planeVertex0.z*size/2;
@@ -62,24 +61,25 @@ public:
 		p2[0] = planeVertex2.x*size/2; p2[1] = planeVertex2.y*size/2; p2[2] = planeVertex2.z*size/2;
 		p3[0] = planeVertex3.x*size/2; p3[1] = planeVertex3.y*size/2; p3[2] = planeVertex3.z*size/2;
 		orientation=planeRotation;
-		position=planePosition;
+		position=vec4(planePosition,1);
+		velocity=vec4(planeVelocity,0);
 	}
-	void inline setVelocity(vec3 newvelo){
+	void inline setVelocity(vec4 newvelo){
 		velocity=newvelo;
 	}
-	vec3 inline getMin(){
-		return vec3(0,0,0);
+	vec4 inline getMin(){
+		return vec4(0,0,0,0);
 	}
-	vec3 inline getMax(){
-		return vec3(0,0,0);
+	vec4 inline getMax(){
+		return vec4(0,0,0,0);
 	}
-	vec3 inline getSkin(){
-		return vec3();
+	vec4 inline getSkin(){
+		return vec4();
 	}
 	void inline addForce(vec3 force,float size){
 	}
-	vec3 inline getNormal(){
-		return vec3(getRotationMatrix()*vec4(0,1,0,1));
+	vec4 inline getNormal(){
+		return normalize(getRotationMatrix()*vec4(0,1,0,0));
 	}
 	mat4 inline getRotationMatrix(){
 		return eulerAngleYXZ(orientation.y,orientation.x,orientation.z);
