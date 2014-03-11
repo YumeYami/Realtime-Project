@@ -71,11 +71,7 @@ void addCylinder(){
 	vec3 position = vec3(1,1,1);
 	vec3 rotation = vec3(0,0,1);
 	vec3 velocity = vec3(1,0,0);
-<<<<<<< HEAD
 	float radius = 1;
-=======
-	float radius = 0.5;
->>>>>>> c1bfb5d5de46452cb1b2725010d3a25cde8c36dd
 	float length = 2;
 	float mass = 1;
 	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
