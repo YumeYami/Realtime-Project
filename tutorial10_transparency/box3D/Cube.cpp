@@ -33,7 +33,7 @@ using namespace glm;
 #include <iostream>
 using namespace std;
 class Cube{
-private:
+public:
 	vec3 position;
 	vec3 velocity;
 	float mass;
@@ -54,8 +54,6 @@ private:
 	float p5[3];
 	float p6[3];
 	float p7[3];
-
-public:
 	Cube(vec3 cubePosition,vec3 cubeRotation,vec3 cubeVelocity,float cubeSize,float cubeMass,vec3 cubeColor){
 		orientation=cubeRotation;
 		position=cubePosition;
@@ -77,16 +75,6 @@ public:
 		p7[0] = cubeVertex7.x*size/2; p7[1] = cubeVertex7.y*size/2; p7[2] = cubeVertex7.z*size/2;
 		
 	}
-
-	vec3 inline getPos(){
-		return position;
-	}
-	vec3 inline getVelocity(){
-		return velocity;
-	}
-	void inline setVelocity(vec3 newvelo){
-		velocity=newvelo;
-	}
 	vec3 inline getMin(){
 		return vec3(0,0,0);
 	}
@@ -105,7 +93,7 @@ public:
 		angularVelocity+=angularMomentum;
 	}
 	vec3 inline getNormal(){
-		return vec3();
+		return vec3(getRotationMatrix()*vec4(0,1,0,1));
 	}
 	mat4 inline getRotationMatrix(){
 		return eulerAngleYXZ(orientation.y,orientation.x,orientation.z);

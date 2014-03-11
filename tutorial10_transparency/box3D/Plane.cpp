@@ -33,7 +33,7 @@ using namespace glm;
 #include <iostream>
 using namespace std;
 class Plane{
-private:
+public:
 	vec3 position;
 	vec3 velocity;
 	float mass;
@@ -49,8 +49,6 @@ private:
 	float p1[3];
 	float p2[3];
 	float p3[3];
-
-public:
 	Plane(vec3 planePosition,vec3 planeRotation,vec3 planeVelocity,float planeSize,float planeMass,vec3 planeColor){
 		size=planeSize;
 		mass=planeMass;
@@ -65,12 +63,6 @@ public:
 		p3[0] = planeVertex3.x*size/2; p3[1] = planeVertex3.y*size/2; p3[2] = planeVertex3.z*size/2;
 		orientation=planeRotation;
 		position=planePosition;
-	}
-	vec3 inline getPos(){
-		return position;
-	}
-	vec3 inline getVelocity(){
-		return velocity;
 	}
 	void inline setVelocity(vec3 newvelo){
 		velocity=newvelo;
@@ -87,7 +79,7 @@ public:
 	void inline addForce(vec3 force,float size){
 	}
 	vec3 inline getNormal(){
-		return vec3();
+		return vec3(getRotationMatrix()*vec4(0,1,0,1));
 	}
 	mat4 inline getRotationMatrix(){
 		return eulerAngleYXZ(orientation.y,orientation.x,orientation.z);
