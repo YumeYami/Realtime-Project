@@ -43,6 +43,7 @@ void inline checkCollision_SphereCylinder(Sphere* sph1,Cylinder* cylinder2){
 //not test
 void inline checkCollision_SpherePlane(Sphere* sph1,Plane* plane2){
 	//cout<<" if "<< length(plane2->getVelocity()-sph1->getVelocity()) <<" "<< length(plane2->getPosition()-sph1->getPosition())<<"\n";
+	cout<<projectSize(sph1->velocity,plane2->getNormal())<<"\n";
 	if(projectSize(sph1->velocity,plane2->getNormal()) >= 0) return;
 	cout<<"check1\n";
 	vec4 spPos = sph1->getPosition();
@@ -54,7 +55,7 @@ void inline checkCollision_SpherePlane(Sphere* sph1,Plane* plane2){
 	//float distance = dot(centerVec,plane2->getNormal());
 	//cout<<"dist = "<<distance<<"\n";
 	if(distance<=radius) {
-		//cout<<"onCollision";
+		cout<<"onCollision";
 		colSphere_Plane(sph1,plane2);
 	}
 
@@ -113,6 +114,13 @@ void inline checkCollision_CylinderCylinder(Cylinder* cylinder1,Cylinder* cylind
 		 }*/
 	}
 }
+bool inline testPlane(Rigidbody* obj1,Plane* plane){
+	
+}
+bool inline testDirection(Rigidbody* obj1, Rigidbody* obj2){
+	vec4 relateVelo = obj2->velocity-obj1->velocity;
+
+}
 
 vec4 inline directionToPos(vec4 pos1,vec4 pos2){
 	return pos2-pos1;
@@ -120,7 +128,7 @@ vec4 inline directionToPos(vec4 pos1,vec4 pos2){
 
 
 void inline checkCollision(vector<Cube*> cu, vector<Cylinder*> cy, vector<Plane*> pl, vector<Sphere*> sp){
-	
+	//cout <<"size "<<cu.size()<<" "<<cy.size()<<" "<<pl.size()<<" "<<sp.size()<<"\n";
 	for(int i=0;i<sp.size();i++){
 		Sphere* sp1 = sp.at(i);
 		
@@ -216,7 +224,7 @@ public:
 
 	void hashCube(Cube* r){
 
-		vec4 pos = (*r).position;
+		vec4 pos = r->position;
 		int a,b,c = 0;
 		findIndex(vec3(pos.x,pos.y,pos.z),a,b,c);
 		vector<int> x;
@@ -228,7 +236,7 @@ public:
 		}
 	}
 	void hashCylinder(Cylinder* r){
-		vec4 pos = (*r).position;
+		vec4 pos = r->position;
 		int a,b,c = 0;
 		findIndex(vec3(pos.x,pos.y,pos.z),a,b,c);
 		vector<int> x;
@@ -240,7 +248,7 @@ public:
 		}
 	}
 	void hashSphere(Sphere* r){
-		vec4 pos = (*r).position;
+		vec4 pos = r->position;
 		int a,b,c = 0;
 		findIndex(vec3(pos.x,pos.y,pos.z),a,b,c);
 		vector<int> x;
@@ -253,7 +261,7 @@ public:
 	}
 	void hashPlane(Plane* r){
 
-		vec4 pos = (*r).position;
+		vec4 pos = r->position;
 		int a,b,c = 0;
 		findIndex(vec3(pos.x,pos.y,pos.z),a,b,c);
 		//cout<<"posPlane* x= "<< pos.x<<" y= "<<pos.y<<" z= "<<pos.z<<"\n";
@@ -310,7 +318,7 @@ public:
 				}
 	}
 
-	void findGrid(vec3 pos,int a, int b, int c, vector<int> x, vector<int> y, vector<int> z){
+	void findGrid(vec3 pos,int a, int b, int c, vector<int> &x, vector<int> &y, vector<int> &z){
 		x.push_back(a); y.push_back(b); z.push_back(c);
 		if(pos.x-floor(pos.x)==0.5 && pos.y-floor(pos.y)==0.5 && pos.z-floor(pos.z)==0.5) return;
 		
