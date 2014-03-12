@@ -5,7 +5,7 @@
 #include "Plane.cpp"
 #include "Cone.cpp"
 //Sphere
-//com
+//completed
 void inline colSphere_Sphere(Sphere sph1, Sphere sph2){
 	vec4 dist = sph2.position-sph1.position;
 	vec4 velo1 = sph1.velocity;
@@ -14,17 +14,18 @@ void inline colSphere_Sphere(Sphere sph1, Sphere sph2){
 	float lineMomentum = dot(relatevelo,normalize(dist));
 	sph1.addMomentum(normalize(dist)*lineMomentum);
 	sph2.addMomentum(normalize(dist)*-lineMomentum);
-	float newLineEngergy1 = pow(sph1.velocity.length(),2);
-	float newLineEngergy2 = pow(sph2.velocity.length(),2);
+	//float newLineEngergy1 = pow(sph1.velocity.length(),2);
+	//float newLineEngergy2 = pow(sph2.velocity.length(),2);
 	//float angularEnergy = (velo1.length()*velo1.length()+velo2.length()*velo2.length())-(newLineEngergy1+newLineEngergy2);
 	vec3 angularMomentum = cross(vec3(relatevelo),normalize(vec3(dist)));
-	sph1.addAngularMomentum(angularMomentum);
-	sph2.addAngularMomentum(-angularMomentum);
+	sph1.addAngularMomentum(vec3(sph1.getInverseRatationMatrix()*vec4(angularMomentum)));
+	sph2.addAngularMomentum(vec3(sph2.getInverseRatationMatrix()*vec4(-angularMomentum)));
 }
+//completed
 void inline colSphere_Plane(Sphere sph1, Plane plane2){
-	vec4 planeNormal = plane2.getRotationMatrix()*vec4(0.0f,1.0f,0.0f,0.0f);
-	vec4 newVelo = reflect(sph1.velocity,planeNormal);
-	sph1.setVelocity(newVelo);
+	vec4 planeNormal = plane2.getNormal();
+	float newVelo = dot(plane2.getNormal(),-sph1.velocity);
+	sph1.setVelocity( reflect(-sph1.velocity,planeNormal ) );
 }
 void inline colSphere_Cube(Sphere sph1, Cube cube2){
 	vec4 dist = cube2.position-sph1.position;

@@ -81,17 +81,7 @@ void inline checkCollision_CubeCube(Cube cu1,Cube cu2){
 void inline checkCollision_CubeCylinder(Cube cu1,Cylinder cylinder){
 }
 void inline checkCollision_CylinderCylinder(Cylinder cylinder1,Cylinder cylinder2){
-	vec4 cylinder1Normal = cylinder1.getNormal();
-	vec4 cylinder1Center = cylinder1.position;
-	//vec4 ep1 = cylinder2.getEndPoint1();
-	//vec4 ep2 = cylinder2.getEndPoint2();
-	//vec4 centerVec1 = ep1 - cylinder1Center;
-	//vec4 centerVec2 = ep2 - cylinder1Center;
-	//float distance = minn(dot(centerVec1,cylinder1Normal),dot(centerVec2,cylinder1Normal));
-	//if(distance<=cylinder1.radius+cylinder2.radius){
-	//	//oncollision
-	//}
-
+	
 }
 
 bool inline isMoveout(Rigidbody* obj1,Rigidbody* obj2){
