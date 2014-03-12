@@ -42,20 +42,12 @@ void inline checkCollision_SphereCylinder(Sphere* sph1,Cylinder* cylinder2){
 }
 //not test
 void inline checkCollision_SpherePlane(Sphere* sph1,Plane* plane2){
-	//cout<<" if "<< length(plane2->getVelocity()-sph1->getVelocity()) <<" "<< length(plane2->getPosition()-sph1->getPosition())<<"\n";
-	cout<<projectSize(sph1->velocity,plane2->getNormal())<<"\n";
 	if(projectSize(sph1->velocity,plane2->getNormal()) >= 0) return;
-	cout<<"check1\n";
 	vec4 spPos = sph1->getPosition();
 	float radius = sph1->radius;
 	vec4 centerVec = spPos-plane2->getPosition();
-	//cout<<centerVec.x<<" "<<centerVec.y<<" "<<centerVec.z<<" "<<centerVec.w<<" = vec\n";
-	//cout<<plane2->getNormal().x<<" "<<plane2->getNormal().y<<" "<<plane2->getNormal().z<<" "<<plane2->getNormal().w<<" = base\n";
 	float distance = projectSize(centerVec,plane2->getNormal());
-	//float distance = dot(centerVec,plane2->getNormal());
-	//cout<<"dist = "<<distance<<"\n";
 	if(distance<=radius) {
-		cout<<"onCollision";
 		colSphere_Plane(sph1,plane2);
 	}
 
@@ -179,11 +171,9 @@ public:
 	}
 	void addSphereToGridCell(Sphere* sp){
 		sphere.push_back(sp);
-		
 	}
 	void addPlaneToGridCell(Plane* pl){
 		//cout<<"addPlane\n";
-		
 		plane.push_back(pl);
 	}
 	void clearGridCell(){
@@ -193,7 +183,6 @@ public:
 	}
 	void checkCollisionGridCell(){
 		checkCollision(cube,cylinder,plane,sphere);
-		
 	}
 
 };
@@ -232,6 +221,7 @@ public:
 		vector<int> z;
 		findGrid(vec3(pos.x,pos.y,pos.z),a,b,c,x,y,z);
 		for(int i=0;i<x.size();i++){
+			if(x[i]>=0 && x[i]< gridSize && y[i]>=0 && y[i]< gridSize && z[i]>=0 && z[i]< gridSize)
 			gridcell[x[i]][y[i]][z[i]].addCubeToGridCell(r);
 		}
 	}
@@ -244,6 +234,7 @@ public:
 		vector<int> z;
 		findGrid(vec3(pos.x,pos.y,pos.z),a,b,c,x,y,z);
 		for(int i=0;i<x.size();i++){
+			if(x[i]>=0 && x[i]< gridSize && y[i]>=0 && y[i]< gridSize && z[i]>=0 && z[i]< gridSize)
 			gridcell[x[i]][y[i]][z[i]].addCylinderToGridCell(r);
 		}
 	}
@@ -256,7 +247,9 @@ public:
 		vector<int> z;
 		findGrid(vec3(pos.x,pos.y,pos.z),a,b,c,x,y,z);
 		for(int i=0;i<x.size();i++){
-			gridcell[x[i]][y[i]][z[i]].addSphereToGridCell(r);
+			if(x[i]>=0 && x[i]< gridSize && y[i]>=0 && y[i]< gridSize && z[i]>=0 && z[i]< gridSize)
+				gridcell[x[i]][y[i]][z[i]].addSphereToGridCell(r);
+			//cout<<"grid x = "<<x[i]<<" y = "<<y[i]<<" z= "<<z[i]<<"\n";
 		}
 	}
 	void hashPlane(Plane* r){
@@ -291,6 +284,8 @@ public:
 						gridcell[i][j][c].addPlaneToGridCell(r);
 					}
 					if(r->orientation==vec3(0,0,0)){
+						//cout<<"plane x = "<<r->orientation.x<<" y = "<<r->orientation.y<<" z = "<<r->orientation.z<<"\n";
+						//cout<<"index x= "<< a<<" y= "<<b<<" z= "<<c<<"\n";
 						gridcell[i][b][k].addPlaneToGridCell(r);
 					}
 				}

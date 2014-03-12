@@ -49,6 +49,7 @@ void addSphere(){
 	sphere.push_back(sp);
 	//sphere.end();//test //cannot change
 	//cout<<"ref temp sphere = "<<&temp<<endl;
+
 }
 void addCube(){
 	vec3 position = vec3(1,1,1);
@@ -95,8 +96,14 @@ int lastKey1=GLFW_RELEASE;
 int lastKey2=GLFW_RELEASE;
 int lastKey3=GLFW_RELEASE;
 int lastKey4=GLFW_RELEASE;
+int lastMouse=GLFW_RELEASE;
+int fixX=0,fixY=0;
+int showX=0,showY=0;
+int clickX1,clickY1=0;
+int clickX2,clickY2=0;
+int xposL,yposL;
 
-void onKeyboard(){
+void onPress(){
 	//sphere
 	if (glfwGetKey('1') == GLFW_PRESS){
 		if(lastKey1 == GLFW_RELEASE) {
@@ -138,10 +145,24 @@ void onKeyboard(){
 		lastKey4 = GLFW_RELEASE;
 	}
 
+	if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS && lastMouse==GLFW_RELEASE){
+		glfwGetMousePos(&clickX1,&clickY1);
+		/*cout<<"x = "<<clickX1;
+		cout<<"\ny = "<<clickY1;*/
+		lastMouse=GLFW_PRESS;
+	} else if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT)==GLFW_RELEASE && lastMouse==GLFW_PRESS) {
+		glfwGetMousePos(&clickX2,&clickY2);
+		lastMouse=GLFW_RELEASE;
+		int dx = clickX2-clickX1;
+		int dy = clickY2-clickY1;
+		clickX1=clickX2;
+		clickY1=clickY2;
+		for(int i=0;i<plane.size();i++) {}
+	//		if(plane[i]->position+=vec4(dx,dy,0,0)>=vec4(-5,-5,-5,0));
+	} else if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT)==GLFW_RELEASE && lastMouse==GLFW_PRESS) {
+		lastMouse=GLFW_RELEASE;
+	}
 
-}
-void keyboard (unsigned char key,int x,int y){
-	if(key == 'x') addCube();
 }
 
 int main( void )
@@ -288,7 +309,7 @@ int main( void )
 		grid.checkCollisionGrid();
 		computeMatricesFromInputs();
 		grid.clearGrid();
-		onKeyboard();
+		onPress();
 
 		glm::mat4 ModelMatrix = mat4(1.0f);
 		glm::mat4 ProjectionMatrix = getProjectionMatrix();
