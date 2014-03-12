@@ -44,6 +44,7 @@ void addSphere(){
 	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
 	Sphere sp= Sphere(position,rotation,velocity,size,mass,color);
 	sphere.push_back(sp);
+	
 }
 void addCube(){
 	vec3 position = vec3(1,1,1);

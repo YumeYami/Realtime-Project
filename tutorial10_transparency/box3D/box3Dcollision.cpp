@@ -1,10 +1,10 @@
 #include "box3Dcollision.h"
 #include "box3DglobalRule.h"
 #include "box3DcalculateForce.cpp"
-#define gridSize 10
-#define ftl_x -5
-#define ftl_y 5
-#define ftl_z 5
+#define gridSize 11
+#define begin_x -5
+#define begin_y -5
+#define begin_z -5
 #define backDownRight vec3(5,-5,-5);
 
 
@@ -71,7 +71,7 @@ void inline checkCollision_PlaneCube(Plane plane,Cube cube){
 	if(dot(cube.velocity - plane.velocity,cube.position - plane.position) >= 0) return;
 	//vec4 cubeHeight_ModelPlane = projectVec(cube.position - plane.position,plane.getNormal());
 	float cubeHeight_ModelPlane = dot(cube.position-plane.position,plane.getNormal());
-	if(cubeHeight_ModelPlane >= cube.maxRadius) return;
+	//if(cubeHeight_ModelPlane >= cube.maxRadius) return;
 	
 }
 //conpleted
@@ -174,14 +174,17 @@ public:
 	float width;
 	Grid(){}
 	Grid(vector<Cube> cu,vector<Cylinder> cy,vector<Sphere> sp, vector<Plane>pl){
-		width = 10/gridSize;
+		width = 1;
 		for(int i=0;i<gridSize;i++)
 			for(int j=0;j<gridSize;j++)
 				for(int k=0;k<gridSize;k++)
 					gridcell[i][j][k] = GridCell();
-		//gridcell[i][j][k] = GridCell(ftl_x+width*i,ftl_y+width*j,ftl_z+width*k);
+		//gridcell[i][j][k] = GridCell(begin_x+width*i,begin_y+width*j,begin_z+width*k);
 		hashGrid(cu,cy,sp);
-		for(int i=0;i<pl.size();i++) hashPlane(pl[i]);
+		for(int i=0;i<pl.size();i++) {
+			hashPlane(pl[i]);
+			
+		}
 	};
 
 	void hashGrid(vector<Cube> cu,vector<Cylinder> cy,vector<Sphere> sp){
@@ -194,40 +197,69 @@ public:
 	void hashCube(Cube r){
 		vec4 pos = r.position;
 		vec3 index = findIndex(vec3(pos.x,pos.y,pos.z));
-		for(int i=index.x-1;i<=index.x+1;i++)
-			for(int j=index.y-1;j<=index.y+1;j++)
-				for(int k=index.z-1;k<=index.z+1;k++)
+		for(int i=index.x-1;i<=index.x+1 && i<gridSize;i++)
+			for(int j=index.y-1;j<=index.y+1 && j<gridSize;j++)
+				for(int k=index.z-1;k<=index.z+1 && k<gridSize;k++)
 					if(i>=0 && j>=0 && k>=0) gridcell[i][j][k].addCubeToGridCell(r);
 	}
 	void hashCylinder(Cylinder r){
 		vec4 pos = r.position;
 		vec3 index = findIndex(vec3(pos.x,pos.y,pos.z));
-		for(int i=index.x-1;i<=index.x+1;i++)
-			for(int j=index.y-1;j<=index.y+1;j++)
-				for(int k=index.z-1;k<=index.z+1;k++)
+		for(int i=index.x-1;i<=index.x+1 && i<gridSize;i++)
+			for(int j=index.y-1;j<=index.y+1 && j<gridSize;j++)
+				for(int k=index.z-1;k<=index.z+1 && k<gridSize;k++)
 					if(i>=0 && j>=0 && k>=0) gridcell[i][j][k].addCylinderToGridCell(r);
 	}
 	void hashSphere(Sphere r){
 		vec4 pos = r.position;
 		vec3 index = findIndex(vec3(pos.x,pos.y,pos.z));
-		for(int i=index.x-1;i<=index.x+1;i++)
-			for(int j=index.y-1;j<=index.y+1;j++)
-				for(int k=index.z-1;k<=index.z+1;k++)
+		for(int i=index.x-1;i<=index.x+1 && i<gridSize;i++)
+			for(int j=index.y-1;j<=index.y+1 && j<gridSize;j++)
+				for(int k=index.z-1;k<=index.z+1 && k<gridSize;k++)
 					if(i>=0 && j>=0 && k>=0) gridcell[i][j][k].addSphereToGridCell(r);
 	}
 	void hashPlane(Plane r){
+		
 		vec4 pos = r.position;
 		vec3 index = findIndex(vec3(pos.x,pos.y,pos.z));
-		for(int i=index.x-1;i<=index.x+1;i++)
-			for(int j=index.y-1;j<=index.y+1;j++)
-				for(int k=index.z-1;k<=index.z+1;k++)
-					if(i>=0 && j>=0 && k>=0) gridcell[i][j][k].addPlaneToGridCell(r);
+		//cout<<"posPlane x= "<< pos.x<<" y= "<<pos.y<<" z= "<<pos.z<<"\n";
+		//cout<<"index x= "<< index.x<<" y= "<<index.y<<" z= "<<index.z<<"\n";
+		
+		for(int i=0;i<gridSize;i++){
+			for(int j=0;j<gridSize;j++){
+				for(int k=0;k<gridSize;k++){
+					//cout<<"i= "<< i<<" j= "<<j<<" k= "<<k<<"\n";
+					if(index.x==0 && index.y==5 && index.z==5){
+						gridcell[0][j][k].addPlaneToGridCell(r);
+						//cout<<"hash1\n";
+					}
+					if(index.x==10 && index.y==5 && index.z==5){
+						gridcell[10][j][k].addPlaneToGridCell(r);
+						//cout<<"hash2\n";
+					}
+					if(index.x==5 && index.y==5 && index.z==10){
+						gridcell[i][j][10].addPlaneToGridCell(r);
+						//cout<<"hash3\n";
+					}
+					if(index.x==5 && index.y==5 && index.z==0){
+						gridcell[i][j][0].addPlaneToGridCell(r);
+						//cout<<"hash4\n";
+					}
+					if(index.x==0 && index.y==0 && index.z==0){
+						gridcell[i][0][k].addPlaneToGridCell(r);
+						//cout<<"hash5\n";
+					}
+				}
+			}
+		}
 	}
 	vec3 findIndex(vec3 pos){
 		vec3 index;
-		index.x = (pos.x-ftl_x)/width;
-		index.y = (pos.y-ftl_y)/width;
-		index.z = (pos.z-ftl_z)/width;
+		index.x = (pos.x-begin_x)/width;
+		index.y = (pos.y-begin_y)/width;
+		index.z = (pos.z-begin_z)/width;
+		
+		//cout<<"i= "<< i<<" j= "<<j<<" k= "<<k<<"\n";
 		return index;
 	}
 

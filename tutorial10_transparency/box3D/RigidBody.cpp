@@ -96,6 +96,7 @@ public:
 	void inline updatePosition(float time){
 		position+=velocity*time;
 		orientation+=angularVelocity*time;
+
 	}
 };
 //End guard at bottom of header file

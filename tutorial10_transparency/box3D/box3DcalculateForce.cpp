@@ -24,9 +24,10 @@ void inline colSphere_Sphere(Sphere sph1, Sphere sph2){
 }
 //not test
 void inline colSphere_Plane(Sphere sph1, Plane plane2){
-	vec4 planeNormal = plane2.getNormal();/*
+	vec4 planeNormal = plane2.getNormal();
 	float newVelo = dot(plane2.getNormal(),-sph1.velocity);
-	sph1.setVelocity( reflect(-sph1.velocity,planeNormal ) );*/
+	sph1.setVelocity( reflect(-sph1.velocity,planeNormal ) );
+	cout<<"col\n";
 }
 //not test
 void inline colSphere_Cube(Sphere sph1, Cube cube2){
