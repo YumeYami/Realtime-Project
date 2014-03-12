@@ -1,50 +1,8 @@
-﻿// Include standard headers
-#include <stdio.h>
-#include <stdlib.h>
-#include <vector>
-// Include GLEW
-#include <GL/glew.h>
-
-// Include GLFW
-#include <GL/glfw.h>
-
-// Include GLM
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtx/quaternion.hpp>
-#include <glm/gtx/euler_angles.hpp>
-#include <glm/gtx/norm.hpp>
-using namespace glm;
-
-// Include AntTweakBar
-#include <AntTweakBar.h>
-
-
-#include <common/shader.hpp>
-#include <common/texture.hpp>
-#include <common/controls.hpp>
-#include <common/objloader.hpp>
-#include <common/vboindexer.hpp>
-#include <common/quaternion_utils.hpp> // See quaternion_utils.cpp for RotationBetweenVectors, LookAt and RotateTowards
-
-
-#include "Plane.h"
-#include <iostream>
+﻿#include "Plane.h"
+#include "Rigidbody.cpp"
 using namespace std;
-class Plane{
+class Plane : public Rigidbody {
 public:
-	vec4 position;
-	vec4 velocity;
-	float mass;
-	
-	vec3 orientation;
-	vec3 angularVelocity;
-	float inertia;
-
-	float size;
-	vec3 color;
-
 	float p0[3];
 	float p1[3];
 	float p2[3];
@@ -54,8 +12,6 @@ public:
 		mass=planeMass;
 		color=planeColor;
 		angularVelocity=vec3(0,0,0);
-		//อนุรักษ์พลังงานกล ศักย์
-		//อนุรักษ์โมเมนตัมเชิงมุม เส้น
 		p0[0] = planeVertex0.x*size/2; p0[1] = planeVertex0.y*size/2; p0[2] = planeVertex0.z*size/2;
 		p1[0] = planeVertex1.x*size/2; p1[1] = planeVertex1.y*size/2; p1[2] = planeVertex1.z*size/2;
 		p2[0] = planeVertex2.x*size/2; p2[1] = planeVertex2.y*size/2; p2[2] = planeVertex2.z*size/2;
@@ -63,39 +19,6 @@ public:
 		orientation=planeRotation;
 		position=vec4(planePosition,1);
 		velocity=vec4(planeVelocity,0);
-	}
-	void inline setVelocity(vec4 newvelo){
-		velocity=newvelo;
-	}
-	vec4 inline getMin(){
-		return vec4(0,0,0,0);
-	}
-	vec4 inline getMax(){
-		return vec4(0,0,0,0);
-	}
-	vec4 inline getSkin(){
-		return vec4();
-	}
-	void inline addForce(vec3 force,float size){
-	}
-	vec4 inline getNormal(){
-		return normalize(getRotationMatrix()*vec4(0,1,0,0));
-	}
-	mat4 inline getRotationMatrix(){
-		return eulerAngleYXZ(orientation.y,orientation.x,orientation.z);
-	}
-	mat4 inline getInverseRatationMatrix(){
-		return eulerAngleYXZ(-orientation.y,-orientation.x,-orientation.z);
-	}
-	mat4 inline getTranslationMatrix(){
-		return mat4(1.0f,0.0f,0.0f,0.0f,
-			0.0f,1.0f,0.0f,0.0f,
-			0.0f,0.0f,1.0f,0.0f,
-			position.x,position.y,position.z,1.0f);
-	}
-	void inline updatePosition(float time){
-		position+=velocity*time;
-		orientation+=angularVelocity*time;
 	}
 	void inline render(){
 		glBegin(GL_QUADS);{
