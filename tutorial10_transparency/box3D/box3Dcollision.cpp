@@ -11,7 +11,8 @@
 float inline minn(float x, float y){
 	return (x < y ?  x : y) ;
 }
-//completed with intersection
+//some intersection
+//not test
 void inline checkCollision_SphereCube(Sphere sph,Cube cube){
 	if(dot(cube.velocity - sph.velocity,cube.position - sph.position) >= 0) return;
 	vec4 dist = sph.position-cube.position;
@@ -19,14 +20,14 @@ void inline checkCollision_SphereCube(Sphere sph,Cube cube){
 	vec4 point = cube.getInverseRatationMatrix()*surfaceSp1;
 	vec3 cubeSkin = cube.getSkin();
 	if(abs(point.x)<=cubeSkin.x && abs(point.y)<=cubeSkin.y && abs(point.z)<=cubeSkin.z) {
-
 		//onCollision
 		colSphere_Cube(sph,cube);
 	}
 
 }
-//completed
+//not test
 void inline checkCollision_SphereCylinder(Sphere sph,Cylinder cyl){
+	if(dot(cyl.velocity - sph.velocity,cyl.position - sph.position) >= 0) return;
 	vec4 spherePos = cyl.getInverseRatationMatrix()*(sph.position-cyl.position);
 	vec4 cylNormal = vec4(0,1,0,0);
 	float projectDist = dot(spherePos,cylNormal);
@@ -40,66 +41,69 @@ void inline checkCollision_SphereCylinder(Sphere sph,Cylinder cyl){
 		else colSphere_Cylinder(sph,cyl);
 	}
 }
-//completed
-void inline checkCollision_SpherePlane(Sphere sp1,Plane pl1){
-	vec4 spPos = sp1.position;
-	float radius = sp1.radius;
-	vec4 centerVec = spPos-pl1.position;
-	float distance = dot(centerVec,pl1.getNormal());
+//not test
+void inline checkCollision_SpherePlane(Sphere sph1,Plane plane2){
+	if(dot(plane2.velocity - sph1.velocity,plane2.position - sph1.position) >= 0) return;
+	vec4 spPos = sph1.position;
+	float radius = sph1.radius;
+	vec4 centerVec = spPos-plane2.position;
+	float distance = dot(centerVec,plane2.getNormal());
 	if(distance<=radius) {
 		//onCollision
-		colSphere_Plane(sp1,pl1);
+		colSphere_Plane(sph1,plane2);
 	}
 
 }
-//completed
-void inline checkCollision_SphereSphere(Sphere sp1, Sphere sp2){
-	vec4 spPos = sp1.position;
-	float radius = sp1.radius;
-	vec4 d = spPos - sp2.position;
+//not test
+void inline checkCollision_SphereSphere(Sphere sph1, Sphere sph2){
+	if(dot(sph2.velocity - sph1.velocity,sph2.position - sph1.position) >= 0) return;
+	vec4 sphPos = sph1.position;
+	float radius = sph1.radius;
+	vec4 d = sphPos - sph2.position;
 	float distance = d.length();
-	float sumR = radius + sp2.radius;
+	float sumR = radius + sph2.radius;
 	if(distance<=sumR) {
 		//onCollision
-		colSphere_Sphere(sp1,sp2);
+		colSphere_Sphere(sph1,sph2);
 	}
 }
-void inline checkCollision_PlaneCube(Plane pl1,Cube cu1){
-	vec4 plPos = pl1.position;
-	vec4 plNormal = pl1.getNormal();
-	vec4 temp = cu1.position-pl1.position;
-	float distance = dot(temp,plNormal);
+void inline checkCollision_PlaneCube(Plane plane,Cube cube){
+	if(dot(cube.velocity - plane.velocity,cube.position - plane.position) >= 0) return;
+	//vec4 cubeHeight_ModelPlane = projectVec(cube.position - plane.position,plane.getNormal());
+	float cubeHeight_ModelPlane = dot(cube.position-plane.position,plane.getNormal());
+	if(cubeHeight_ModelPlane >= cube.maxRadius) return;
+	
 }
 //conpleted
-void inline checkCollision_PlaneCylinder(Plane pl,Cylinder cylinder){
-	vec4 dist = cylinder.position-pl.position;
-	vec4 cylinderPosition_PlaneModel = pl.getInverseRatationMatrix()*dist;
-	vec4 cylinderNormal_PlaneModel = pl.getInverseRatationMatrix()*cylinder.getRotationMatrix()*vec4(0,1,0,0);
+void inline checkCollision_PlaneCylinder(Plane plane1,Cylinder cylinder){
+	if(dot(cylinder.velocity - plane1.velocity,cylinder.position - plane1.position) >= 0) return;
+	vec4 dist = cylinder.position-plane1.position;
+	vec4 cylinderPosition_PlaneModel = plane1.getInverseRatationMatrix()*dist;
+	vec4 cylinderNormal_PlaneModel = plane1.getInverseRatationMatrix()*cylinder.getRotationMatrix()*vec4(0,1,0,0);
 	float height = dot(cylinderNormal_PlaneModel,vec4(0,1,0,0)) + (cross(vec3(0,1,0),vec3(cylinderNormal_PlaneModel))*cylinder.radius).length();
 	if(height<=cylinder.position.y){
 		//Collision
-		colPlane_Cylinder(pl,cylinder);
+		colPlane_Cylinder(plane1,cylinder);
 	}
 }
 
-void inline checkCollision_CubeCube(Cube cu1,Cube cu2){
+void inline checkCollision_CubeCube(Cube cube1,Cube cube2){
+	if(dot(cube2.velocity - cube1.velocity,cube2.position - cube1.position) >= 0) return;
 }
-void inline checkCollision_CubeCylinder(Cube cu1,Cylinder cylinder){
+void inline checkCollision_CubeCylinder(Cube cube1,Cylinder cyl2){
+	if(dot(cyl2.velocity - cube1.velocity,cyl2.position - cube1.position) >= 0) return;
 }
-void inline checkCollision_CylinderCylinder(Cylinder cylinder1,Cylinder cylinder2){
-	vec4 cylinder1Normal = cylinder1.getNormal();
-	vec4 cylinder1Center = cylinder1.position;
-	//vec4 ep1 = cylinder2.getEndPoint1();
-	//vec4 ep2 = cylinder2.getEndPoint2();
-	//vec4 centerVec1 = ep1 - cylinder1Center;
-	//vec4 centerVec2 = ep2 - cylinder1Center;
-	//float distance = minn(dot(centerVec1,cylinder1Normal),dot(centerVec2,cylinder1Normal));
-	//if(distance<=cylinder1.radius+cylinder2.radius){
-	//	//oncollision
-	//}
-
+void inline checkCollision_CylinderCylinder(Cylinder cyl1,Cylinder cyl2){
+	if(dot(cyl2.velocity - cyl1.velocity,cyl2.position - cyl1.position) >= 0) return;
+	
 }
 
+vec4 inline directionToPos(vec4 pos1,vec4 pos2){
+	return pos2-pos1;
+}
+vec4 inline projectVec(vec4 vec,vec4 normal){
+	return normalize(normal)*dot(vec,normal);
+}
 bool inline isMoveout(Rigidbody* obj1,Rigidbody* obj2){
 	if(dot(obj2->velocity - obj1->velocity,obj2->position - obj1->position) >= 0) return true;
 	else return false;
