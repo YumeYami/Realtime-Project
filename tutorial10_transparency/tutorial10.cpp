@@ -33,7 +33,7 @@ vector<Plane> plane;
 #define CELL_SIZE 2*sqrt(3.0)
 #define minC -5
 #define maxC 5
-
+Grid grid;
 
 void addSphere(){
 	vec3 position = vec3(1,1,1);
@@ -44,6 +44,7 @@ void addSphere(){
 	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
 	Sphere sp= Sphere(position,rotation,velocity,size,mass,color);
 	sphere.push_back(sp);
+	
 }
 void addCube(){
 	vec3 position = vec3(1,1,1);
@@ -80,9 +81,9 @@ void addPlane(){
 		plane.push_back(pl);
 	}
 }
-void removePlane(){
+void tranparentPlane(){
 	for(int i=0;i<5;i++){
-		plane.pop_back();
+		//plane.pop_back();
 	}
 }
 
@@ -96,8 +97,6 @@ void onKeyboard(){
 	if (glfwGetKey('1') == GLFW_PRESS){
 		if(lastKey1 == GLFW_RELEASE) {
 			addSphere();
-			vec4 l = dist3D_Line_to_point(vec4(1,1,1,1),vec4(-1,1,-1,1),vec4(0,0,0,1));
-			cout<<l.x<<" "<<l.y<<" "<<l.z<<" "<<l.w<<"\n";
 		}
 		lastKey1 = GLFW_PRESS;
 
@@ -128,7 +127,7 @@ void onKeyboard(){
 	if (glfwGetKey('4') == GLFW_PRESS){
 		if(lastKey4 == GLFW_RELEASE) 
 			if(plane.size()==0)addPlane();
-			else removePlane();
+			else tranparentPlane();
 			lastKey4 = GLFW_PRESS;
 	}
 	else if (glfwGetKey('4') == GLFW_RELEASE){
@@ -224,7 +223,7 @@ int main( void )
 	sphere.push_back(sphere3);
 	addPlane();
 	addCylinder();
-	//Grid grid = Grid((maxC-minC)/CELL_SIZE);
+	grid = Grid(c3,cylinder,sphere,plane);
 
 	GLuint vertexbuffer;
 	glGenBuffers(1, &vertexbuffer);
@@ -281,10 +280,10 @@ int main( void )
 		glUseProgram(programID);
 
 		// Compute the MVP matrix from keyboard and mouse input
-
-		checkCollision(c3, cylinder, plane, sphere);
-
+		grid.hashGrid(c3,cylinder,sphere);
+		grid.checkCollisionGrid();
 		computeMatricesFromInputs();
+		grid.clearGrid();
 		onKeyboard();
 
 		glm::mat4 ModelMatrix = mat4(1.0f);
