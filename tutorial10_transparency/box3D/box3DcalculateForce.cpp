@@ -31,7 +31,7 @@ void inline colSphere_Plane(Sphere sph1, Plane plane2){
 	cout<<length(sph1.velocity)<<"\n";
 	float newVelo = projectSize(-sph1.velocity,plane2.getNormal());
 	sph1.addMomentum(newVelo*2*plane2.getNormal());
-	cout<<"col\n";
+	//cout<<"col\n";
 }
 //not test
 void inline colSphere_Cube(Sphere sph1, Cube cube2){
