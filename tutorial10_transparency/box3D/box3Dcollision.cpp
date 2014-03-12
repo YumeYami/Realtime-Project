@@ -120,15 +120,13 @@ vec4 inline directionToPos(vec4 pos1,vec4 pos2){
 
 
 void inline checkCollision(vector<Cube*> cu, vector<Cylinder*> cy, vector<Plane*> pl, vector<Sphere*> sp){
-	
 	for(int i=0;i<sp.size();i++){
 		Sphere* sp1 = sp.at(i);
-		
 		for(int j=0;j<cu.size();j++) checkCollision_SphereCube(sp1,cu.at(j));
 		for(int j=0;j<cy.size();j++) checkCollision_SphereCylinder(sp1,cy.at(j));
 		for(int j=0;j<pl.size();j++) {
 			checkCollision_SpherePlane(sp1,pl.at(j));
-			//cout<<"check\n";
+			cout<<"check\n";
 		}
 		if(i<sp.size()-1) 
 			for(int j=i+1;j<sp.size();j++) {
@@ -171,11 +169,9 @@ public:
 	}
 	void addSphereToGridCell(Sphere* sp){
 		sphere.push_back(sp);
-		
 	}
 	void addPlaneToGridCell(Plane* pl){
 		//cout<<"addPlane\n";
-		
 		plane.push_back(pl);
 	}
 	void clearGridCell(){
@@ -185,7 +181,6 @@ public:
 	}
 	void checkCollisionGridCell(){
 		checkCollision(cube,cylinder,plane,sphere);
-		
 	}
 
 };
@@ -215,7 +210,6 @@ public:
 
 
 	void hashCube(Cube* r){
-
 		vec4 pos = (*r).position;
 		int a,b,c = 0;
 		findIndex(vec3(pos.x,pos.y,pos.z),a,b,c);
@@ -224,6 +218,7 @@ public:
 		vector<int> z;
 		findGrid(vec3(pos.x,pos.y,pos.z),a,b,c,x,y,z);
 		for(int i=0;i<x.size();i++){
+			if(x[i]>=0 && x[i]< gridSize && y[i]>=0 && y[i]< gridSize && z[i]>=0 && z[i]< gridSize)
 			gridcell[x[i]][y[i]][z[i]].addCubeToGridCell(r);
 		}
 	}
@@ -236,6 +231,7 @@ public:
 		vector<int> z;
 		findGrid(vec3(pos.x,pos.y,pos.z),a,b,c,x,y,z);
 		for(int i=0;i<x.size();i++){
+			if(x[i]>=0 && x[i]< gridSize && y[i]>=0 && y[i]< gridSize && z[i]>=0 && z[i]< gridSize)
 			gridcell[x[i]][y[i]][z[i]].addCylinderToGridCell(r);
 		}
 	}
@@ -248,7 +244,9 @@ public:
 		vector<int> z;
 		findGrid(vec3(pos.x,pos.y,pos.z),a,b,c,x,y,z);
 		for(int i=0;i<x.size();i++){
-			gridcell[x[i]][y[i]][z[i]].addSphereToGridCell(r);
+			if(x[i]>=0 && x[i]< gridSize && y[i]>=0 && y[i]< gridSize && z[i]>=0 && z[i]< gridSize)
+				gridcell[x[i]][y[i]][z[i]].addSphereToGridCell(r);
+			//cout<<"grid x = "<<x[i]<<" y = "<<y[i]<<" z= "<<z[i]<<"\n";
 		}
 	}
 	void hashPlane(Plane* r){
@@ -283,6 +281,8 @@ public:
 						gridcell[i][j][c].addPlaneToGridCell(r);
 					}
 					if(r->orientation==vec3(0,0,0)){
+						//cout<<"plane x = "<<r->orientation.x<<" y = "<<r->orientation.y<<" z = "<<r->orientation.z<<"\n";
+						//cout<<"index x= "<< a<<" y= "<<b<<" z= "<<c<<"\n";
 						gridcell[i][b][k].addPlaneToGridCell(r);
 					}
 				}
@@ -310,7 +310,7 @@ public:
 				}
 	}
 
-	void findGrid(vec3 pos,int a, int b, int c, vector<int> x, vector<int> y, vector<int> z){
+	void findGrid(vec3 pos,int a, int b, int c, vector<int> &x, vector<int> &y, vector<int> &z){
 		x.push_back(a); y.push_back(b); z.push_back(c);
 		if(pos.x-floor(pos.x)==0.5 && pos.y-floor(pos.y)==0.5 && pos.z-floor(pos.z)==0.5) return;
 		
