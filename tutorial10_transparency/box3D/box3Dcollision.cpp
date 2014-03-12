@@ -2,23 +2,25 @@
 #include "box3DglobalRule.h"
 #include "box3DcalculateForce.cpp"
 
-float minn(float x, float y){
+float inline minn(float x, float y){
 	return (x < y ?  x : y) ;
 }
 //completed with intersection
-void checkCollision_SphereCube(Sphere sp1,Cube cube){
-	vec4 dist = sp1.position-cube.position;
-	vec4 surfaceSp1 = dist*( (dist.length()-sp1.radius) / dist.length() );
+void inline checkCollision_SphereCube(Sphere sph,Cube cube){
+	if(dot(cube.velocity - sph.velocity,cube.position - sph.position) >= 0) return;
+	vec4 dist = sph.position-cube.position;
+	vec4 surfaceSp1 = dist*( (dist.length()-sph.radius) / dist.length() );
 	vec4 point = cube.getInverseRatationMatrix()*surfaceSp1;
 	vec3 cubeSkin = cube.getSkin();
 	if(abs(point.x)<=cubeSkin.x && abs(point.y)<=cubeSkin.y && abs(point.z)<=cubeSkin.z) {
 
 		//onCollision
-		colSphere_Cube(sp1,cube);
+		colSphere_Cube(sph,cube);
 	}
 
 }
-void checkCollision_SphereCylinder(Sphere sph,Cylinder cyl){
+//completed
+void inline checkCollision_SphereCylinder(Sphere sph,Cylinder cyl){
 	vec4 spherePos = cyl.getInverseRatationMatrix()*(sph.position-cyl.position);
 	vec4 cylNormal = vec4(0,1,0,0);
 	float projectDist = dot(spherePos,cylNormal);
@@ -28,11 +30,12 @@ void checkCollision_SphereCylinder(Sphere sph,Cylinder cyl){
 		if(projectDist <= cyl.length + sph.radius) return;
 		else colSphere_Cylinder(sph,cyl);
 	} else {
-		
+		if((projectDist*cylNormal + vec4(cyl.radius,0,0,0) - spherePos).length() >= sph.radius) return;
+		else colSphere_Cylinder(sph,cyl);
 	}
 }
 //completed
-void checkCollision_SpherePlane(Sphere sp1,Plane pl1){
+void inline checkCollision_SpherePlane(Sphere sp1,Plane pl1){
 	vec4 spPos = sp1.position;
 	float radius = sp1.radius;
 	vec4 centerVec = spPos-pl1.position;
@@ -44,7 +47,7 @@ void checkCollision_SpherePlane(Sphere sp1,Plane pl1){
 
 }
 //completed
-void checkCollision_SphereSphere(Sphere sp1, Sphere sp2){
+void inline checkCollision_SphereSphere(Sphere sp1, Sphere sp2){
 	vec4 spPos = sp1.position;
 	float radius = sp1.radius;
 	vec4 d = spPos - sp2.position;
@@ -55,14 +58,14 @@ void checkCollision_SphereSphere(Sphere sp1, Sphere sp2){
 		colSphere_Sphere(sp1,sp2);
 	}
 }
-void checkCollision_PlaneCube(Plane pl1,Cube cu1){
+void inline checkCollision_PlaneCube(Plane pl1,Cube cu1){
 	vec4 plPos = pl1.position;
 	vec4 plNormal = pl1.getNormal();
 	vec4 temp = cu1.position-pl1.position;
 	float distance = dot(temp,plNormal);
 }
 //conpleted
-void checkCollision_PlaneCylinder(Plane pl,Cylinder cylinder){
+void inline checkCollision_PlaneCylinder(Plane pl,Cylinder cylinder){
 	vec4 dist = cylinder.position-pl.position;
 	vec4 cylinderPosition_PlaneModel = pl.getInverseRatationMatrix()*dist;
 	vec4 cylinderNormal_PlaneModel = pl.getInverseRatationMatrix()*cylinder.getRotationMatrix()*vec4(0,1,0,0);
@@ -73,20 +76,11 @@ void checkCollision_PlaneCylinder(Plane pl,Cylinder cylinder){
 	}
 }
 
-void checkCollision_CubeCube(Cube cu1,Cube cu2){
-	vec3 cu1Max = cu1.getMax();
-	vec3 cu1Min = cu1.getMin();
-	if(cu1Max.x>=cu2.getMin().x && cu1Min.x<=cu2.getMax().x
-		&& cu1Max.y>=cu2.getMin().y && cu1Min.y<=cu2.getMax().y
-		&& cu1Max.z>=cu2.getMin().z && cu1Min.z<=cu2.getMax().z) {
-			//onCollision
-
-	}
+void inline checkCollision_CubeCube(Cube cu1,Cube cu2){
 }
-void checkCollision_CubeCylinder(Cube cu1,Cylinder cylinder){
-	
+void inline checkCollision_CubeCylinder(Cube cu1,Cylinder cylinder){
 }
-void checkCollision_CylinderCylinder(Cylinder cylinder1,Cylinder cylinder2){
+void inline checkCollision_CylinderCylinder(Cylinder cylinder1,Cylinder cylinder2){
 	vec4 cylinder1Normal = cylinder1.getNormal();
 	vec4 cylinder1Center = cylinder1.position;
 	//vec4 ep1 = cylinder2.getEndPoint1();
@@ -99,7 +93,13 @@ void checkCollision_CylinderCylinder(Cylinder cylinder1,Cylinder cylinder2){
 	//}
 
 }
-void checkCollision_(vector<Cube> cu, vector<Cylinder> cylinder, vector<Plane> pl, vector<Sphere> sp){
+
+bool inline isMoveout(Rigidbody* obj1,Rigidbody* obj2){
+	if(dot(obj2->velocity - obj1->velocity,obj2->position - obj1->position) >= 0) return true;
+	else return false;
+}
+
+void inline checkCollision_(vector<Cube> cu, vector<Cylinder> cylinder, vector<Plane> pl, vector<Sphere> sp){
 	for(int i=0;i<sp.size();i++){
 		Sphere sp1 = sp.at(i);
 		for(int j=0;j<cu.size();j++) checkCollision_SphereCube(sp1,cu.at(j));

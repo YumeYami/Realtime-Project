@@ -107,3 +107,110 @@ void inline colCylinder_Cylinder(Cylinder cy1, Cylinder cy2){
 }
 void inline colCylinder_Cone(Cylinder cy1,Cone cone2){
 }
+
+// dist3D_Line_to_Line(): get the 3D minimum distance between 2 lines
+//    Input:  two 3D lines L1 and L2
+//    Return: the shortest distance between L1 and L2
+#define SMALL_NUM 0.00000001f
+
+float dist3D_Line_to_Line( vec4 l1p1, vec4 l1p0, vec4 l2p1, vec4 l2p0)
+{
+    vec4   u = l1p1 - l1p0;
+    vec4   v = l2p1 - l2p0;
+    vec4   w = l1p0 - l2p0;
+    float    a = dot(u,u);         // always >= 0
+    float    b = dot(u,v);
+    float    c = dot(v,v);         // always >= 0
+    float    d = dot(u,w);
+    float    e = dot(v,w);
+    float    D = a*c - b*b;        // always >= 0
+    float    sc, tc;
+
+    // compute the line parameters of the two closest points
+    if (D < SMALL_NUM) {          // the lines are almost parallel
+        sc = 0.0;
+        tc = (b>c ? d/b : e/c);    // use the largest denominator
+    }
+    else {
+        sc = (b*e - c*d) / D;
+        tc = (a*e - b*d) / D;
+    }
+
+    // get the difference of the two closest points
+    vec4   dP = w + (sc * u) - (tc * v);  // =  L1(sc) - L2(tc)
+
+    return dP.length();   // return the closest distance
+}
+//===================================================================
+// dist3D_Segment_to_Segment(): get the 3D minimum distance between 2 segments
+//    Input:  two 3D line segments S1 and S2
+//    Return: the shortest distance between S1 and S2
+float dist3D_Segment_to_Segment( vec4 s1p1, vec4 s1p0, vec4 s2p1, vec4 s2p0)
+{
+    vec4   u = s1p1 - s1p0;
+    vec4   v = s2p1 - s2p0;
+    vec4   w = s1p0 - s2p0;
+    float    a = dot(u,u);         // always >= 0
+    float    b = dot(u,v);
+    float    c = dot(v,v);         // always >= 0
+    float    d = dot(u,w);
+    float    e = dot(v,w);
+    float    D = a*c - b*b;        // always >= 0
+    float    sc, sN, sD = D;       // sc = sN / sD, default sD = D >= 0
+    float    tc, tN, tD = D;       // tc = tN / tD, default tD = D >= 0
+
+    // compute the line parameters of the two closest points
+    if (D < SMALL_NUM) { // the lines are almost parallel
+        sN = 0.0;         // force using point P0 on segment S1
+        sD = 1.0;         // to prevent possible division by 0.0 later
+        tN = e;
+        tD = c;
+    }
+    else {                 // get the closest points on the infinite lines
+        sN = (b*e - c*d);
+        tN = (a*e - b*d);
+        if (sN < 0.0) {        // sc < 0 => the s=0 edge is visible
+            sN = 0.0;
+            tN = e;
+            tD = c;
+        }
+        else if (sN > sD) {  // sc > 1  => the s=1 edge is visible
+            sN = sD;
+            tN = e + b;
+            tD = c;
+        }
+    }
+
+    if (tN < 0.0) {            // tc < 0 => the t=0 edge is visible
+        tN = 0.0;
+        // recompute sc for this edge
+        if (-d < 0.0)
+            sN = 0.0;
+        else if (-d > a)
+            sN = sD;
+        else {
+            sN = -d;
+            sD = a;
+        }
+    }
+    else if (tN > tD) {      // tc > 1  => the t=1 edge is visible
+        tN = tD;
+        // recompute sc for this edge
+        if ((-d + b) < 0.0)
+            sN = 0;
+        else if ((-d + b) > a)
+            sN = sD;
+        else {
+            sN = (-d +  b);
+            sD = a;
+        }
+    }
+    // finally do the division to get sc and tc
+    sc = (abs(sN) < SMALL_NUM ? 0.0 : sN / sD);
+    tc = (abs(tN) < SMALL_NUM ? 0.0 : tN / tD);
+
+    // get the difference of the two closest points
+    vec4   dP = w + (sc * u) - (tc * v);  // =  S1(sc) - S2(tc)
+
+    return dP.length();   // return the closest distance
+}
