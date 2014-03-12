@@ -201,10 +201,6 @@ public:
 		for(int i=0;i<pl.size();i++) {
 			hashPlane(pl[i]);
 		}
-		for(int i=0;i<cy.size()-1;i++){
-			Cylinder cy1 = cy.at(i);
-			for(int j=i+1;j<cy.size();j++) checkCollision_CylinderCylinder(cy1,cy.at(j));
-		}
 	};
 	void hashGrid(vector<Cube> cu,vector<Cylinder> cy,vector<Sphere> sp){
 		for(int i=0;i<cu.size();i++) hashCube(cu[i]);
