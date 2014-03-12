@@ -47,6 +47,7 @@ void inline colSphere_Plane(Sphere sph1, Plane plane2){
 	vec4 velo = sph1.getVelocity();
 	velo = sph1.getVelocity() + newVelo*2;
 	sph1.setVelocity(velo);
+	cout<<"ref update sphere = "<<&sph1<<"\n";
 	cout<<"col\n";
 
 }
