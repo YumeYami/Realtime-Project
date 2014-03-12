@@ -205,7 +205,7 @@ public:
 		//gridcell[i][j][k] = GridCell(begin_x+width*i,begin_y+width*j,begin_z+width*k);
 		//hashGrid(cu,cy,sp);
 		for(int i=0;i<pl.size();i++) {
-			hashPlane(*pl[i]);
+			hashPlane(*(pl[i]));
 		}
 	};
 	void hashGrid(vector<Cube*> cu,vector<Cylinder*> cy,vector<Sphere*> sp){
