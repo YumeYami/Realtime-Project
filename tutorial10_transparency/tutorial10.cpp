@@ -94,8 +94,13 @@ int lastKey4=GLFW_RELEASE;
 void onKeyboard(){
 	//sphere
 	if (glfwGetKey('1') == GLFW_PRESS){
-		if(lastKey1 == GLFW_RELEASE) addSphere();
+		if(lastKey1 == GLFW_RELEASE) {
+			addSphere();
+			vec4 l = dist3D_Line_to_point(vec4(1,1,1,1),vec4(-1,1,-1,1),vec4(0,0,0,1));
+			cout<<l.x<<" "<<l.y<<" "<<l.z<<" "<<l.w<<"\n";
+		}
 		lastKey1 = GLFW_PRESS;
+
 	}
 	else if (glfwGetKey('1') == GLFW_RELEASE){
 		lastKey1 = GLFW_RELEASE;
@@ -278,7 +283,7 @@ int main( void )
 		// Compute the MVP matrix from keyboard and mouse input
 
 		checkCollision(c3, cylinder, plane, sphere);
-		
+
 		computeMatricesFromInputs();
 		onKeyboard();
 
