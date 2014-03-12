@@ -2,6 +2,37 @@
 #include "box3DglobalRule.h"
 #include "box3DcalculateForce.cpp"
 
+#define gridSize 10
+
+class GridCell
+{
+public:
+	vector<Cube> cube;
+	vector<Cylinder> cylinder;
+	vector<Sphere> sphere;
+	vector<Plane> plane;
+	GridCell(){
+	
+	}
+	GridCell(vector<Cube> cu,vector<Cylinder> cy,vector<Sphere> sp, vector<Plane>pl){
+		cube = cu;
+		cylinder = cy;
+		sphere = sp;
+		plane = pl;
+	}
+
+};
+
+class Grid
+{
+public:
+	GridCell gridcell [gridSize][gridSize];
+	Grid(int n){
+
+	}
+};
+
+
 float inline minn(float x, float y){
 	return (x < y ?  x : y) ;
 }
@@ -89,27 +120,6 @@ bool inline isMoveout(Rigidbody* obj1,Rigidbody* obj2){
 	else return false;
 }
 
-void inline checkCollision_(vector<Cube> cu, vector<Cylinder> cylinder, vector<Plane> pl, vector<Sphere> sp){
-	for(int i=0;i<sp.size();i++){
-		Sphere sp1 = sp.at(i);
-		for(int j=0;j<cu.size();j++) checkCollision_SphereCube(sp1,cu.at(j));
-		for(int j=0;j<cylinder.size();j++) checkCollision_SphereCylinder(sp1,cylinder.at(j));
-		for(int j=0;j<pl.size();j++) checkCollision_SpherePlane(sp1,pl.at(j));
-		for(int j=i+1;j<sp.size();j++) checkCollision_SphereSphere(sp1,sp.at(j));
-	}
-	for(int i=0;i<pl.size();i++){
-		Plane pl1 = pl.at(i);
-		for(int j=0;j<cu.size();j++) checkCollision_PlaneCube(pl1,cu.at(j));
-		for(int j=0;j<cu.size();j++) checkCollision_PlaneCylinder(pl1,cylinder.at(j));
-	}
-	for(int i=0;i<cu.size();i++){
-		Cube cu1 = cu.at(i);
-		for(int j=i+1;j<cu.size();j++) checkCollision_CubeCube(cu1,cu.at(j));
-		for(int j=0;j<cu.size();j++) checkCollision_CubeCylinder(cu1,cylinder.at(j));
-	}
-	for(int i=0;i<cylinder.size()-1;i++){
-		Cylinder cylinder1 = cylinder.at(i);
-		for(int j=i+1;j<cylinder.size();j++) checkCollision_CylinderCylinder(cylinder1,cylinder.at(j));
-
-	}
+void inline checkCollision(vector<Cube>* cu, vector<Cylinder>* cylinder, vector<Plane>* pl, vector<Sphere>* sp){
+	
 }

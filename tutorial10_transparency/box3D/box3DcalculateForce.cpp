@@ -1,9 +1,10 @@
-#include "box3Dcollision.h"
 #include "Cube.cpp"
 #include "Sphere.cpp"
 #include "Cylinder.cpp"
 #include "Plane.cpp"
 #include "Cone.cpp"
+#define SMALL_NUM 0.00000001f
+
 //Sphere
 //completed
 void inline colSphere_Sphere(Sphere sph1, Sphere sph2){
@@ -112,9 +113,8 @@ void inline colCylinder_Cone(Cylinder cy1,Cone cone2){
 // dist3D_Line_to_Line(): get the 3D minimum distance between 2 lines
 //    Input:  two 3D lines L1 and L2
 //    Return: the shortest distance between L1 and L2
-#define SMALL_NUM 0.00000001f
 
-float dist3D_Line_to_Line( vec4 l1p1, vec4 l1p0, vec4 l2p1, vec4 l2p0)
+float inline dist3D_Line_to_Line( vec4 l1p1, vec4 l1p0, vec4 l2p1, vec4 l2p0)
 {
     vec4   u = l1p1 - l1p0;
     vec4   v = l2p1 - l2p0;
@@ -146,7 +146,7 @@ float dist3D_Line_to_Line( vec4 l1p1, vec4 l1p0, vec4 l2p1, vec4 l2p0)
 // dist3D_Segment_to_Segment(): get the 3D minimum distance between 2 segments
 //    Input:  two 3D line segments S1 and S2
 //    Return: the shortest distance between S1 and S2
-float dist3D_Segment_to_Segment( vec4 s1p1, vec4 s1p0, vec4 s2p1, vec4 s2p0)
+float inline dist3D_Segment_to_Segment( vec4 s1p1, vec4 s1p0, vec4 s2p1, vec4 s2p0)
 {
     vec4   u = s1p1 - s1p0;
     vec4   v = s2p1 - s2p0;

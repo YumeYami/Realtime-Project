@@ -4,13 +4,7 @@
 #include <vector>
 #include <iostream>
 //Realtime-Project library
-#include "box3D/box3Dcollision.h"
-#include "box3D/box3DglobalRule.h"
-#include "box3D/Cube.cpp"
-#include "box3D/Sphere.cpp"
-#include "box3D/Cylinder.cpp"
-#include "box3D/Plane.cpp"
-#include "box3D/Cone.cpp"
+#include "box3D/box3Dcollision.cpp"
 // Include GLEW
 #include <GL/glew.h>
 // Include GLFW
@@ -25,26 +19,20 @@ using namespace std;
 #include <common/shader.hpp>
 #include <common/texture.hpp>
 #include <common/controls.hpp>
-#include <common/objloader.hpp>
-#include <common/vboindexer.hpp>
-#include <common/quaternion_utils.hpp>
 std::vector<unsigned short> indices;
 std::vector<glm::vec3> indexed_vertices;
 std::vector<glm::mat4> indexed_rotates;
 std::vector<glm::vec2> indexed_uvs;
 std::vector<glm::vec3> indexed_normals;
-vec3 gPosition1(-1.5f, 0.0f, 0.0f);
-vec3 gOrientation1;
-
-vec3 gPosition2( 1.5f, 0.0f, 0.0f);
-quat gOrientation2;
-
-bool gLookAtOther = true;
 
 vector<Cube> c3;
 vector<Sphere> sphere;
 vector<Cylinder> cylinder;
 vector<Plane> plane;
+
+#define CELL_SIZE 2*sqrt(3.0)
+#define minC -5
+#define maxC 5
 
 
 void addSphere(){
@@ -71,7 +59,7 @@ void addCylinder(){
 	vec3 position = vec3(1,1,1);
 	vec3 rotation = vec3(0,0,1);
 	vec3 velocity = vec3(0,-1,0);
-	float radius = 1;
+	float radius = 0.5;
 	float length = 2;
 	float mass = 1;
 	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
@@ -130,18 +118,18 @@ void onKeyboard(){
 	else if (glfwGetKey('3') == GLFW_RELEASE){
 		lastKey3 = GLFW_RELEASE;
 	}
-	
+
 	//plane
 	if (glfwGetKey('4') == GLFW_PRESS){
 		if(lastKey4 == GLFW_RELEASE) 
 			if(plane.size()==0)addPlane();
 			else removePlane();
-		lastKey4 = GLFW_PRESS;
+			lastKey4 = GLFW_PRESS;
 	}
 	else if (glfwGetKey('4') == GLFW_RELEASE){
 		lastKey4 = GLFW_RELEASE;
 	}
-	
+
 
 }
 void keyboard (unsigned char key,int x,int y){
@@ -230,6 +218,8 @@ int main( void )
 	sphere.push_back(sphere2);
 	sphere.push_back(sphere3);
 	addPlane();
+	addCylinder();
+	Grid grid = Grid((maxC-minC)/CELL_SIZE);
 
 	GLuint vertexbuffer;
 	glGenBuffers(1, &vertexbuffer);
@@ -286,6 +276,30 @@ int main( void )
 		glUseProgram(programID);
 
 		// Compute the MVP matrix from keyboard and mouse input
+
+		//checkCollision(&c3, &cylinder, &plane, &sphere);
+		for(int i=0;i<sphere.size();i++){
+			Sphere sp1 = sphere.at(i);
+			for(int j=0;j<c3.size();j++) checkCollision_SphereCube(sp1,c3.at(j));
+			for(int j=0;j<cylinder.size();j++) checkCollision_SphereCylinder(sp1,cylinder.at(j));
+			for(int j=0;j<plane.size();j++) checkCollision_SpherePlane(sp1,plane.at(j));
+			for(int j=i+1;j<sphere.size();j++) checkCollision_SphereSphere(sp1,sphere.at(j));
+		}
+		for(int i=0;i<plane.size();i++){
+			Plane pl1 = plane.at(i);
+			for(int j=0;j<c3.size();j++) checkCollision_PlaneCube(pl1,c3.at(j));
+			for(int j=0;j<c3.size();j++) checkCollision_PlaneCylinder(pl1,cylinder.at(j));
+		}
+		for(int i=0;i<c3.size();i++){
+			Cube cu1 = c3.at(i);
+			for(int j=i+1;j<c3.size();j++) checkCollision_CubeCube(cu1,c3.at(j));
+			for(int j=0;j<c3.size();j++) checkCollision_CubeCylinder(cu1,cylinder.at(j));
+		}
+		for(int i=0;i<cylinder.size()-1;i++){
+			Cylinder cylinder1 = cylinder.at(i);
+			for(int j=i+1;j<cylinder.size();j++) checkCollision_CylinderCylinder(cylinder1,cylinder.at(j));
+
+		}
 		computeMatricesFromInputs();
 		onKeyboard();
 
