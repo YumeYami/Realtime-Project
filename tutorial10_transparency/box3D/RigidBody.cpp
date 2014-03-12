@@ -72,7 +72,7 @@ public:
 	void inline addMomentum(vec4 momentum){
 		velocity+=momentum;
 	}
-	void inline addAngularMomentum(vec4 angularMomentum){
+	void inline addAngularMomentum_vec4(vec4 angularMomentum){
 		angularVelocity+=vec3(angularMomentum);
 	}
 	void inline addAngularMomentum(vec3 angularMomentum){
