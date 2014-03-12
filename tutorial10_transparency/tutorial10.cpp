@@ -219,7 +219,7 @@ int main( void )
 	sphere.push_back(sphere3);
 	addPlane();
 	addCylinder();
-	Grid grid = Grid((maxC-minC)/CELL_SIZE);
+	//Grid grid = Grid((maxC-minC)/CELL_SIZE);
 
 	GLuint vertexbuffer;
 	glGenBuffers(1, &vertexbuffer);
@@ -277,29 +277,8 @@ int main( void )
 
 		// Compute the MVP matrix from keyboard and mouse input
 
-		//checkCollision(&c3, &cylinder, &plane, &sphere);
-		for(int i=0;i<sphere.size();i++){
-			Sphere sp1 = sphere.at(i);
-			for(int j=0;j<c3.size();j++) checkCollision_SphereCube(sp1,c3.at(j));
-			for(int j=0;j<cylinder.size();j++) checkCollision_SphereCylinder(sp1,cylinder.at(j));
-			for(int j=0;j<plane.size();j++) checkCollision_SpherePlane(sp1,plane.at(j));
-			for(int j=i+1;j<sphere.size();j++) checkCollision_SphereSphere(sp1,sphere.at(j));
-		}
-		for(int i=0;i<plane.size();i++){
-			Plane pl1 = plane.at(i);
-			for(int j=0;j<c3.size();j++) checkCollision_PlaneCube(pl1,c3.at(j));
-			for(int j=0;j<c3.size();j++) checkCollision_PlaneCylinder(pl1,cylinder.at(j));
-		}
-		for(int i=0;i<c3.size();i++){
-			Cube cu1 = c3.at(i);
-			for(int j=i+1;j<c3.size();j++) checkCollision_CubeCube(cu1,c3.at(j));
-			for(int j=0;j<c3.size();j++) checkCollision_CubeCylinder(cu1,cylinder.at(j));
-		}
-		for(int i=0;i<cylinder.size()-1;i++){
-			Cylinder cylinder1 = cylinder.at(i);
-			for(int j=i+1;j<cylinder.size();j++) checkCollision_CylinderCylinder(cylinder1,cylinder.at(j));
-
-		}
+		checkCollision(c3, cylinder, plane, sphere);
+		
 		computeMatricesFromInputs();
 		onKeyboard();
 
