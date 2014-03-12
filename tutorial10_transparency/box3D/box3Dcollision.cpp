@@ -1,36 +1,11 @@
 #include "box3Dcollision.h"
 #include "box3DglobalRule.h"
 #include "box3DcalculateForce.cpp"
-
 #define gridSize 10
-
-class GridCell
-{
-public:
-	vector<Cube> cube;
-	vector<Cylinder> cylinder;
-	vector<Sphere> sphere;
-	vector<Plane> plane;
-	GridCell(){
-	
-	}
-	GridCell(vector<Cube> cu,vector<Cylinder> cy,vector<Sphere> sp, vector<Plane>pl){
-		cube = cu;
-		cylinder = cy;
-		sphere = sp;
-		plane = pl;
-	}
-
-};
-
-class Grid
-{
-public:
-	//GridCell gridcell [gridSize][gridSize];
-	Grid(int n){
-
-	}
-};
+#define ftl_x -5
+#define ftl_y 5
+#define ftl_z 5
+#define backDownRight vec3(5,-5,-5);
 
 
 float inline minn(float x, float y){
@@ -132,25 +107,139 @@ bool inline isMoveout(Rigidbody* obj1,Rigidbody* obj2){
 
 void inline checkCollision(vector<Cube> cu, vector<Cylinder> cy, vector<Plane> pl, vector<Sphere> sp){
 	for(int i=0;i<sp.size();i++){
-			Sphere sp1 = sp.at(i);
-			for(int j=0;j<cu.size();j++) checkCollision_SphereCube(sp1,cu.at(j));
-			for(int j=0;j<cy.size();j++) checkCollision_SphereCylinder(sp1,cy.at(j));
-			for(int j=0;j<pl.size();j++) checkCollision_SpherePlane(sp1,pl.at(j));
-			for(int j=i+1;j<sp.size();j++) checkCollision_SphereSphere(sp1,sp.at(j));
-		}
-		for(int i=0;i<pl.size();i++){
-			Plane pl1 = pl.at(i);
-			for(int j=0;j<cu.size();j++) checkCollision_PlaneCube(pl1,cu.at(j));
-			for(int j=0;j<cy.size();j++) checkCollision_PlaneCylinder(pl1,cy.at(j));
-		}
-		for(int i=0;i<cu.size();i++){
-			Cube cu1 = cu.at(i);
-			for(int j=i+1;j<cu.size();j++) checkCollision_CubeCube(cu1,cu.at(j));
-			for(int j=0;j<cy.size();j++) checkCollision_CubeCylinder(cu1,cy.at(j));
-		}
-		for(int i=0;i<cy.size()-1;i++){
-			Cylinder cy1 = cy.at(i);
-			for(int j=i+1;j<cy.size();j++) checkCollision_CylinderCylinder(cy1,cy.at(j));
+		Sphere sp1 = sp.at(i);
+		for(int j=0;j<cu.size();j++) checkCollision_SphereCube(sp1,cu.at(j));
+		for(int j=0;j<cy.size();j++) checkCollision_SphereCylinder(sp1,cy.at(j));
+		for(int j=0;j<pl.size();j++) checkCollision_SpherePlane(sp1,pl.at(j));
+		if(i<sp.size()-1) for(int j=i+1;j<sp.size();j++) checkCollision_SphereSphere(sp1,sp.at(j));
+	}
+	for(int i=0;i<pl.size();i++){
+		Plane pl1 = pl.at(i);
+		for(int j=0;j<cu.size();j++) checkCollision_PlaneCube(pl1,cu.at(j));
+		for(int j=0;j<cy.size();j++) checkCollision_PlaneCylinder(pl1,cy.at(j));
+	}
+	for(int i=0;i<cu.size();i++){
+		Cube cu1 = cu.at(i);
+		if(i<cu.size()-1) for(int j=i+1;j<cu.size();j++) checkCollision_CubeCube(cu1,cu.at(j));
+		for(int j=0;j<cy.size();j++) checkCollision_CubeCylinder(cu1,cy.at(j));
+	}
+	for(int i=0;i<cy.size();i++){
+		Cylinder cy1 = cy.at(i);
+		if(i<cy.size()-1) 
+			for(int j=i+1;j<cy.size();j++)
+				checkCollision_CylinderCylinder(cy1,cy.at(j));
 
-		}
+	}
 }
+
+
+class GridCell
+{
+public:
+	vector<Cube> cube;
+	vector<Cylinder> cylinder;
+	vector<Sphere> sphere;
+	vector<Plane> plane;
+	GridCell(){}
+	void addCubeToGridCell(Cube cu){
+		cube.push_back(cu);
+	}
+	void addCylinderToGridCell(Cylinder cy){
+		cylinder.push_back(cy);
+	}
+	void addSphereToGridCell(Sphere sp){
+		sphere.push_back(sp);
+	}
+	void addPlaneToGridCell(Plane pl){
+		plane.push_back(pl);
+	}
+	void clearGridCell(){
+		cube.clear();
+		cylinder.clear();
+		sphere.clear();
+	}
+	void checkCollisionGridCell(){
+		checkCollision(cube,cylinder,plane,sphere);
+	}
+
+};
+class Grid
+{
+public:
+	GridCell gridcell[gridSize][gridSize][gridSize];
+	float width;
+	Grid(){}
+	Grid(vector<Cube> cu,vector<Cylinder> cy,vector<Sphere> sp, vector<Plane>pl){
+		width = 10/gridSize;
+		for(int i=0;i<gridSize;i++)
+			for(int j=0;j<gridSize;j++)
+				for(int k=0;k<gridSize;k++)
+					gridcell[i][j][k] = GridCell();
+		//gridcell[i][j][k] = GridCell(ftl_x+width*i,ftl_y+width*j,ftl_z+width*k);
+		hashGrid(cu,cy,sp);
+		for(int i=0;i<pl.size();i++) hashPlane(pl[i]);
+	};
+
+	void hashGrid(vector<Cube> cu,vector<Cylinder> cy,vector<Sphere> sp){
+		for(int i=0;i<cu.size();i++) hashCube(cu[i]);
+		for(int i=0;i<cy.size();i++) hashCylinder(cy[i]);
+		for(int i=0;i<sp.size();i++) hashSphere(sp[i]);
+	}
+
+
+	void hashCube(Cube r){
+		vec4 pos = r.position;
+		vec3 index = findIndex(vec3(pos.x,pos.y,pos.z));
+		for(int i=index.x-1;i<=index.x+1;i++)
+			for(int j=index.y-1;j<=index.y+1;j++)
+				for(int k=index.z-1;k<=index.z+1;k++)
+					if(i>=0 && j>=0 && k>=0) gridcell[i][j][k].addCubeToGridCell(r);
+	}
+	void hashCylinder(Cylinder r){
+		vec4 pos = r.position;
+		vec3 index = findIndex(vec3(pos.x,pos.y,pos.z));
+		for(int i=index.x-1;i<=index.x+1;i++)
+			for(int j=index.y-1;j<=index.y+1;j++)
+				for(int k=index.z-1;k<=index.z+1;k++)
+					if(i>=0 && j>=0 && k>=0) gridcell[i][j][k].addCylinderToGridCell(r);
+	}
+	void hashSphere(Sphere r){
+		vec4 pos = r.position;
+		vec3 index = findIndex(vec3(pos.x,pos.y,pos.z));
+		for(int i=index.x-1;i<=index.x+1;i++)
+			for(int j=index.y-1;j<=index.y+1;j++)
+				for(int k=index.z-1;k<=index.z+1;k++)
+					if(i>=0 && j>=0 && k>=0) gridcell[i][j][k].addSphereToGridCell(r);
+	}
+	void hashPlane(Plane r){
+		vec4 pos = r.position;
+		vec3 index = findIndex(vec3(pos.x,pos.y,pos.z));
+		for(int i=index.x-1;i<=index.x+1;i++)
+			for(int j=index.y-1;j<=index.y+1;j++)
+				for(int k=index.z-1;k<=index.z+1;k++)
+					if(i>=0 && j>=0 && k>=0) gridcell[i][j][k].addPlaneToGridCell(r);
+	}
+	vec3 findIndex(vec3 pos){
+		vec3 index;
+		index.x = (pos.x-ftl_x)/width;
+		index.y = (pos.y-ftl_y)/width;
+		index.z = (pos.z-ftl_z)/width;
+		return index;
+	}
+
+	void clearGrid(){
+		for(int i=0;i<gridSize;i++)
+			for(int j=0;j<gridSize;j++)
+				for(int k=0;k<gridSize;k++)
+					gridcell[i][j][k].clearGridCell();
+
+	}
+	void checkCollisionGrid(){
+		for(int i=0;i<gridSize;i++)
+			for(int j=0;j<gridSize;j++)
+				for(int k=0;k<gridSize;k++){
+					gridcell[i][j][k].checkCollisionGridCell();
+				}
+	}
+};
+
