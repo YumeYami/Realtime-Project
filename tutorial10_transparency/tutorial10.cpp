@@ -220,7 +220,7 @@ int main( void )
 	sphere.push_back(sphere3);
 	addPlane();
 	addCylinder();
-	grid = Grid(c3,cylinder,sphere,plane);
+	grid = Grid(plane);
 
 	GLuint vertexbuffer;
 	glGenBuffers(1, &vertexbuffer);

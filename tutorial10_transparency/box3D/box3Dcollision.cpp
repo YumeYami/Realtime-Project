@@ -43,6 +43,7 @@ void inline checkCollision_SphereCylinder(Sphere sph,Cylinder cyl){
 }
 //not test
 void inline checkCollision_SpherePlane(Sphere sph1,Plane plane2){
+	
 	if(dot(plane2.velocity - sph1.velocity,plane2.position - sph1.position) >= 0) return;
 	vec4 spPos = sph1.position;
 	float radius = sph1.radius;
@@ -51,19 +52,23 @@ void inline checkCollision_SpherePlane(Sphere sph1,Plane plane2){
 	if(distance<=radius) {
 		//onCollision
 		colSphere_Plane(sph1,plane2);
+		
 	}
 
 }
 //not test
 void inline checkCollision_SphereSphere(Sphere sph1, Sphere sph2){
+	
 	if(dot(sph2.velocity - sph1.velocity,sph2.position - sph1.position) >= 0) return;
 	vec4 sphPos = sph1.position;
 	float radius = sph1.radius;
 	vec4 d = sphPos - sph2.position;
 	float distance = d.length();
 	float sumR = radius + sph2.radius;
+	cout<<"distance = "<<distance<<"\n";
 	if(distance<=sumR) {
 		//onCollision
+		cout<<"hash1\n";
 		colSphere_Sphere(sph1,sph2);
 	}
 }
@@ -110,12 +115,16 @@ bool inline isMoveout(Rigidbody* obj1,Rigidbody* obj2){
 }
 
 void inline checkCollision(vector<Cube> cu, vector<Cylinder> cy, vector<Plane> pl, vector<Sphere> sp){
+	
 	for(int i=0;i<sp.size();i++){
 		Sphere sp1 = sp.at(i);
 		for(int j=0;j<cu.size();j++) checkCollision_SphereCube(sp1,cu.at(j));
 		for(int j=0;j<cy.size();j++) checkCollision_SphereCylinder(sp1,cy.at(j));
 		for(int j=0;j<pl.size();j++) checkCollision_SpherePlane(sp1,pl.at(j));
-		if(i<sp.size()-1) for(int j=i+1;j<sp.size();j++) checkCollision_SphereSphere(sp1,sp.at(j));
+		if(i<sp.size()-1) 
+			for(int j=i+1;j<sp.size();j++) {
+				checkCollision_SphereSphere(sp1,sp.at(j));
+			}
 	}
 	for(int i=0;i<pl.size();i++){
 		Plane pl1 = pl.at(i);
@@ -153,6 +162,7 @@ public:
 	}
 	void addSphereToGridCell(Sphere sp){
 		sphere.push_back(sp);
+		
 	}
 	void addPlaneToGridCell(Plane pl){
 		plane.push_back(pl);
@@ -164,6 +174,7 @@ public:
 	}
 	void checkCollisionGridCell(){
 		checkCollision(cube,cylinder,plane,sphere);
+		
 	}
 
 };
@@ -173,14 +184,14 @@ public:
 	GridCell gridcell[gridSize][gridSize][gridSize];
 	float width;
 	Grid(){}
-	Grid(vector<Cube> cu,vector<Cylinder> cy,vector<Sphere> sp, vector<Plane>pl){
+	Grid(vector<Plane>pl){
 		width = 1;
 		for(int i=0;i<gridSize;i++)
 			for(int j=0;j<gridSize;j++)
 				for(int k=0;k<gridSize;k++)
 					gridcell[i][j][k] = GridCell();
 		//gridcell[i][j][k] = GridCell(begin_x+width*i,begin_y+width*j,begin_z+width*k);
-		hashGrid(cu,cy,sp);
+		//hashGrid(cu,cy,sp);
 		for(int i=0;i<pl.size();i++) {
 			hashPlane(pl[i]);
 			
@@ -216,7 +227,10 @@ public:
 		for(int i=index.x-1;i<=index.x+1 && i<gridSize;i++)
 			for(int j=index.y-1;j<=index.y+1 && j<gridSize;j++)
 				for(int k=index.z-1;k<=index.z+1 && k<gridSize;k++)
-					if(i>=0 && j>=0 && k>=0) gridcell[i][j][k].addSphereToGridCell(r);
+					if(i>=0 && j>=0 && k>=0) {
+						gridcell[i][j][k].addSphereToGridCell(r);
+						
+					}
 	}
 	void hashPlane(Plane r){
 		
