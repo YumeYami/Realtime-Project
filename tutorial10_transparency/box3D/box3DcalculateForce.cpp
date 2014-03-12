@@ -8,62 +8,61 @@
 //Sphere
 //completed
 void inline colSphere_Sphere(Sphere sph1, Sphere sph2){
-	vec4 dist = sph2.position-sph1.position;
-	vec4 velo1 = sph1.velocity;
-	vec4 velo2 = sph2.velocity;
-	vec4 relatevelo = velo2-velo1;//ref from sph1
-	float lineMomentum = dot(relatevelo,normalize(dist));
-	sph1.addMomentum(normalize(dist)*lineMomentum);
-	sph2.addMomentum(normalize(dist)*-lineMomentum);
-	//float newLineEngergy1 = pow(sph1.velocity.length(),2);
-	//float newLineEngergy2 = pow(sph2.velocity.length(),2);
-	//float angularEnergy = (velo1.length()*velo1.length()+velo2.length()*velo2.length())-(newLineEngergy1+newLineEngergy2);
-	vec3 angularMomentum = cross(vec3(relatevelo),normalize(vec3(dist)));
-	sph1.addAngularMomentum(vec3(sph1.getInverseRatationMatrix()*vec4(angularMomentum)));
-	sph2.addAngularMomentum(vec3(sph2.getInverseRatationMatrix()*vec4(-angularMomentum)));
+	//vec4 dist = sph2.position-sph1.position;
+	//vec4 velo1 = sph1.velocity;
+	//vec4 velo2 = sph2.velocity;
+	//vec4 relatevelo = velo2-velo1;//ref from sph1
+	//float lineMomentum = dot(relatevelo,normalize(dist));
+	//sph1.addMomentum(normalize(dist)*lineMomentum);
+	//sph2.addMomentum(normalize(dist)*-lineMomentum);
+	////float newLineEngergy1 = pow(sph1.velocity.length(),2);
+	////float newLineEngergy2 = pow(sph2.velocity.length(),2);
+	////float angularEnergy = (velo1.length()*velo1.length()+velo2.length()*velo2.length())-(newLineEngergy1+newLineEngergy2);
+	//vec3 angularMomentum = cross(vec3(relatevelo),normalize(vec3(dist)));
+	//sph1.addAngularMomentum(vec3(sph1.getInverseRatationMatrix()*vec4(angularMomentum)));
+	//sph2.addAngularMomentum(vec3(sph2.getInverseRatationMatrix()*vec4(-angularMomentum)));
 }
 //completed
 void inline colSphere_Plane(Sphere sph1, Plane plane2){
-	vec4 planeNormal = plane2.getNormal();
+	vec4 planeNormal = plane2.getNormal();/*
 	float newVelo = dot(plane2.getNormal(),-sph1.velocity);
-	sph1.setVelocity( reflect(-sph1.velocity,planeNormal ) );
+	sph1.setVelocity( reflect(-sph1.velocity,planeNormal ) );*/
 }
 void inline colSphere_Cube(Sphere sph1, Cube cube2){
-	vec4 dist = cube2.position-sph1.position;
-	vec4 velo1 = sph1.velocity;
-	vec4 velo2 = cube2.velocity;
-	vec4 relatevelo = velo2-velo1;//ref from sph1
-	float exchangeMomentum = dot(relatevelo,normalize(dist));
-	sph1.addMomentum(normalize(dist)*exchangeMomentum);
-	cube2.addMomentum(normalize(dist)*-exchangeMomentum);
-	float newLineEngergy1 = pow(sph1.velocity.length(),2);
-	float newLineEngergy2 = pow(cube2.velocity.length(),2);
-	//float angularEnergy = (velo1.length()*velo1.length()+velo2.length()*velo2.length())-(newLineEngergy1+newLineEngergy2);
-	vec3 angularMomentum = cross(vec3(relatevelo),normalize(vec3(dist)));
-	sph1.addAngularMomentum(angularMomentum);
-	cube2.addAngularMomentum(-angularMomentum);
+	//vec4 dist = cube2.position-sph1.position;
+	//vec4 velo1 = sph1.velocity;
+	//vec4 velo2 = cube2.velocity;
+	//vec4 relatevelo = velo2-velo1;//ref from sph1
+	//float exchangeMomentum = dot(relatevelo,normalize(dist));
+	//sph1.addMomentum(normalize(dist)*exchangeMomentum);
+	//cube2.addMomentum(normalize(dist)*-exchangeMomentum);
+	//float newLineEngergy1 = pow(sph1.velocity.length(),2);
+	//float newLineEngergy2 = pow(cube2.velocity.length(),2);
+	////float angularEnergy = (velo1.length()*velo1.length()+velo2.length()*velo2.length())-(newLineEngergy1+newLineEngergy2);
+	//vec3 angularMomentum = cross(vec3(relatevelo),normalize(vec3(dist)));
+	//sph1.addAngularMomentum(angularMomentum);
+	//cube2.addAngularMomentum(-angularMomentum);
 }
 void inline colSphere_Cylinder(Sphere sph1, Cylinder cy2){
-	vec4 dist = cy2.position-sph1.position;
-	vec4 velo1 = sph1.velocity;
-	vec4 velo2 = cy2.velocity;
-	vec4 relatevelo = velo2-velo1;//ref from sph1
-	float exchangeMomentum = dot(relatevelo,normalize(dist));
-	sph1.addMomentum(normalize(dist)*exchangeMomentum);
-	cy2.addMomentum(normalize(dist)*-exchangeMomentum);
-	float newLineEngergy1 = pow(sph1.velocity.length(),2);
-	float newLineEngergy2 = pow(cy2.velocity.length(),2);
-	//float angularEnergy = (velo1.length()*velo1.length()+velo2.length()*velo2.length())-(newLineEngergy1+newLineEngergy2);
-	vec3 angularMomentum = cross(vec3(relatevelo),normalize(vec3(dist)));
-	sph1.addAngularMomentum(angularMomentum);
-	cy2.addAngularMomentum(-angularMomentum);
+	//vec4 dist = cy2.position-sph1.position;
+	//vec4 velo1 = sph1.velocity;
+	//vec4 velo2 = cy2.velocity;
+	//vec4 relatevelo = velo2-velo1;//ref from sph1
+	//float exchangeMomentum = dot(relatevelo,normalize(dist));
+	//sph1.addMomentum(normalize(dist)*exchangeMomentum);
+	//cy2.addMomentum(normalize(dist)*-exchangeMomentum);
+	//float newLineEngergy1 = pow(sph1.velocity.length(),2);
+	//float newLineEngergy2 = pow(cy2.velocity.length(),2);
+	////float angularEnergy = (velo1.length()*velo1.length()+velo2.length()*velo2.length())-(newLineEngergy1+newLineEngergy2);
+	//vec3 angularMomentum = cross(vec3(relatevelo),normalize(vec3(dist)));
+	//sph1.addAngularMomentum(angularMomentum);
+	//cy2.addAngularMomentum(-angularMomentum);
 }
 void inline colSphere_Cone(Sphere sph1,Cone cone2){
 }
 
 //Cube
 void inline colCube_Sphere(Cube cube1, Sphere sph2){
-	colSphere_Cube(sph2,cube1);
 }
 void inline colCube_Plane(Cube cube1, Plane plane2){
 }
