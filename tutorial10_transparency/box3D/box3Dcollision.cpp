@@ -311,9 +311,7 @@ public:
 	}
 
 	void findGrid(vec3 pos,int a, int b, int c, vector<int> x, vector<int> y, vector<int> z){
-		x.push_back(a);
-		y.push_back(b);
-		z.push_back(c);
+		x.push_back(a); y.push_back(b); z.push_back(c);
 		if(pos.x-floor(pos.x)==0.5 && pos.y-floor(pos.y)==0.5 && pos.z-floor(pos.z)==0.5) return;
 		
 		if(pos.x-floor(pos.x) < 0.5) {										//x<0.5 
@@ -370,8 +368,18 @@ public:
 		
 		if(pos.z-floor(pos.z) < 0.5) { 
 			x.push_back(a); y.push_back(b); z.push_back(c-1); 
+			if(pos.x-floor(pos.x) < 0.5) {
+				x.push_back(a-1); y.push_back(b); z.push_back(c-1);
+			} else {
+				x.push_back(a+1); y.push_back(b); z.push_back(c-1);
+			}
 		} else { 
 			x.push_back(a); y.push_back(b); z.push_back(c+1); 
+			if(pos.x-floor(pos.x) < 0.5) {
+				x.push_back(a-1); y.push_back(b); z.push_back(c+1);
+			} else {
+				x.push_back(a+1); y.push_back(b); z.push_back(c+1);
+			}
 		}
 		
 	}
