@@ -32,6 +32,7 @@ using namespace glm;
 using namespace std;
 
 class Rigidbody{
+
 public:
 	vec4 position;
 	vec4 velocity;

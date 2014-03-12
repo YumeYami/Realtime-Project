@@ -35,6 +35,12 @@ void inline colSphere_Sphere(Sphere sph1, Sphere sph2){
 //not test
 void inline colSphere_Plane(Sphere sph1, Plane plane2){
 	vec4 planeNormal = plane2.getNormal();
+
+	//cout<<length(sph1.velocity)<<"\n";
+	//float newVelo = projectSize(-sph1.velocity,plane2.getNormal());
+	//sph1.addMomentum(newVelo*2*plane2.getNormal());
+	////cout<<"col\n";
+
 	vec4 newVelo = projectVec(-sph1.getVelocity(),plane2.getNormal());
 	//cout<<sph1.getVelocity().x<<" "<<sph1.getVelocity().y<<" "<<sph1.getVelocity().z<<" "<<sph1.getVelocity().w<<"\n";
 	//cout<<newVelo.x<<" "<<newVelo.y<<" "<<newVelo.z<<" "<<newVelo.w<<"\n";
@@ -43,6 +49,7 @@ void inline colSphere_Plane(Sphere sph1, Plane plane2){
 	sph1.setVelocity(velo);
 	cout<<"ref update sphere = "<<&sph1<<"\n";
 	cout<<"col\n";
+
 }
 //not test
 void inline colSphere_Cube(Sphere sph1, Cube cube2){
