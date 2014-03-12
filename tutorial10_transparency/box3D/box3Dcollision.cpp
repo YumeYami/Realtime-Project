@@ -43,13 +43,21 @@ void inline checkCollision_SphereCylinder(Sphere sph,Cylinder cyl){
 }
 //not test
 void inline checkCollision_SpherePlane(Sphere sph1,Plane plane2){
+	//cout<<"check1\n";
 	if(projectSize(plane2.velocity - sph1.velocity,plane2.position - sph1.position) >= 0) return;
+	//cout<<"check1\n";
 	vec4 spPos = sph1.position;
 	float radius = sph1.radius;
 	vec4 centerVec = spPos-plane2.position;
+	//cout<<centerVec.x<<" "<<centerVec.y<<" "<<centerVec.z<<" "<<centerVec.w<<" = vec\n";
+	//cout<<plane2.getNormal().x<<" "<<plane2.getNormal().y<<" "<<plane2.getNormal().z<<" "<<plane2.getNormal().w<<" = base\n";
+	
 	float distance = projectSize(centerVec,plane2.getNormal());
+	//float distance = dot(centerVec,plane2.getNormal());
+	//cout<<"dist = "<<distance<<"\n";
 	if(distance<=radius) {
 		//onCollision
+		
 		colSphere_Plane(sph1,plane2);
 		
 	}
@@ -63,10 +71,9 @@ void inline checkCollision_SphereSphere(Sphere sph1, Sphere sph2){
 	vec4 d = sphPos - sph2.position;
 	float distance = length(d);
 	float sumR = radius + sph2.radius;
-	cout<<"distance = "<<distance<<"\n";
+	
 	if(distance<=sumR) {
 		//onCollision
-		cout<<"hash1\n";
 		colSphere_Sphere(sph1,sph2);
 	}
 }
@@ -124,9 +131,13 @@ void inline checkCollision(vector<Cube> cu, vector<Cylinder> cy, vector<Plane> p
 	
 	for(int i=0;i<sp.size();i++){
 		Sphere sp1 = sp.at(i);
+		
 		for(int j=0;j<cu.size();j++) checkCollision_SphereCube(sp1,cu.at(j));
 		for(int j=0;j<cy.size();j++) checkCollision_SphereCylinder(sp1,cy.at(j));
-		for(int j=0;j<pl.size();j++) checkCollision_SpherePlane(sp1,pl.at(j));
+		for(int j=0;j<pl.size();j++) {
+			checkCollision_SpherePlane(sp1,pl.at(j));
+			//cout<<"check\n";
+		}
 		if(i<sp.size()-1) 
 			for(int j=i+1;j<sp.size();j++) {
 				checkCollision_SphereSphere(sp1,sp.at(j));
@@ -171,6 +182,8 @@ public:
 		
 	}
 	void addPlaneToGridCell(Plane pl){
+		//cout<<"addPlane\n";
+		
 		plane.push_back(pl);
 	}
 	void clearGridCell(){
@@ -263,8 +276,9 @@ public:
 						gridcell[i][j][0].addPlaneToGridCell(r);
 						//cout<<"hash4\n";
 					}
-					if(index.x==0 && index.y==0 && index.z==0){
+					if(index.x==5 && index.y==0 && index.z==5){
 						gridcell[i][0][k].addPlaneToGridCell(r);
+						//cout<<"plsize = "<<gridcell[i][0][k].plane.size()<<"\n";
 						//cout<<"hash5\n";
 					}
 				}
