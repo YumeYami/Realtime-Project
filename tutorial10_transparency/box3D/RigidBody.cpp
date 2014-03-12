@@ -32,7 +32,7 @@ using namespace glm;
 using namespace std;
 
 class Rigidbody{
-protected:
+public:
 	vec4 position;
 	vec4 velocity;
 	float mass;
@@ -42,8 +42,6 @@ protected:
 	float inertia;
 	float size;
 	vec3 color;
-public:
-
 	Rigidbody(){
 		position = vec4(0,0,0,1);
 		mass = 1;

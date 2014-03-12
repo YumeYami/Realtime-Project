@@ -43,8 +43,10 @@ void addSphere(){
 	float mass = 1;
 	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
 	Sphere sp= Sphere(position,rotation,velocity,size,mass,color);
+	cout<<"ref new sphere = "<<&sp<<endl;
 	sphere.push_back(sp);
-	
+	Sphere temp = sp;
+	cout<<"ref temp sphere = "<<&temp<<endl;
 }
 void addCube(){
 	vec3 position = vec3(1,1,1);
@@ -456,4 +458,3 @@ int main( void )
 
 	return 0;
 }
-
