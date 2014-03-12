@@ -195,7 +195,7 @@ public:
 	GridCell gridcell[gridSize][gridSize][gridSize];
 	float width;
 	Grid(){}
-	Grid(vector<Plane>pl){
+	Grid(vector<Plane*>pl){
 		width = 1;
 		for(int i=0;i<gridSize;i++)
 			for(int j=0;j<gridSize;j++)
@@ -204,13 +204,13 @@ public:
 		//gridcell[i][j][k] = GridCell(begin_x+width*i,begin_y+width*j,begin_z+width*k);
 		//hashGrid(cu,cy,sp);
 		for(int i=0;i<pl.size();i++) {
-			hashPlane(pl[i]);
+			hashPlane(*(pl[i]));
 		}
 	};
-	void hashGrid(vector<Cube> cu,vector<Cylinder> cy,vector<Sphere> sp){
-		for(int i=0;i<cu.size();i++) hashCube(cu[i]);
-		for(int i=0;i<cy.size();i++) hashCylinder(cy[i]);
-		for(int i=0;i<sp.size();i++) hashSphere(sp[i]);
+	void hashGrid(vector<Cube*> cu,vector<Cylinder*> cy,vector<Sphere*> sp){
+		for(int i=0;i<cu.size();i++) hashCube(*cu[i]);
+		for(int i=0;i<cy.size();i++) hashCylinder(*cy[i]);
+		for(int i=0;i<sp.size();i++) hashSphere(*sp[i]);
 	}
 
 
