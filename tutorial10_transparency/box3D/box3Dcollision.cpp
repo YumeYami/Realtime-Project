@@ -276,13 +276,13 @@ public:
 					if(a==5 && b==0 && c==5){
 						gridcell[i][0][k].addPlaneToGridCell(r);
 					}*/
-					if(r.orientation==vec3(0,0,PI/2)){
+					if(r->orientation==vec3(0,0,PI/2)){
 						gridcell[a][j][k].addPlaneToGridCell(r);
 					}
-					if(r.orientation==vec3(PI/2,0,0)){
+					if(r->orientation==vec3(PI/2,0,0)){
 						gridcell[i][j][c].addPlaneToGridCell(r);
 					}
-					if(r.orientation==vec3(0,0,0)){
+					if(r->orientation==vec3(0,0,0)){
 						gridcell[i][b][k].addPlaneToGridCell(r);
 					}
 				}
