@@ -4,12 +4,19 @@
 #include "Plane.cpp"
 #include "Cone.cpp"
 #define SMALL_NUM 0.00000001f
+#define PARALLEL_SIZE 0.01f
 vec4 inline projectVec(vec4 vec,vec4 base){
 	return normalize(base)*dot(vec,base)/length(base);
 }
 float inline projectSize(vec4 vec,vec4 base){
 	return dot(vec,base)/length(base);
 }
+bool inline isParallel(vec4 normal1,vec4 normal2){
+	if(dot(normal1,normal2)-length(normal1)*length(normal2) <= PARALLEL_SIZE){
+	
+	}
+}
+
 //Sphere
 //not test
 void inline colSphere_Sphere(Sphere sph1, Sphere sph2){
@@ -90,6 +97,7 @@ void inline colCube_Cylinder(Cube cube1, Cylinder cy2){
 //void inline colPlane_Plane(Plane plane1, Plane plane2){
 //}
 void inline colPlane_Cylinder(Plane plane1, Cylinder cy2){
+	if(plane1.getNormal())
 }
 //void inline colPlane_Cone(Plane plane1,Cone cone2){
 //}
@@ -100,7 +108,6 @@ void inline colCylinder_Cylinder(Cylinder cy1, Cylinder cy2){
 }
 //void inline colCylinder_Cone(Cylinder cy1,Cone cone2){
 //}
-
 // dist3D_Line_to_Line(): get the 3D minimum distance between 2 lines
 //    Input:  two 3D lines L1 and L2
 //    Return: the shortest distance between L1 and L2
