@@ -44,13 +44,15 @@ void inline checkCollision_SphereCylinder(Sphere sph,Cylinder cyl){
 //not test
 void inline checkCollision_SpherePlane(Sphere sph1,Plane plane2){
 	
-	if(dot(plane2.velocity - sph1.velocity,plane2.position - sph1.position) >= 0) return;
+	//if(dot(plane2.velocity - sph1.velocity,plane2.position - sph1.position) >= 0) return;
 	vec4 spPos = sph1.position;
 	float radius = sph1.radius;
 	vec4 centerVec = spPos-plane2.position;
 	float distance = dot(centerVec,plane2.getNormal());
+	cout<<"distance = "<<distance<<"\n";
 	if(distance<=radius) {
 		//onCollision
+		
 		colSphere_Plane(sph1,plane2);
 		
 	}
@@ -58,17 +60,16 @@ void inline checkCollision_SpherePlane(Sphere sph1,Plane plane2){
 }
 //not test
 void inline checkCollision_SphereSphere(Sphere sph1, Sphere sph2){
-	
+	//cout<<"hash1\n";
 	if(dot(sph2.velocity - sph1.velocity,sph2.position - sph1.position) >= 0) return;
 	vec4 sphPos = sph1.position;
 	float radius = sph1.radius;
 	vec4 d = sphPos - sph2.position;
 	float distance = d.length();
 	float sumR = radius + sph2.radius;
-	cout<<"distance = "<<distance<<"\n";
+	
 	if(distance<=sumR) {
 		//onCollision
-		cout<<"hash1\n";
 		colSphere_Sphere(sph1,sph2);
 	}
 }
