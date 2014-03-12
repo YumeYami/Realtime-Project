@@ -42,9 +42,13 @@ void addSphere(){
 	float size = 1;
 	float mass = 1;
 	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
-	Sphere sp= Sphere(position,rotation,velocity,size,mass,color);
-	cout<<"ref new sphere = "<<&sp<<endl;
-	sphere.push_back(&sp);
+	Sphere* sp = new Sphere(position,rotation,velocity,size,mass,color);
+	//cout<<"ref new sphere = "<<&sp<<endl;
+	//Sphere *temp = sp;
+	//(*temp).velocity.y=0.5f;
+	sphere.push_back(sp);
+	//sphere.end();//test //cannot change
+	//cout<<"ref temp sphere = "<<&temp<<endl;
 
 }
 void addCube(){
@@ -54,8 +58,8 @@ void addCube(){
 	float size = 1;
 	float mass = 1;
 	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
-	Cube cube= Cube(position,rotation,velocity,size,mass,color);
-	c3.push_back(&cube);
+	Cube *cube=new Cube(position,rotation,velocity,size,mass,color);
+	c3.push_back(cube);
 }
 void addCylinder(){
 	vec3 position = vec3(1,1,1);
@@ -65,8 +69,8 @@ void addCylinder(){
 	float length = 1;
 	float mass = 1;
 	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
-	Cylinder cy= Cylinder(position,rotation,velocity,radius,length,mass,color);
-	cylinder.push_back(&cy);
+	Cylinder *cy = new Cylinder(position,rotation,velocity,radius,length,mass,color);
+	cylinder.push_back(cy);
 }
 void addPlane(){
 	vec3 pos[5] = {vec3(0,-5,0),vec3(-5,0,0),vec3(5,0,0),vec3(0,0,5),vec3(0,0,-5)};
@@ -78,8 +82,8 @@ void addPlane(){
 		float size = 20;
 		float mass = 1;
 		vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
-		Plane pl= Plane(position,rotation,velocity,size,mass,color);
-		plane.push_back(&pl);
+		Plane *pl=new Plane(position,rotation,velocity,size,mass,color);
+		plane.push_back(pl);
 	}
 }
 void tranparentPlane(){
