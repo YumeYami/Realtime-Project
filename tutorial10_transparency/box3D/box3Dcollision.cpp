@@ -2,6 +2,35 @@
 #include "box3DglobalRule.h"
 #include "box3DcalculateForce.cpp"
 
+#define gridSize 10
+
+class GridCell
+{
+public:
+	vector<Cube> cube;
+	vector<Cylinder> cylinder;
+	vector<Sphere> sphere;
+	vector<Plane> plane;
+	GridCell(){
+	
+	}
+	GridCell(vector<Cube> cu,vector<Cylinder> cy,vector<Sphere> sp, vector<Plane>pl){
+		cube = cu;
+		cylinder = cy;
+		sphere = sp;
+		plane = pl;
+	}
+
+};
+
+class Grid
+{
+public:
+	GridCell gridcell [gridSize][gridSize];
+	Grid(int n){
+
+	}
+};
 
 float minn(float x, float y){
 	return (x < y ?  x : y) ;

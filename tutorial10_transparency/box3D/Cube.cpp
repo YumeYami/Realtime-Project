@@ -1,4 +1,6 @@
-﻿// Include standard headers
+﻿#ifndef CUBE_H
+#define CUBE_H
+// Include standard headers
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
@@ -153,3 +155,4 @@ public:
 		}glEnd();
 	}
 };
+#endif

@@ -5,6 +5,7 @@
 #include <iostream>
 //Realtime-Project library
 #include "box3D/box3Dcollision.h"
+#include "box3D/box3Dcollision.cpp"
 #include "box3D/box3DglobalRule.h"
 #include "box3D/Cube.cpp"
 #include "box3D/Sphere.cpp"
@@ -46,6 +47,10 @@ vector<Sphere> sphere;
 vector<Cylinder> cylinder;
 vector<Plane> plane;
 
+#define CELL_SIZE 2*sqrt(3.0)
+#define minC -5
+#define maxC 5
+
 
 void addSphere(){
 	vec3 position = vec3(1,1,1);
@@ -71,7 +76,7 @@ void addCylinder(){
 	vec3 position = vec3(1,1,1);
 	vec3 rotation = vec3(0,0,1);
 	vec3 velocity = vec3(0,-1,0);
-	float radius = 1;
+	float radius = 0.5;
 	float length = 2;
 	float mass = 1;
 	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
@@ -230,6 +235,7 @@ int main( void )
 	sphere.push_back(sphere2);
 	sphere.push_back(sphere3);
 	addPlane();
+	Grid grid = Grid((maxC-minC)/CELL_SIZE);
 
 	GLuint vertexbuffer;
 	glGenBuffers(1, &vertexbuffer);
@@ -286,6 +292,8 @@ int main( void )
 		glUseProgram(programID);
 
 		// Compute the MVP matrix from keyboard and mouse input
+
+		checkCollision(c3, cylinder, plane, sphere);
 		computeMatricesFromInputs();
 		onKeyboard();
 
