@@ -25,12 +25,14 @@ using namespace glm;
 //#include <common/objloader.hpp>
 //#include <common/vboindexer.hpp>
 //#include <common/quaternion_utils.hpp> // See quaternion_utils.cpp for RotationBetweenVectors, LookAt and RotateTowards
-
+#include <iostream>
 #include "Rigidbody.h"
 #include "box3DglobalRule.cpp"
-#include <iostream>
+
 using namespace std;
+
 class Rigidbody{
+
 public:
 	vec4 position;
 	vec4 velocity;
@@ -39,13 +41,10 @@ public:
 	vec3 orientation;
 	vec3 angularVelocity;
 	float inertia;
-
 	float size;
 	vec3 color;
-
 	Rigidbody(){
 		position = vec4(0,0,0,1);
-		velocity = vec4(0,0,0,0);
 		mass = 1;
 
 		orientation = vec3(0,0,0);
@@ -55,48 +54,53 @@ public:
 		size = 1;
 		color = vec3(0,0,0);
 	}
-	void inline setVelocity(vec4 newvelo){
-		velocity=newvelo;
+	vec4 getPosition(){
+		return position;
 	}
-	vec3 inline getMin(){
+	vec4 getVelocity(){
+		return velocity;
+	}
+	void setVelocity(vec4 velo){
+		velocity = velo;
+	}
+	vec3 getMin(){
 		return vec3(0,0,0);
 	}
-	vec3 inline getMax(){
+	vec3 getMax(){
 		return vec3(0,0,0);
 	}
-	vec3 inline getSkin(){
+	vec3 getSkin(){
 		return vec3();
 	}
-	void inline addForce(vec4 force,float size){
+	void addForce(vec4 force,float size){
 	}
-	void inline addMomentum(vec4 momentum){
-		velocity+=momentum;
+	void addMomentum(vec4 momentum){
+		velocity = velocity+momentum;
 	}
-	void inline addAngularMomentum_vec4(vec4 angularMomentum){
+	void addAngularMomentum_vec4(vec4 angularMomentum){
 		angularVelocity+=vec3(angularMomentum);
 	}
-	void inline addAngularMomentum(vec3 angularMomentum){
+	void addAngularMomentum(vec3 angularMomentum){
 		angularVelocity+=angularMomentum;
 	}
-	vec4 inline getNormal(){
+	vec4 getNormal(){
 		return normalize(getRotationMatrix()*vec4(0,1,0,0));
 	}
-	mat4 inline getRotationMatrix(){
+	mat4 getRotationMatrix(){
 		return eulerAngleYXZ(orientation.y,orientation.x,orientation.z);
 	}
-	mat4 inline getInverseRatationMatrix(){
+	mat4 getInverseRatationMatrix(){
 		return eulerAngleYXZ(-orientation.y,-orientation.x,-orientation.z);
 	}
-	mat4 inline getTranslationMatrix(){
+	mat4 getTranslationMatrix(){
 		return mat4(1.0f,0.0f,0.0f,0.0f,
 			0.0f,1.0f,0.0f,0.0f,
 			0.0f,0.0f,1.0f,0.0f,
 			position.x,position.y,position.z,1.0f);
 	}
-	void inline updatePosition(float time){
-		position+=velocity*time;
+	void updatePosition(float time){
+		position+=(velocity)*time;
 		orientation+=angularVelocity*time;
-
 	}
 };
 //End guard at bottom of header file

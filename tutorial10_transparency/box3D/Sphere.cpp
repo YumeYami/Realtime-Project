@@ -10,7 +10,8 @@ public:
 		angularVelocity=vec3(0,0,0);
 		orientation=sphereRotation;
 		position=vec4(spherePosition,1);
-		velocity=vec4(sphereVelocity,0);
+		setVelocity(vec4(sphereVelocity,0));
+		cout<<"newSphere";
 	}
 	void inline render(){
 		GLUquadric* sphere;

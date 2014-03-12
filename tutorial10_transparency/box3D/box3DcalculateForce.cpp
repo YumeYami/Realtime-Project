@@ -4,6 +4,7 @@
 #include "Plane.cpp"
 #include "Cone.cpp"
 #define SMALL_NUM 0.00000001f
+#define PARALLEL_SIZE 0.01f
 vec4 inline projectVec(vec4 vec,vec4 base){
 	return normalize(base)*dot(vec,base)/length(base);
 }
@@ -11,12 +12,18 @@ float inline projectSize(vec4 vec,vec4 base){
 	
 	return dot(vec,base)/length(base);
 }
+bool inline isParallel(vec4 normal1,vec4 normal2){
+	if(dot(normal1,normal2)-length(normal1)*length(normal2) <= PARALLEL_SIZE){
+	
+	}
+}
+
 //Sphere
 //not test
 void inline colSphere_Sphere(Sphere sph1, Sphere sph2){
-	vec4 dist = sph2.position-sph1.position;
-	vec4 velo1 = sph1.velocity;
-	vec4 velo2 = sph2.velocity;
+	vec4 dist = sph2.getPosition()-sph1.getPosition();
+	vec4 velo1 = sph1.getVelocity();
+	vec4 velo2 = sph2.getVelocity();
 	vec4 relatevelo = velo2-velo1;//ref from sph1
 	float lineMomentum = projectSize(relatevelo,normalize(dist));
 	sph1.addMomentum(normalize(dist)*lineMomentum);
@@ -28,43 +35,51 @@ void inline colSphere_Sphere(Sphere sph1, Sphere sph2){
 //not test
 void inline colSphere_Plane(Sphere sph1, Plane plane2){
 	vec4 planeNormal = plane2.getNormal();
-	cout<<length(sph1.velocity)<<"\n";
-	float newVelo = projectSize(-sph1.velocity,plane2.getNormal());
-	sph1.addMomentum(newVelo*2*plane2.getNormal());
-	//cout<<"col\n";
+
+	//cout<<length(sph1.velocity)<<"\n";
+	//float newVelo = projectSize(-sph1.velocity,plane2.getNormal());
+	//sph1.addMomentum(newVelo*2*plane2.getNormal());
+	////cout<<"col\n";
+
+	vec4 newVelo = projectVec(-sph1.getVelocity(),plane2.getNormal());
+	//cout<<sph1.getVelocity().x<<" "<<sph1.getVelocity().y<<" "<<sph1.getVelocity().z<<" "<<sph1.getVelocity().w<<"\n";
+	//cout<<newVelo.x<<" "<<newVelo.y<<" "<<newVelo.z<<" "<<newVelo.w<<"\n";
+	vec4 velo = sph1.getVelocity();
+	velo = sph1.getVelocity() + newVelo*2;
+	sph1.setVelocity(velo);
+	cout<<"col\n";
+
 }
 //not test
 void inline colSphere_Cube(Sphere sph1, Cube cube2){
-	vec4 dist = cube2.position-sph1.position;
-	vec4 velo1 = sph1.velocity;
-	vec4 velo2 = cube2.velocity;
+	vec4 dist = cube2.getPosition()-sph1.getPosition();
+	vec4 velo1 = sph1.getVelocity();
+	vec4 velo2 = cube2.getVelocity();
 	vec4 relatevelo = velo2-velo1;//ref from sph1
 	float exchangeMomentum = projectSize(relatevelo,normalize(dist));
 	sph1.addMomentum(normalize(dist)*exchangeMomentum);
 	cube2.addMomentum(normalize(dist)*-exchangeMomentum);
-	float newLineEngergy1 = pow(length(sph1.velocity),2);
-	float newLineEngergy2 = pow(length(cube2.velocity),2);
+	float newLineEngergy1 = pow(length(sph1.getVelocity()),2);
+	float newLineEngergy2 = pow(length(cube2.getVelocity()),2);
 	vec3 angularMomentum = cross(vec3(relatevelo),normalize(vec3(dist)));
 	sph1.addAngularMomentum(angularMomentum);
 	cube2.addAngularMomentum(-angularMomentum);
 }
 //not test
 void inline colSphere_Cylinder(Sphere sph1, Cylinder cy2){
-	vec4 dist = cy2.position-sph1.position;
-	vec4 velo1 = sph1.velocity;
-	vec4 velo2 = cy2.velocity;
+	vec4 dist = cy2.getPosition()-sph1.getPosition();
+	vec4 velo1 = sph1.getVelocity();
+	vec4 velo2 = cy2.getVelocity();
 	vec4 relatevelo = velo2-velo1;//ref from sph1
 	float exchangeMomentum = projectSize(relatevelo,normalize(dist));
 	sph1.addMomentum(normalize(dist)*exchangeMomentum);
 	cy2.addMomentum(normalize(dist)*-exchangeMomentum);
-	float newLineEngergy1 = pow(length(sph1.velocity),2);
-	float newLineEngergy2 = pow(length(cy2.velocity),2);
+	float newLineEngergy1 = pow(length(sph1.getVelocity()),2);
+	float newLineEngergy2 = pow(length(cy2.getVelocity()),2);
 	vec3 angularMomentum = cross(vec3(relatevelo),normalize(vec3(dist)));
 	sph1.addAngularMomentum(angularMomentum);
 	cy2.addAngularMomentum(-angularMomentum);
 }
-//void inline colSphere_Cone(Sphere sph1,Cone cone2){
-//}
 
 //Cube
 void inline colCube_Plane(Cube cube1, Plane plane2){
@@ -73,28 +88,10 @@ void inline colCube_Cube(Cube cube1, Cube cube2){
 }
 void inline colCube_Cylinder(Cube cube1, Cylinder cy2){
 }
-//void inline colCube_Cone(Cube cube1,Cone cone2){
-//}
-
-////Cone
-//void inline colCone_Sphere(Cone cone1, Sphere sph2){
-//}
-//void inline colCone_Plane(Cone cone1, Plane plane2){
-//}
-//void inline colCone_Cube(Cone cone1, Cube cube2){
-//}
-//void inline colCone_Cylinder(Cone cone1, Cylinder cy2){
-//}
-//void inline colCone_Cone(Cone cone1,Cone cone2){
-//}
 
 //Plane
-//void inline colPlane_Plane(Plane plane1, Plane plane2){
-//}
 void inline colPlane_Cylinder(Plane plane1, Cylinder cy2){
 }
-//void inline colPlane_Cone(Plane plane1,Cone cone2){
-//}
 
 //Cylinder
 void inline colCylinder_Cylinder(Cylinder cy1, Cylinder cy2){
@@ -102,7 +99,6 @@ void inline colCylinder_Cylinder(Cylinder cy1, Cylinder cy2){
 }
 //void inline colCylinder_Cone(Cylinder cy1,Cone cone2){
 //}
-
 // dist3D_Line_to_Line(): get the 3D minimum distance between 2 lines
 //    Input:  two 3D lines L1 and L2
 //    Return: the shortest distance between L1 and L2
