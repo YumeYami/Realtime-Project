@@ -1,11 +1,10 @@
 #include "box3Dcollision.h"
 #include "box3DglobalRule.h"
 #include "box3DcalculateForce.cpp"
-#define gridSize 11
+#define gridSize 13
 #define begin_x -5
 #define begin_y -5
 #define begin_z -5
-#define backDownRight vec3(5,-5,-5);
 
 
 float inline minn(float x, float y){
@@ -254,7 +253,6 @@ public:
 
 	}
 	void hashPlane(Plane r){
-
 		vec4 pos = r.position;
 		int a,b,c = 0;
 		findIndex(vec3(pos.x,pos.y,pos.z),a,b,c);
@@ -264,27 +262,22 @@ public:
 		for(int i=0;i<gridSize;i++){
 			for(int j=0;j<gridSize;j++){
 				for(int k=0;k<gridSize;k++){
-					//cout<<"i= "<< i<<" j= "<<j<<" k= "<<k<<"\n";
-					if(a==0 && b==5 && c==5){
+					/*if(a==0 && b==5 && c==5){
 						gridcell[0][j][k].addPlaneToGridCell(r);
-						//cout<<"hash1\n";
 					}
 					if(a==10 && b==5 && c==5){
 						gridcell[10][j][k].addPlaneToGridCell(r);
-						//cout<<"hash2\n";
 					}
 					if(a==5 && b==5 && c==10){
 						gridcell[i][j][10].addPlaneToGridCell(r);
-						//cout<<"hash3\n";
 					}
 					if(a==5 && b==5 && c==0){
 						gridcell[i][j][0].addPlaneToGridCell(r);
-						//cout<<"hash4\n";
 					}
 					if(a==5 && b==0 && c==5){
 						gridcell[i][0][k].addPlaneToGridCell(r);
-						//cout<<"hash5\n";
-					}
+					}*/
+					if(r.orientation==vec3(0,0,0)){}
 				}
 			}
 		}
