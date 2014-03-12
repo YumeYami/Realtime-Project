@@ -95,8 +95,11 @@ int lastKey4=GLFW_RELEASE;
 void onKeyboard(){
 	//sphere
 	if (glfwGetKey('1') == GLFW_PRESS){
-		if(lastKey1 == GLFW_RELEASE) addSphere();
+		if(lastKey1 == GLFW_RELEASE) {
+			addSphere();
+		}
 		lastKey1 = GLFW_PRESS;
+
 	}
 	else if (glfwGetKey('1') == GLFW_RELEASE){
 		lastKey1 = GLFW_RELEASE;
@@ -277,7 +280,6 @@ int main( void )
 		glUseProgram(programID);
 
 		// Compute the MVP matrix from keyboard and mouse input
-
 		grid.hashGrid(c3,cylinder,sphere);
 		grid.checkCollisionGrid();
 		computeMatricesFromInputs();

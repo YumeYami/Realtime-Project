@@ -14,11 +14,11 @@ public:
 		color = cylinderColor;
 
 	}
-	vec3 getEndPoint1(){
-		return vec3(0,0,0);
+	vec4 getEndPoint1(){
+		return position + (getNormal()*length/2);
 	}
-	vec3 getEndPoint2(){
-		return vec3(0,0,0);
+	vec4 getEndPoint2(){
+		return position - (getNormal()*length/2);
 	}
 	void render(){
 		glColor3f(color.r,color.g,color.b);
