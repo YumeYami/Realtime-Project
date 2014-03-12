@@ -44,11 +44,11 @@ void addSphere(){
 	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
 	Sphere sp= Sphere(position,rotation,velocity,size,mass,color);
 	cout<<"ref new sphere = "<<&sp<<endl;
-	Sphere temp = sp;
-	temp.velocity.y=0.5f;
+	//Sphere temp = sp;
+	//temp.velocity.y=0.5f;
 	sphere.push_back(&sp);
 	//sphere.end();//test //cannot change
-	cout<<"ref temp sphere = "<<&temp<<endl;
+	//cout<<"ref temp sphere = "<<&temp<<endl;
 }
 void addCube(){
 	vec3 position = vec3(1,1,1);

@@ -250,7 +250,6 @@ public:
 		for(int i=0;i<x.size();i++){
 			gridcell[x[i]][y[i]][z[i]].addSphereToGridCell(r);
 		}
-
 	}
 	void hashPlane(Plane r){
 		vec4 pos = r.position;
@@ -258,11 +257,10 @@ public:
 		findIndex(vec3(pos.x,pos.y,pos.z),a,b,c);
 		//cout<<"posPlane x= "<< pos.x<<" y= "<<pos.y<<" z= "<<pos.z<<"\n";
 		//cout<<"index x= "<< a<<" y= "<<b<<" z= "<<c<<"\n";
-
 		for(int i=0;i<gridSize;i++){
 			for(int j=0;j<gridSize;j++){
 				for(int k=0;k<gridSize;k++){
-					/*if(a==0 && b==5 && c==5){
+				/*	if(a==0 && b==5 && c==5){
 						gridcell[0][j][k].addPlaneToGridCell(r);
 					}
 					if(a==10 && b==5 && c==5){
@@ -277,7 +275,15 @@ public:
 					if(a==5 && b==0 && c==5){
 						gridcell[i][0][k].addPlaneToGridCell(r);
 					}*/
-					if(r.orientation==vec3(0,0,0)){}
+					if(r.orientation==vec3(0,0,PI/2)){
+						gridcell[a][j][k].addPlaneToGridCell(r);
+					}
+					if(r.orientation==vec3(PI/2,0,0)){
+						gridcell[i][j][c].addPlaneToGridCell(r);
+					}
+					if(r.orientation==vec3(0,0,0)){
+						gridcell[i][b][k].addPlaneToGridCell(r);
+					}
 				}
 			}
 		}
