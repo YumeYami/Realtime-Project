@@ -69,7 +69,7 @@ void addCylinder(){
 }
 void addPlane(){
 	vec3 pos[5] = {vec3(0,-5,0),vec3(-5,0,0),vec3(5,0,0),vec3(0,0,5),vec3(0,0,-5)};
-	vec3 rot[5] = {vec3(PI/2,0,0),vec3(0,PI/2,0),vec3(0,PI/2,0),vec3(0,0,PI/2),vec3(0,0,PI/2)};
+	vec3 rot[5] = {vec3(0,0,0),vec3(0,0,PI/2),vec3(0,0,PI/2),vec3(PI/2,0,0),vec3(PI/2,0,0)};
 	for(int i=0;i<5;i++){
 		vec3 position = pos[i];
 		vec3 rotation = rot[i];

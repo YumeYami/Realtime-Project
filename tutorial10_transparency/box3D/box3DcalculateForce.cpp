@@ -8,6 +8,7 @@ vec4 inline projectVec(vec4 vec,vec4 base){
 	return normalize(base)*dot(vec,base)/length(base);
 }
 float inline projectSize(vec4 vec,vec4 base){
+	
 	return dot(vec,base)/length(base);
 }
 //Sphere
@@ -27,8 +28,9 @@ void inline colSphere_Sphere(Sphere sph1, Sphere sph2){
 //not test
 void inline colSphere_Plane(Sphere sph1, Plane plane2){
 	vec4 planeNormal = plane2.getNormal();
-	float newVelo = dot(plane2.getNormal(),-sph1.velocity);
-	sph1.setVelocity( reflect(-sph1.velocity,planeNormal ) );
+	cout<<length(sph1.velocity)<<"\n";
+	float newVelo = projectSize(-sph1.velocity,plane2.getNormal());
+	sph1.addMomentum(newVelo*2*plane2.getNormal());
 	cout<<"col\n";
 }
 //not test
