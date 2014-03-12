@@ -36,7 +36,8 @@ public:
 float inline minn(float x, float y){
 	return (x < y ?  x : y) ;
 }
-//completed with intersection
+//some intersection
+//not test
 void inline checkCollision_SphereCube(Sphere sph,Cube cube){
 	if(dot(cube.velocity - sph.velocity,cube.position - sph.position) >= 0) return;
 	vec4 dist = sph.position-cube.position;
@@ -44,13 +45,12 @@ void inline checkCollision_SphereCube(Sphere sph,Cube cube){
 	vec4 point = cube.getInverseRatationMatrix()*surfaceSp1;
 	vec3 cubeSkin = cube.getSkin();
 	if(abs(point.x)<=cubeSkin.x && abs(point.y)<=cubeSkin.y && abs(point.z)<=cubeSkin.z) {
-
 		//onCollision
 		colSphere_Cube(sph,cube);
 	}
 
 }
-//completed
+//not test
 void inline checkCollision_SphereCylinder(Sphere sph,Cylinder cyl){
 	if(dot(cyl.velocity - sph.velocity,cyl.position - sph.position) >= 0) return;
 	vec4 spherePos = cyl.getInverseRatationMatrix()*(sph.position-cyl.position);
@@ -66,7 +66,7 @@ void inline checkCollision_SphereCylinder(Sphere sph,Cylinder cyl){
 		else colSphere_Cylinder(sph,cyl);
 	}
 }
-//completed
+//not test
 void inline checkCollision_SpherePlane(Sphere sph1,Plane plane2){
 	if(dot(plane2.velocity - sph1.velocity,plane2.position - sph1.position) >= 0) return;
 	vec4 spPos = sph1.position;
@@ -79,7 +79,7 @@ void inline checkCollision_SpherePlane(Sphere sph1,Plane plane2){
 	}
 
 }
-//completed
+//not test
 void inline checkCollision_SphereSphere(Sphere sph1, Sphere sph2){
 	if(dot(sph2.velocity - sph1.velocity,sph2.position - sph1.position) >= 0) return;
 	vec4 sphPos = sph1.position;
@@ -92,12 +92,12 @@ void inline checkCollision_SphereSphere(Sphere sph1, Sphere sph2){
 		colSphere_Sphere(sph1,sph2);
 	}
 }
-void inline checkCollision_PlaneCube(Plane plane1,Cube cube2){
-	if(dot(cube2.velocity - plane1.velocity,cube2.position - plane1.position) >= 0) return;
-	vec4 plPos = plane1.position;
-	vec4 plNormal = plane1.getNormal();
-	vec4 temp = cube2.position-plane1.position;
-	float distance = dot(temp,plNormal);
+void inline checkCollision_PlaneCube(Plane plane,Cube cube){
+	if(dot(cube.velocity - plane.velocity,cube.position - plane.position) >= 0) return;
+	//vec4 cubeHeight_ModelPlane = projectVec(cube.position - plane.position,plane.getNormal());
+	float cubeHeight_ModelPlane = dot(cube.position-plane.position,plane.getNormal());
+	if(cubeHeight_ModelPlane >= cube.maxRadius) return;
+	
 }
 //conpleted
 void inline checkCollision_PlaneCylinder(Plane plane1,Cylinder cylinder){
@@ -123,6 +123,12 @@ void inline checkCollision_CylinderCylinder(Cylinder cyl1,Cylinder cyl2){
 	
 }
 
+vec4 inline directionToPos(vec4 pos1,vec4 pos2){
+	return pos2-pos1;
+}
+vec4 inline projectVec(vec4 vec,vec4 normal){
+	return normalize(normal)*dot(vec,normal);
+}
 bool inline isMoveout(Rigidbody* obj1,Rigidbody* obj2){
 	if(dot(obj2->velocity - obj1->velocity,obj2->position - obj1->position) >= 0) return true;
 	else return false;
