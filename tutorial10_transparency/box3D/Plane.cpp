@@ -18,7 +18,7 @@ public:
 		p3[0] = planeVertex3.x*size/2; p3[1] = planeVertex3.y*size/2; p3[2] = planeVertex3.z*size/2;
 		orientation=planeRotation;
 		position=vec4(planePosition,1);
-		velocity=vec4(planeVelocity,0);
+		velocity=(vec4(planeVelocity,0));
 	}
 	void inline render(){
 		glBegin(GL_QUADS);{

@@ -38,7 +38,7 @@ Grid grid;
 void addSphere(){
 	vec3 position = vec3(1,1,1);
 	vec3 rotation = vec3(0,0,1);
-	vec3 velocity = vec3(0,-1,0);
+	vec3 velocity = vec3(-0.2,-0.5,0);
 	float size = 1;
 	float mass = 1;
 	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);

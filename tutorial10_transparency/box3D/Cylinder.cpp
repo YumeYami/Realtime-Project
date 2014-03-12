@@ -7,7 +7,7 @@ public:
 	Cylinder(vec3 cylinderPosition,vec3 cylinderRotation,vec3 cylinderVelocity,float cylinderRadius,float cylinderLength,float cylinderMass,vec3 cylinderColor){
 		mass=cylinderMass;
 		position=vec4(cylinderPosition,1);
-		velocity=vec4(cylinderVelocity,0);
+		velocity=(vec4(cylinderVelocity,0));
 		orientation=cylinderRotation;
 		radius=cylinderRadius;
 		length=cylinderLength;

@@ -15,7 +15,7 @@ public:
 	Cube(vec3 cubePosition,vec3 cubeRotation,vec3 cubeVelocity,float cubeSize,float cubeMass,vec3 cubeColor) {
 		orientation=cubeRotation;
 		position=vec4(cubePosition,1);
-		velocity=vec4(cubeVelocity,0);
+		velocity= (vec4(cubeVelocity,0));
 		angularVelocity=vec3(0,0,0);
 		size=cubeSize;
 		mass=cubeMass;
@@ -34,6 +34,9 @@ public:
 		vertex[6][0] = cubeVertex6.x*size/2; vertex[6][1] = cubeVertex6.y*size/2; vertex[6][2] = cubeVertex6.z*size/2;
 		vertex[7][0] = cubeVertex7.x*size/2; vertex[7][1] = cubeVertex7.y*size/2; vertex[7][2] = cubeVertex7.z*size/2;
 		
+	}
+	void updateVeloCube(vec4 velo){
+		addMomentum(velo);
 	}
 	void inline render(){
 		glBegin(GL_QUADS);{

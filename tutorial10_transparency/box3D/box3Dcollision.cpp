@@ -43,8 +43,8 @@ void inline checkCollision_SphereCylinder(Sphere sph,Cylinder cyl){
 }
 //not test
 void inline checkCollision_SpherePlane(Sphere sph1,Plane plane2){
-	//cout<<"check1\n";
-	if(projectSize(plane2.velocity - sph1.velocity,plane2.position - sph1.position) >= 0) return;
+	//cout<<" if "<< length(plane2.velocity-sph1.velocity) <<" "<< length(plane2.position-sph1.position)<<"\n";
+	if(projectSize(sph1.velocity,plane2.getNormal()) >= 0) return;
 	//cout<<"check1\n";
 	vec4 spPos = sph1.position;
 	float radius = sph1.radius;
@@ -56,7 +56,7 @@ void inline checkCollision_SpherePlane(Sphere sph1,Plane plane2){
 	//float distance = dot(centerVec,plane2.getNormal());
 	//cout<<"dist = "<<distance<<"\n";
 	if(distance<=radius) {
-		//onCollision
+		//cout<<"onCollision";
 		
 		colSphere_Plane(sph1,plane2);
 		
@@ -122,10 +122,6 @@ vec4 inline directionToPos(vec4 pos1,vec4 pos2){
 	return pos2-pos1;
 }
 
-bool inline isMoveout(Rigidbody* obj1,Rigidbody* obj2){
-	if(projectSize(obj2->velocity - obj1->velocity,obj2->position - obj1->position) >= 0) return true;
-	else return false;
-}
 
 void inline checkCollision(vector<Cube> cu, vector<Cylinder> cy, vector<Plane> pl, vector<Sphere> sp){
 	
