@@ -15,7 +15,7 @@ public:
 	Cube(vec3 cubePosition,vec3 cubeRotation,vec3 cubeVelocity,float cubeSize,float cubeMass,vec3 cubeColor) {
 		orientation=cubeRotation;
 		position=vec4(cubePosition,1);
-		velocity= (vec4(cubeVelocity,0));
+		setVelocity (vec4(cubeVelocity,0));
 		angularVelocity=vec3(0,0,0);
 		size=cubeSize;
 		mass=cubeMass;

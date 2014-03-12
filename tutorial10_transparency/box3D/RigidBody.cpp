@@ -30,8 +30,9 @@ using namespace glm;
 #include "box3DglobalRule.cpp"
 
 using namespace std;
+
 class Rigidbody{
-public:
+protected:
 	vec4 position;
 	vec4 velocity;
 	float mass;
@@ -41,10 +42,10 @@ public:
 	float inertia;
 	float size;
 	vec3 color;
+public:
 
 	Rigidbody(){
 		position = vec4(0,0,0,1);
-		velocity = vec4(0,0,0,0);
 		mass = 1;
 
 		orientation = vec3(0,0,0);
@@ -53,6 +54,15 @@ public:
 
 		size = 1;
 		color = vec3(0,0,0);
+	}
+	vec4 getPosition(){
+		return position;
+	}
+	vec4 getVelocity(){
+		return velocity;
+	}
+	void setVelocity(vec4 velo){
+		velocity = velo;
 	}
 	vec3 getMin(){
 		return vec3(0,0,0);
@@ -66,7 +76,7 @@ public:
 	void addForce(vec4 force,float size){
 	}
 	void addMomentum(vec4 momentum){
-		velocity+=momentum;
+		velocity = velocity+momentum;
 	}
 	void addAngularMomentum_vec4(vec4 angularMomentum){
 		angularVelocity+=vec3(angularMomentum);
@@ -90,7 +100,7 @@ public:
 			position.x,position.y,position.z,1.0f);
 	}
 	void updatePosition(float time){
-		position+=velocity*time;
+		position+=(velocity)*time;
 		orientation+=angularVelocity*time;
 	}
 };
