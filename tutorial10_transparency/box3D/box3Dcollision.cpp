@@ -10,14 +10,17 @@
 float inline minn(float x, float y){
 	return (x < y ?  x : y) ;
 }
-//some intersection
 //not test
 void inline checkCollision_SphereCube(Sphere* sph1,Cube* cube2){
-	if(projectSize(cube2->getVelocity() - sph1->getVelocity(),cube2->getPosition() - sph1->getPosition()) >= 0) return;
+	if(projectSize(cube2->velocity - sph1->velocity,cube2->position - sph1->position) >= 0) return;
+	//cout<<"check cube\n";
 	for (int i = 0; i < 12; i++)
 	{
-		vec4 colPoint =  dist3D_Segment_to_point(cube2->edgeSta[i],cube2->edgeEnd[i],sph1->position);
+		vec4 start = (cube2->edgeSta[i]);
+		vec4 end = (cube2->edgeEnd[i]);
+		vec4 colPoint =  dist3D_Segment_to_point(start,end,sph1->position);
 		if (length(colPoint)<=sph1->radius){
+			cout<<"collision Cube";
 			colSphere_Cube(sph1,cube2,colPoint);
 			return;
 		}
@@ -66,7 +69,6 @@ void inline checkCollision_SphereSphere(Sphere* sph1, Sphere* sph2){
 		colSphere_Sphere(sph1,sph2);
 	}
 }
-//dummy collision
 //not test
 void inline checkCollision_PlaneCube(Plane* plane1,Cube* cube2){
 	if(projectSize(cube2->getVelocity() - plane1->getVelocity(),cube2->getPosition() - plane1->getPosition()) >= 0) return;
@@ -94,19 +96,20 @@ void inline checkCollision_CubeCube(Cube* cube1,Cube* cube2){
 }
 void inline checkCollision_CubeCylinder(Cube* cube1,Cylinder* cyl2){
 	if(projectSize(cyl2->getVelocity() - cube1->getVelocity(),cyl2->getPosition() - cube1->getPosition()) >= 0) return;
-	
+
 }
 void inline checkCollision_CylinderCylinder(Cylinder* cylinder1,Cylinder* cylinder2){
 	if(projectSize(cylinder2->getVelocity() - cylinder1->getVelocity(),cylinder2->getPosition() - cylinder1->getPosition()) >= 0) return;
-	float minimumDist = dist3D_Segment_to_Segment(cylinder1->getEndPoint1(),cylinder1->getEndPoint2(),cylinder2->getEndPoint1(),cylinder2->getEndPoint2());
-	if(minimumDist >= cylinder1->radius + cylinder2->radius) return;
-	else if(minimumDist <= cylinder1->radius) colCylinder_Cylinder(cylinder1,cylinder2);
+	vec4 minimumDist = dist3D_Segment_to_Segment(cylinder1->getEndPoint1(),cylinder1->getEndPoint2(),cylinder2->getEndPoint1(),cylinder2->getEndPoint2());
+	if(length(minimumDist)>= cylinder1->radius + cylinder2->radius) return;
+	else if(length(minimumDist) <= cylinder1->radius) colCylinder_Cylinder(cylinder1,cylinder2);
 	else{
 
 	}
 }
+
 bool inline testPlane(Rigidbody* obj1,Plane* plane){
-	
+
 }
 bool inline testDirection(Rigidbody* obj1, Rigidbody* obj2){
 	vec4 relateVelo = obj2->velocity-obj1->velocity;
@@ -122,7 +125,7 @@ void inline checkCollision(vector<Cube*> cu, vector<Cylinder*> cy, vector<Plane*
 	//cout <<"size "<<cu.size()<<" "<<cy.size()<<" "<<pl.size()<<" "<<sp.size()<<"\n";
 	for(int i=0;i<sp.size();i++){
 		Sphere* sp1 = sp.at(i);
-		
+
 		for(int j=0;j<cu.size();j++) checkCollision_SphereCube(sp1,cu.at(j));
 		for(int j=0;j<cy.size();j++) checkCollision_SphereCylinder(sp1,cy.at(j));
 		for(int j=0;j<pl.size();j++) {
@@ -225,7 +228,7 @@ public:
 		findGrid(vec3(pos.x,pos.y,pos.z),x,y,z);
 		for(int i=0;i<x.size();i++){
 			if(x[i]>=0 && x[i]< gridSize && y[i]>=0 && y[i]< gridSize && z[i]>=0 && z[i]< gridSize)
-			gridcell[x[i]][y[i]][z[i]].addCubeToGridCell(r);
+				gridcell[x[i]][y[i]][z[i]].addCubeToGridCell(r);
 		}
 	}
 	void hashCylinder(Cylinder* r){
@@ -238,7 +241,7 @@ public:
 		findGrid(vec3(pos.x,pos.y,pos.z),x,y,z);
 		for(int i=0;i<x.size();i++){
 			if(x[i]>=0 && x[i]< gridSize && y[i]>=0 && y[i]< gridSize && z[i]>=0 && z[i]< gridSize)
-			gridcell[x[i]][y[i]][z[i]].addCylinderToGridCell(r);
+				gridcell[x[i]][y[i]][z[i]].addCylinderToGridCell(r);
 		}
 	}
 	void hashSphere(Sphere* r){
@@ -388,6 +391,6 @@ public:
 		//		x.push_back(a+1); y.push_back(b); z.push_back(c+1);
 		//	}
 		//}
-		
+	
 	}
 };

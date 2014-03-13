@@ -70,7 +70,7 @@ void addCylinder(){
 void addPlane(){
 	//top,bottom,left,right,front,back
 	vec3 pos[6] = {vec3(1.5,begin_y+gridSize-1.5,1.5), vec3(1.5,begin_y+1.5,1.5),vec3(begin_x+1.5,1.5,1.5),
-	vec3(begin_x+gridSize-1.5,1.5,1.5),vec3(1.5,1.5,begin_z+gridSize-1.5),vec3(1.5,1.5,begin_z+1.5)};
+		vec3(begin_x+gridSize-1.5,1.5,1.5),vec3(1.5,1.5,begin_z+gridSize-1.5),vec3(1.5,1.5,begin_z+1.5)};
 	vec3 rot[6] = {vec3(PI,0,0), vec3(0,0,0),vec3(0,0,-PI/2),vec3(0,0,PI/2),vec3(-PI/2,0,0),vec3(PI/2,0,0)};
 	for(int i=0;i<6;i++){
 		vec3 position = pos[i];
@@ -84,7 +84,7 @@ void addPlane(){
 	}
 }
 void transparentPlane(){
-		//top,bottom,left,right,front, back
+	//top,bottom,left,right,front, back
 	if(plane[4]->color.a==0.0f) plane[4]->color.a=0.8f;
 	else plane[4]->color.a=0.0f;
 }
@@ -110,11 +110,11 @@ class PickingRay
 {
 	vec3 clickPosInWorld;
 	vec3 direction;
- 
+
 	/**
-	 * Computes the intersection of this ray with the X-Y Plane (where Z = 0)
-	 * and writes it back to the provided vector.
-	 */
+	* Computes the intersection of this ray with the X-Y Plane (where Z = 0)
+	* and writes it back to the provided vector.
+	*/
 public:
 	void intersectionWithXyPlane(vec3 worldPos)
 	{
@@ -123,7 +123,7 @@ public:
 		worldPos[1] = clickPosInWorld.y+direction.y*s;
 		worldPos[2] = 0;
 	}
- 
+
 	vec3 getClickPosInWorld() {
 		return clickPosInWorld;
 	}
@@ -133,25 +133,25 @@ public:
 };
 /*
 void picking(float screenX, float screenY, PickingRay pickingRay)
-    {
-        pickingRay.getClickPosInWorld().set(position);
-        pickingRay.getClickPosInWorld().add(view);
- 
-        screenX -= (float)viewportWidth/2f;
-        screenY -= (float)viewportHeight/2f;
- 
-        // normalize to 1
-        screenX /= ((float)viewportWidth/2f);
-        screenY /= ((float)viewportHeight/2f);
- 
-        pickingRay.getClickPosInWorld().x += screenHoritzontally.x*screenX + screenVertically.x*screenY;
-        pickingRay.getClickPosInWorld().y += screenHoritzontally.y*screenX + screenVertically.y*screenY;
-        pickingRay.getClickPosInWorld().z += screenHoritzontally.z*screenX + screenVertically.z*screenY;
- 
-        pickingRay.getDirection().set(pickingRay.getClickPosInWorld());
-        pickingRay.getDirection().sub(position);
-    }
-	*/
+{
+pickingRay.getClickPosInWorld().set(position);
+pickingRay.getClickPosInWorld().add(view);
+
+screenX -= (float)viewportWidth/2f;
+screenY -= (float)viewportHeight/2f;
+
+// normalize to 1
+screenX /= ((float)viewportWidth/2f);
+screenY /= ((float)viewportHeight/2f);
+
+pickingRay.getClickPosInWorld().x += screenHoritzontally.x*screenX + screenVertically.x*screenY;
+pickingRay.getClickPosInWorld().y += screenHoritzontally.y*screenX + screenVertically.y*screenY;
+pickingRay.getClickPosInWorld().z += screenHoritzontally.z*screenX + screenVertically.z*screenY;
+
+pickingRay.getDirection().set(pickingRay.getClickPosInWorld());
+pickingRay.getDirection().sub(position);
+}
+*/
 void pick (int mouse_x, int mouse_y){
 	float x = (2.0f * mouse_x) / width - 1.0f;
 	float y = 1.0f - (2.0f * mouse_y) / height;
@@ -170,6 +170,11 @@ void onPress(){
 	if (glfwGetKey('1') == GLFW_PRESS){
 		if(lastKey1 == GLFW_RELEASE) {
 			addSphere();
+			/*vec4 start = vec4(0,0,0,1);
+			vec4 end = vec4(0,2,0,1);
+			vec4 point = vec4(-1,-2,0,1);
+			vec4 proj = dist3D_Segment_to_point(start,end,point); 
+			cout<<proj.x<<" "<<proj.y<<" "<<proj.z<<" "<<length(proj)<<"\n";*/
 		}
 		lastKey1 = GLFW_PRESS;
 
@@ -218,7 +223,7 @@ void onPress(){
 		if(lastKey6 == GLFW_RELEASE) 
 			if(update) update = 0;
 			else update = 1;
-		lastKey6 = GLFW_PRESS;
+			lastKey6 = GLFW_PRESS;
 	}
 	else if (glfwGetKey('Z') == GLFW_RELEASE){
 		lastKey6 = GLFW_RELEASE;
@@ -290,7 +295,11 @@ int main( void )
 		return -1;
 	}
 
-
+	cout << length(dist3D_Segment_to_Segment(
+		vec4(0,0,0,1),
+		vec4(1,1.5f,0,1),
+		vec4(2,2,0,1),
+		vec4(2,3,0,1) ) )<<" = test\n";
 	// Initialize GLEW
 	if (glewInit() != GLEW_OK) {
 		fprintf(stderr, "Failed to initialize GLEW\n");
@@ -426,7 +435,10 @@ int main( void )
 		glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
 		for (int i = 0; i < c3.size(); i++)
 		{
-			if(update)(*c3[i]).updatePosition(timeStep);
+			if(update){
+				c3[i]->updatePosition(timeStep);
+				c3[i]->setEdge();
+			}
 			glm::mat4 ScaleMatrix = mat4();
 			glm::mat4 RotateMatrix = (*c3[i]).getRotationMatrix();
 			glm::mat4 TranslateMatrix = (*c3[i]).getTranslationMatrix();
