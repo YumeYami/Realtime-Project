@@ -163,29 +163,21 @@ void inline colSphere_Sphere(Sphere* sph1, Sphere* sph2){
 void inline colSphere_Plane(Sphere* sph1, Plane* plane2,vec4 height){
 	vec4 planeNormal = plane2->getNormal();
 	vec4 newVelo = projectVec(-sph1->velocity,plane2->getNormal());
-	//printVec4("nor " ,plane2->getNormal());
-	//printVec4("nor " ,plane2->getNormal());
 	vec4 velo = sph1->velocity;
 	velo = sph1->velocity + newVelo*2;
-	printVec4("velo " ,sph1->velocity);
-	printVec4("nor " ,plane2->getNormal());
-	printVec4("newvelo ",newVelo);
 	sph1->addMomentum(newVelo*2);
-	//sph1->updatePosition(height*(length(sph1->radius) - length(height) ) );
+	sph1->updatePosition(height*(length(sph1->radius) - length(height) ) );
 }
 //still bugging
 void inline colSphere_Cube(Sphere* sph1, Cube* cube2,vec4 colPoint_ModelSphere){
-	//cout<<"col";
+	cout<<"col";
 	vec4 relatevelo = cube2->velocity - sph1->velocity;//ref from sph1
 	vec4 moment1 = -projectVec(relatevelo,normalize(colPoint_ModelSphere));
-	printVec4("\ncolpoint ",colPoint_ModelSphere);
-	printVec4("relatevelo ",relatevelo);
-	printVec4("moment ",moment1);
-	sph1->addMomentum(moment1);
+	sph1->addMomentum(0.1f*moment1);
 	sph1->addAngularMomentum_vec4(-relatevelo - moment1);
 	vec4 colPoint_ModelCube = sph1->position - cube2->position - colPoint_ModelSphere; 
 	vec4 moment2 = projectVec(-relatevelo,colPoint_ModelCube);
-	cube2->addMomentum(-moment1);
+	cube2->addMomentum(0.1f*-moment1);
 	cube2->addAngularMomentum_vec4(relatevelo - moment2);
 }
 //not test
@@ -205,16 +197,21 @@ void inline colSphere_Cylinder(Sphere* sph1, Cylinder* cy2){
 }
 
 //Cube
-void inline colCube_Plane(Cube* cube1, Plane* plane2){
-	cube1->velocity=-cube1->velocity;
+void inline colCube_Plane(Cube* cube1, Plane* plane2, vec4 colPoint_ModelCube){
+	//cout<<"col cube plane";
+	vec4 moment1 = projectVec(-cube1->velocity , plane2->getNormal());
+	cube1->addMomentum(moment1*2);
 }
 void inline colCube_Cube(Cube* cube1, Cube* cube2){
 }
 void inline colCube_Cylinder(Cube* cube1, Cylinder* cy2){
 }
 
-//Plane
-void inline colPlane_Cylinder(Plane* plane1, Cylinder* cy2){
+//dummy code
+void inline colPlane_Cylinder(Plane* plane1, Cylinder* cylinder2){
+	cout<<"col cube plane";
+	vec4 moment1 = projectVec(-cylinder2->velocity , plane1->getNormal());
+	cylinder2->addMomentum(moment1*2);
 }
 
 //Cylinder

@@ -55,15 +55,6 @@ public:
 		size = 1;
 		color = vec4(0,0,0,0);
 	}
-	vec4 inline getPosition(){
-		return position;
-	}
-	vec4 inline getVelocity(){
-		return velocity;
-	}
-	void inline setVelocity(vec4 velo){
-		velocity = velo;
-	}
 	vec3 inline getMin(){
 		return vec3(0,0,0);
 	}

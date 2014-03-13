@@ -58,10 +58,10 @@ void addCube(){
 }
 void addCylinder(){
 	vec3 position = vec3(rand()%(gridSize-5)-2,begin_x+gridSize-4,rand()%(gridSize-5)-2);
-	vec3 rotation = vec3(0,0,1);
-	vec3 velocity = vec3(rand()%2/10.0,-rand()%2/10.0,rand()%2/10.0);
-	float radius = 0.5;
-	float length = 1;
+	vec3 rotation = vec3(rand()%(gridSize-5)-2,begin_x+gridSize-4,rand()%(gridSize-5)-2);
+	vec3 velocity = vec3(rand()%6/10.0,-rand()%6/10.0,rand()%6/10.0);
+	float radius = 0.25;
+	float length = 0.5;
 	float mass = 1;
 	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
 	Cylinder *cy = new Cylinder(position,rotation,velocity,radius,length,mass,color);
@@ -365,10 +365,27 @@ int main( void )
 
 	//---------------------------------------------------------------------------------------------------------------
 
-	addCube();
-	addSphere();
+	//addCube();
+	//addSphere();
 	addPlane();
 	addCylinder();
+	addCylinder();
+	addCylinder();
+	Cylinder* cyl = cylinder[0];
+	cyl->velocity = vec4(0,0,0,0);
+	cyl->position = vec4(0,-3.5,0,1);
+	cyl->orientation = vec3(0,0,0);
+	cyl->color = vec4(1,0,0,1);
+	Cylinder* cyl2 = cylinder[1];
+	cyl2->velocity = vec4(0,0,0,0);
+	cyl2->position = vec4(2,-3.0,0,1);
+	cyl2->orientation = vec3(0,0,0);
+	cyl2->color = vec4(0,1,0,1);
+	Cylinder* cyl3 = cylinder[2];
+	cyl3->velocity = vec4(0,0,0,0);
+	cyl3->position = vec4(0,-3.5,2,1);
+	cyl3->orientation = vec3(0,0,0);
+	cyl3->color = vec4(0,0,1,1);
 	grid = Grid(plane);
 
 	GLuint vertexbuffer;
@@ -426,7 +443,7 @@ int main( void )
 
 		// Compute the MVP matrix from keyboard and mouse input
 		grid.hashGrid(c3,cylinder,sphere);
-		if(update){
+		if(update || playOneFrame){
 			grid.checkCollisionGrid();
 		}
 		computeMatricesFromInputs();
@@ -491,7 +508,8 @@ int main( void )
 			glUniformMatrix4fv(ScaleMatrixID, 1, GL_FALSE, &ScaleMatrix[0][0]);
 			glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);
 			glUniformMatrix4fv(TranslateMatrixID, 1, GL_FALSE, &TranslateMatrix[0][0]);
-			(*plane[i]).render();
+			glPolygonMode(GL_FRONT_AND_BACK,GL_SMOOTH);
+			plane[i]->render();
 			glPopMatrix();
 		}
 		playOneFrame=0;
