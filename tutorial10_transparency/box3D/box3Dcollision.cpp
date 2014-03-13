@@ -69,6 +69,7 @@ void inline checkCollision_SphereSphere(Sphere* sph1, Sphere* sph2){
 }
 //completed dummy code
 void inline checkCollision_PlaneCube(Plane* plane1,Cube* cube2){
+
 	if(projectSize(cube2->velocity,plane1->getNormal()) >= 0) return;
 	
 	for (int i = 0; i < 12; i++)
@@ -110,15 +111,146 @@ void inline checkCollision_CubeCylinder(Cube* cube1,Cylinder* cyl2){
 	if(projectSize(cyl2->velocity - cube1->velocity,cyl2->getPositionCylinder() - cube1->position) >= 0) return;
 
 }
+
+float f1(float t,float r0,float r1,float h1b1Div2, float c1sqr,float a2,float b2){
+	float omt = 1-t;
+	float tsqr =t*t;
+	float omtsqr = omt*omt;
+	float term0=r0*sqrt(omtsqr+tsqr);
+	float term1=r1*sqrt(omtsqr+c1sqr*tsqr);
+	float term2 = h1b1Div2;
+	float term3 = abs(omt*a2+t*b2);
+	return term0+term1+term2-term3;
+}
+float fDer1(float t,float r0,float r1,float h1b1Div2, float c1sqr,float a2,float b2){
+	float omt = 1-t;
+	float tsqr =t*t;
+	float omtsqr = omt*omt;
+	float term0=r0*(2*t-1)/sqrt(omtsqr+tsqr);
+	float term1=r1*((1+c1sqr)*t-1)/sqrt(omtsqr+c1sqr*tsqr);
+	float term2 = h1b1Div2;
+	float term3 = (b2-a2)*sign(omt*a2+t*b2);
+	return term0+term1+term2-term3;
+}
+
+int separatedByCylinderPerpendiculars2(vec3 p0,vec3 w0, float r0, float h0, vec3 p1,vec3 w1,float r1,float h1){
+	vec3 delta = p1-p0;
+	float c1 = dot(w0,w1);
+	float b1 = sqrt(1-c1*c1);
+	vec3 v0 = (w1-c1*w0)/b1;
+	vec3 u0 = cross(v0,w0);
+	float a2 = dot(delta,u0);
+	float b2 = dot(delta,v0);
+//	(float t,float r0,float r1,float h1b1Div2, float c1sqr,float a2,float b2)
+	if(f1(0,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0||f1(1,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0) return 1;
+	if(fDer1(0,r0,r1,h1*b1/2,c1*c1,a2,b2)>=0||fDer1(1,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0) return 0;
+
+	float t0,t1,fd0,fd1,tmid,fdmid;
+	int i;
+	t0=0;
+	t1=1;
+	tmid = 0.5*(t0+t1);
+	if(f1(tmid,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0) return 1;
+	
+	a2=-a2;
+	if(f1(0,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0 || f1(1,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0) return 1;
+	if(fDer1(0,r0,r1,h1*b1/2,c1*c1,a2,b2)>=0 || fDer1(1,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0) return 0;
+	
+	if(f1(tmid,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0) return 1;
+	return 1;
+}
+
+float g1(float s, float t, float r0, float h0Div2, float r1,float h1Div2,
+		float a0,float b0,float c0,float a1,float b1,float c1,float lenDelta){
+			float omsmt = 1-s-t;
+			float ssqr =s*s;
+			float tsqr=t*t;
+			float omsmtsqr = omsmt*omsmt;
+			float temp=ssqr+tsqr+omsmtsqr;
+			float L0=a0*s+b0*t+c0*omsmt;
+			float L1 = a1*s+b1*t+c1*omsmt;
+			float Q0 = temp-L0*L0;
+			float Q1=temp-L1*L1;
+			return r0*sqrt(Q0)+r1*sqrt(Q1)+h0Div2*abs(L0)+h1Div2*abs(L1)-omsmt*lenDelta;
+}
+vec2 gDer1(float s, float t, float r0, float h0Div2, float r1,float h1Div2,
+		float a0,float b0,float c0,float a1,float b1,float c1,float lenDelta){
+			float omsmt = 1-s-t;
+			float ssqr =s*s;
+			float tsqr=t*t;
+			float omsmtsqr = omsmt*omsmt;
+			float temp=ssqr+tsqr+omsmtsqr;
+			float L0=a0*s+b0*t+c0*omsmt;
+			float L1 = a1*s+b1*t+c1*omsmt;
+			float Q0 = temp-L0*L0;
+			float Q1=temp-L1*L1;
+			float diffS = s-omsmt, diffT = t-omsmt;
+			float diffa0c0 = a0-c0,diffa1c1=a1-c1,diffb0c0=b0-c0,diffb1c1=b1-c1;
+			float halfQ0s = diffS-diffa0c0*L0, halfQ1s=diffS-diffa1c1*L1;
+			float halfQ0t = diffT-diffa0c0*L0, halfQ1t=diffT-diffa1c1*L1;
+			float factor0 = r0/sqrt(Q0),factor1=r1/sqrt(L1);
+			float signL0 = sign(L0),signL1=sign(L1);
+			vec2 gradient = vec2(0,0);
+			gradient[0]+=halfQ0s*factor0;
+			gradient[0]+=halfQ1s*factor1;
+			gradient[0]+=h0Div2*diffa0c0*signL0;
+			gradient[0]+=h1Div2*diffa1c1*signL1;
+			gradient[0]+=lenDelta;
+			gradient[1]+=halfQ0t*factor0;
+			gradient[1]+=halfQ1t*factor1;
+			gradient[1]+=h0Div2*diffb0c0*signL0;
+			gradient[1]+=h1Div2*diffb1c1*signL1;
+			gradient[1]+=lenDelta;
+			return gradient;
+}
+int separatedByOtherDirections1(vec3 w0,float r0,float h0,vec3 w1,float r1,float h1,vec3 delta){
+	return 1;
+}
+void inline checkCollision_CylinderCylinder(Cylinder* cy1,Cylinder* cy2){
+	/*if(projectSize(cylinder2->getVelocity() - cylinder1->getVelocity(),cylinder2->getPosition() - cylinder1->getPosition()) >= 0) return;
+	vec4 minimumDist = dist3D_Segment_to_Segment(cylinder1->getEndPoint1(),cylinder1->getEndPoint2(),cylinder2->getEndPoint1(),cylinder2->getEndPoint2());
+=======
 //dummy
 void inline checkCollision_CylinderCylinder(Cylinder* cylinder1,Cylinder* cylinder2){
 	if(projectSize(cylinder2->velocity - cylinder1->velocity,cylinder2->getPositionCylinder() - cylinder1->getPositionCylinder()) >= 0) return;
 	vec4 minimumDist = dist3D_Segment_to_Segment(cylinder1->getBasePoint(),cylinder1->getTopPoint(),cylinder2->getBasePoint(),cylinder2->getTopPoint());
+>>>>>>> 1dd066ed64ec3d07b9ac4864f37aa39a0ef52491
 	if(length(minimumDist)>= cylinder1->radius + cylinder2->radius) return;
 	else if(length(minimumDist) <= cylinder1->radius) colCylinder_Cylinder(cylinder1,cylinder2);
 	else{
 
+	}*/
+	vec3 c0 = (vec3)cy1->position;
+	vec3 c1 = (vec3)cy2->position;
+	vec3 w0=(vec3)cy1->getNormal();
+	vec3 w1=(vec3)cy2->getNormal();
+	float r0 = cy1->radius;
+	float r1 = cy2->radius;
+	float h0 = cy1->length;
+	float h1 = cy2->length;
+	vec3 delta = c0 - c1;
+	vec3 W0xW1 = cross(w0,w1);
+	float lenW0xW1 = length(W0xW1);
+	float h0Div2 = h0/2;
+	float h1Div2 = h1/2;
+	float rSum = r0+r1;
+	if(lenW0xW1>0){
+		//by w0
+		if(r1*lenW0xW1+h0Div2+h1Div2*abs(dot(w0,w1))-abs(dot(w0,delta))) return;
+		//by w1
+		if(r0*lenW0xW1+h0Div2*abs(dot(w0,w1))+h1Div2-abs(dot(w0,delta))) return;
+		//by w0xw1
+		if(rSum*lenW0xW1-abs(dot(W0xW1,delta))<0) return;
+		if(separatedByCylinderPerpendiculars2(c0,w0,r0,h0,c1,w1,r1,h1)) return;
+		if(separatedByCylinderPerpendiculars2(c1,w1,r1,h1,c0,w0,r0,h0)) return;
+		if(separatedByOtherDirections1(w0,r0,h0,w1,r1,h1,delta)) return;
+	} else {
+		//by height
+		if(h0Div2+h1Div2-abs(dot(w0,delta))<0) return;
+		//by radius	
+		if(rSum-length((delta-dot(w0,delta)*w0))<0) return;
 	}
+	colCylinder_Cylinder(cy1,cy2);
 }
 
 bool inline testPlane(Rigidbody* obj1,Plane* plane){
@@ -188,7 +320,6 @@ public:
 		sphere.push_back(sp);
 	}
 	void addPlaneToGridCell(Plane* pl){
-		//cout<<"addPlane\n";
 		plane.push_back(pl);
 	}
 	void clearGridCellPlane(){
