@@ -1,11 +1,11 @@
 #include "box3Dcollision.h"
 #include "box3DglobalRule.h"
 #include "box3DcalculateForce.cpp"
+
 #define gridSize 13
 #define begin_x -5
 #define begin_y -5
 #define begin_z -5
-
 
 float inline minn(float x, float y){
 	return (x < y ?  x : y) ;
@@ -44,7 +44,7 @@ void inline checkCollision_SphereCylinder(Sphere* sph1,Cylinder* cylinder2){
 void inline checkCollision_SpherePlane(Sphere* sph1,Plane* plane2){
 	//cout<<" if "<< length(plane2->getVelocity()-sph1->getVelocity()) <<" "<< length(plane2->getPosition()-sph1->getPosition())<<"\n";
 	if(projectSize(sph1->velocity,plane2->getNormal()) >= 0) return;
-	cout<<"check1\n";
+	//cout<<"check1\n";
 	vec4 spPos = sph1->getPosition();
 	float radius = sph1->radius;
 	vec4 centerVec = spPos-plane2->getPosition();
@@ -126,7 +126,7 @@ void inline checkCollision(vector<Cube*> cu, vector<Cylinder*> cy, vector<Plane*
 		for(int j=0;j<cy.size();j++) checkCollision_SphereCylinder(sp1,cy.at(j));
 		for(int j=0;j<pl.size();j++) {
 			checkCollision_SpherePlane(sp1,pl.at(j));
-			cout<<"check\n";
+			//cout<<"check\n";
 		}
 		if(i<sp.size()-1) 
 			for(int j=i+1;j<sp.size();j++) {
@@ -174,6 +174,9 @@ public:
 		//cout<<"addPlane\n";
 		plane.push_back(pl);
 	}
+	void clearGridCellPlane(){
+		plane.clear();
+	}
 	void clearGridCell(){
 		cube.clear();
 		cylinder.clear();
@@ -202,6 +205,7 @@ public:
 			hashPlane((pl[i]));
 		}
 	};
+
 	void hashGrid(vector<Cube*> cu,vector<Cylinder*> cy,vector<Sphere*> sp){
 		for(int i=0;i<cu.size();i++) hashCube(cu[i]);
 		for(int i=0;i<cy.size();i++) hashCylinder(cy[i]);
@@ -274,13 +278,13 @@ public:
 					if(a==5 && b==0 && c==5){
 						gridcell[i][0][k].addPlaneToGridCell(r);
 					}*/
-					if(r->orientation==vec3(0,0,PI/2)){
+					if(r->orientation==vec3(0,0,PI/2)||r->orientation==vec3(0,0,-PI/2)){
 						gridcell[a][j][k].addPlaneToGridCell(r);
 					}
-					if(r->orientation==vec3(PI/2,0,0)){
+					if(r->orientation==vec3(PI/2,0,0)||r->orientation==vec3(-PI/2,0,0)){
 						gridcell[i][j][c].addPlaneToGridCell(r);
 					}
-					if(r->orientation==vec3(0,0,0)){
+					if(r->orientation==vec3(0,0,0)||r->orientation==vec3(PI,0,0)){
 						//cout<<"plane x = "<<r->orientation.x<<" y = "<<r->orientation.y<<" z = "<<r->orientation.z<<"\n";
 						//cout<<"index x= "<< a<<" y= "<<b<<" z= "<<c<<"\n";
 						gridcell[i][b][k].addPlaneToGridCell(r);
@@ -294,7 +298,12 @@ public:
 		j = (int)(pos.y-begin_y)/width;
 		k = (int)(pos.z-begin_z)/width;
 	}
-
+	void clearGridPlane(){
+		for(int i=0;i<gridSize;i++)
+			for(int j=0;j<gridSize;j++)
+				for(int k=0;k<gridSize;k++)
+					gridcell[i][j][k].clearGridCellPlane();
+	}
 	void clearGrid(){
 		for(int i=0;i<gridSize;i++)
 			for(int j=0;j<gridSize;j++)
