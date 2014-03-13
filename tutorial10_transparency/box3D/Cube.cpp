@@ -4,14 +4,8 @@ class Cube : public Rigidbody{
 public:
 	float maxRadius;
 	float vertex[8][3];
-	float p0[3];
-	float p1[3];
-	float p2[3];
-	float p3[3];
-	float p4[3];
-	float p5[3];
-	float p6[3];
-	float p7[3];
+	vec4 edgeStart[12];
+	vec4 edgeEnd[12];
 	Cube(vec3 cubePosition,vec3 cubeRotation,vec3 cubeVelocity,float cubeSize,float cubeMass,vec3 cubeColor) {
 		orientation=cubeRotation;
 		position=vec4(cubePosition,1);
@@ -19,7 +13,7 @@ public:
 		angularVelocity=vec3(0,0,0);
 		size=cubeSize;
 		mass=cubeMass;
-		color=cubeColor;
+		color=vec4(cubeColor,0.8f);
 		inertia=1;
 		maxRadius = size*sqrt(3.0f)*0.5;
 		//อนุรักษ์พลังงานกล ศักย์
@@ -33,16 +27,19 @@ public:
 		vertex[5][0] = cubeVertex5.x*size/2; vertex[5][1] = cubeVertex5.y*size/2; vertex[5][2] = cubeVertex5.z*size/2;
 		vertex[6][0] = cubeVertex6.x*size/2; vertex[6][1] = cubeVertex6.y*size/2; vertex[6][2] = cubeVertex6.z*size/2;
 		vertex[7][0] = cubeVertex7.x*size/2; vertex[7][1] = cubeVertex7.y*size/2; vertex[7][2] = cubeVertex7.z*size/2;
-		
+		//setEdge(&edgeStart,&edgeEnd,vertex);
 	}
-	void updateVeloCube(vec4 velo){
+	vec4 inline toPosition(int i){
+		return vec4(vertex[i][0],vertex[i][1],vertex[i][2],1);
+	}
+	void inline updateVeloCube(vec4 velo){
 		addMomentum(velo);
 	}
 	void inline render(){
 		glBegin(GL_QUADS);{
 			//back
 			//glColor3f(1,1,0);
-			glColor3f(color.r,color.g,color.b);
+			glColor4f(color.r,color.g,color.b,color.a);
 			glVertex3fv(vertex[0]);
 			glVertex3fv(vertex[1]);
 			glVertex3fv(vertex[3]);

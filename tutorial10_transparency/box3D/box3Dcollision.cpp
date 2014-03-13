@@ -18,7 +18,6 @@ void inline checkCollision_SphereCube(Sphere* sph1,Cube* cube2){
 	vec4 surfaceSp1 = dist*( length(dist) - sph1->radius) / length(dist) ;
 	vec4 point = cube2->getInverseRatationMatrix()*surfaceSp1;
 	vec3 cubeSkin = cube2->getSkin();
-	//cout<< "check Sphere Cubes";
 	if(abs(point.x)<=cubeSkin.x && abs(point.y)<=cubeSkin.y && abs(point.z)<=cubeSkin.z) {
 		//onCollision
 		colSphere_Cube(sph1,cube2);

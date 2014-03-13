@@ -11,7 +11,7 @@ public:
 		orientation=cylinderRotation;
 		radius=cylinderRadius;
 		length=cylinderLength;
-		color = cylinderColor;
+		color = vec4(cylinderColor,0.8f);
 
 	}
 	vec4 getEndPoint1(){
@@ -21,7 +21,7 @@ public:
 		return position - (getNormal()*length/2);
 	}
 	void render(){
-		glColor3f(color.r,color.g,color.b);
+		glColor4f(color.r,color.g,color.b,color.a);
 		GLUquadric* cyl;
 		cyl=gluNewQuadric();
 		gluQuadricNormals(cyl,GL_SMOOTH);
