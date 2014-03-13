@@ -19,6 +19,8 @@ using namespace std;
 #include <common/shader.hpp>
 #include <common/texture.hpp>
 #include <common/controls.hpp>
+
+
 std::vector<unsigned short> indices;
 std::vector<glm::vec3> indexed_vertices;
 std::vector<glm::mat4> indexed_rotates;
@@ -30,25 +32,22 @@ vector<Sphere*> sphere;
 vector<Cylinder*> cylinder;
 vector<Plane*> plane;
 
-#define CELL_SIZE 2*sqrt(3.0)
-#define minC -5
-#define maxC 5
 Grid grid;
 
 void addSphere(){
-	vec3 position = vec3(1,1,1);
+	vec3 position = vec3(rand()%(gridSize-4)-4,begin_x+gridSize-4,rand()%(gridSize-4)-4);
 	vec3 rotation = vec3(0,0,1);
-	vec3 velocity = vec3(-0.2,-0.5,0);
-	float size = 1;
+	vec3 velocity = vec3(rand()%2/10.0,-rand()%2/10.0,rand()%2/10.0);
+	float size = 0.5f;
 	float mass = 1;
 	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
 	Sphere* sp = new Sphere(position,rotation,velocity,size,mass,color);
 	sphere.push_back(sp);
 }
 void addCube(){
-	vec3 position = vec3(1,1,1);
+	vec3 position = vec3(rand()%(gridSize-4)-4,begin_x+gridSize-4,rand()%(gridSize-4)-4);
 	vec3 rotation = vec3(0,0,1);
-	vec3 velocity = vec3(0,-1,0);
+	vec3 velocity = vec3(rand()%2/10.0,-rand()%2/10.0,rand()%2/10.0);
 	float size = 1;
 	float mass = 1;
 	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
@@ -56,9 +55,9 @@ void addCube(){
 	c3.push_back(cube);
 }
 void addCylinder(){
-	vec3 position = vec3(1,1,1);
+	vec3 position = vec3(rand()%(gridSize-4)-4,begin_x+gridSize-4,rand()%(gridSize-4)-4);
 	vec3 rotation = vec3(0,0,1);
-	vec3 velocity = vec3(0,-1,0);
+	vec3 velocity = vec3(rand()%2/10.0,-rand()%2/10.0,rand()%2/10.0);
 	float radius = 0.5;
 	float length = 1;
 	float mass = 1;
@@ -67,9 +66,9 @@ void addCylinder(){
 	cylinder.push_back(cy);
 }
 void addPlane(){
-	vec3 pos[5] = {vec3(0,-5,0),vec3(-5,0,0),vec3(5,0,0),vec3(0,0,5),vec3(0,0,-5)};
-	vec3 rot[5] = {vec3(0,0,0),vec3(0,0,PI/2),vec3(0,0,PI/2),vec3(PI/2,0,0),vec3(PI/2,0,0)};
-	for(int i=0;i<5;i++){
+	vec3 pos[6] = {vec3(0,begin_y+gridSize-3,0), vec3(0,begin_y,0),vec3(begin_x,0,0),vec3(begin_x+gridSize-3,0,0),vec3(0,0,begin_z+gridSize-3),vec3(0,0,begin_z)};
+	vec3 rot[6] = {vec3(PI,0,0), vec3(0,0,0),vec3(0,0,-PI/2),vec3(0,0,PI/2),vec3(-PI/2,0,0),vec3(PI/2,0,0)};
+	for(int i=0;i<6;i++){
 		vec3 position = pos[i];
 		vec3 rotation = rot[i];
 		vec3 velocity = vec3(0,0,0);
@@ -145,18 +144,23 @@ void onPress(){
 	} else if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT)==GLFW_RELEASE && lastMouse==GLFW_PRESS) {
 		glfwGetMousePos(&clickX2,&clickY2);
 		lastMouse=GLFW_RELEASE;
-		int dx = clickX2-clickX1;
-		int dy = clickY2-clickY1;
-		cout<<"x = "<<dx;
-		cout<<"y = "<<dy<<"\n";
+		float dx = clickX2-clickX1;
+		float dy = clickY2-clickY1;
+		//cout<<"x = "<<dx;
+		//cout<<"y = "<<dy<<"\n";
 		clickX1=clickX2;
 		clickY1=clickY2;
+		dx/=100.0f;
+		dy/=100.0f;
 		for(int i=0;i<plane.size();i++) {
 			vec4 pos = plane[i]->position;
 			if(pos.x+dx>=-5 && pos.x+dx<=-5+gridSize) pos.x+=dx;
 			if(pos.y+dy>=-5 && pos.y+dy<=-5+gridSize) pos.y+=dy;
 			plane[i]->position=pos;
+			grid.clearGridPlane();
+			grid.hashPlane(plane[i]);
 		}
+
 	} else if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT)==GLFW_RELEASE && lastMouse==GLFW_PRESS) {
 		lastMouse=GLFW_RELEASE;
 	}
