@@ -35,7 +35,9 @@ vector<Plane*> plane;
 Grid grid;
 
 void addSphere(){
-	vec3 position = vec3(rand()%(gridSize-4)-4,begin_x+gridSize-4,rand()%(gridSize-4)-4);
+	//0->8
+	//-2->6
+	vec3 position = vec3(rand()%(gridSize-5)-2,begin_x+gridSize-4,rand()%(gridSize-5)-2);
 	vec3 rotation = vec3(0,0,1);
 	vec3 velocity = vec3(rand()%2/10.0,-rand()%2/10.0,rand()%2/10.0);
 	float size = rand()%6/10.0+0.5;
@@ -45,7 +47,7 @@ void addSphere(){
 	sphere.push_back(sp);
 }
 void addCube(){
-	vec3 position = vec3(rand()%(gridSize-4)-4,begin_x+gridSize-4,rand()%(gridSize-4)-4);
+	vec3 position = vec3(rand()%(gridSize-5)-2,begin_x+gridSize-4,rand()%(gridSize-5)-2);
 	vec3 rotation = vec3(0,0,1);
 	vec3 velocity = vec3(rand()%2/10.0,-rand()%2/10.0,rand()%2/10.0);
 	float size = 1;
@@ -55,7 +57,7 @@ void addCube(){
 	c3.push_back(cube);
 }
 void addCylinder(){
-	vec3 position = vec3(rand()%(gridSize-4)-4,begin_x+gridSize-4,rand()%(gridSize-4)-4);
+	vec3 position = vec3(rand()%(gridSize-5)-2,begin_x+gridSize-4,rand()%(gridSize-5)-2);
 	vec3 rotation = vec3(0,0,1);
 	vec3 velocity = vec3(rand()%2/10.0,-rand()%2/10.0,rand()%2/10.0);
 	float radius = 0.5;
@@ -68,7 +70,7 @@ void addCylinder(){
 void addPlane(){
 	//top,bottom,left,right,back,front
 	vec3 pos[6] = {vec3(1.5,begin_y+gridSize-1.5,1.5), vec3(1.5,begin_y+1.5,1.5),vec3(begin_x+1.5,1.5,1.5),
-		vec3(begin_x+gridSize-1.5,1.5,1.5),vec3(1.5,1.5,begin_z+gridSize-1.5),vec3(1.5,1.5,begin_z+1.5)};
+	vec3(begin_x+gridSize-1.5,1.5,1.5),vec3(1.5,1.5,begin_z+gridSize-1.5),vec3(1.5,1.5,begin_z+1.5)};
 	vec3 rot[6] = {vec3(PI,0,0), vec3(0,0,0),vec3(0,0,-PI/2),vec3(0,0,PI/2),vec3(-PI/2,0,0),vec3(PI/2,0,0)};
 	for(int i=0;i<6;i++){
 		vec3 position = pos[i];
@@ -81,8 +83,8 @@ void addPlane(){
 		plane.push_back(pl);
 	}
 }
-void tranparentPlane(){
-	for(int i=0;i<5;i++){
+void transparentPlane(){
+	for(int i=0;i<plane.size();i++){
 		//plane.pop_back();
 	}
 }
@@ -396,9 +398,7 @@ int main( void )
 
 		// Bind our texture in Texture Unit 0
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, Texture);
 		// Set our "myTextureSampler" sampler to user Texture Unit 0
-		glUniform1i(TextureID, 0);
 
 		//1rst attribute buffer : vertices
 		glEnableVertexAttribArray(vertexPosition_modelspaceID);
@@ -483,7 +483,6 @@ int main( void )
 	glDeleteBuffers(1, &normalbuffer);
 	glDeleteBuffers(1, &elementbuffer);
 	glDeleteProgram(programID);
-	glDeleteTextures(1, &Texture);
 
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();
