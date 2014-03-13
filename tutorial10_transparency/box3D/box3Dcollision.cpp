@@ -86,21 +86,23 @@ void inline checkCollision_PlaneCube(Plane* plane1,Cube* cube2){
 		}
 	}
 }
-//dummy
+//bugging
 void inline checkCollision_PlaneCylinder(Plane* plane1,Cylinder* cylinder2){
-	if(projectSize(cylinder2->velocity , plane1->getNormal()) >= 0) return;
+	vec4 planeNormal = plane1->getNormal();
+	if(projectSize(cylinder2->velocity , planeNormal) >= 0) return;
 	vec4 dist = cylinder2->position - plane1->position;
 	//cout << "check plane cylinder \t";
 	//printvec4();
-	vec4 height = projectVec(cylinder2->position - plane1->position , plane1->getNormal());
-	/*printVec4("base pos ",cylinder2->getBasePoint());
-	printVec4("top pos ",cylinder2->getTopPoint());
-	printVec4("plane pos ",plane1->position);*/
-	printVec4("cyl pos ",cylinder2->position);
-	printVec4("height ",height);
-	if(length(height)<=cylinder2->position.y){
+	vec4 cylNormal = cylinder2->getNormal();
+	vec4 posheight = projectVec(cylinder2->position - plane1->position , cylNormal);
+
+	vec3 temp1 = cross((vec3)planeNormal , (vec3)cylNormal);
+	vec4 lowestPos = vec4(cross(temp1 , (vec3)cylNormal) , 0);
+	vec4 bodyheight = projectVec(cylNormal*(cylinder2->length/2) , planeNormal);
+	vec4 baseheight = projectVec(lowestPos,planeNormal);
+	if( length(bodyheight) + length(baseheight) >= length(posheight)){
 		cout<<"col plane cylinder\n";
-		colPlane_Cylinder(plane1,cylinder2);
+		colPlane_Cylinder(plane1,cylinder2,lowestPos);
 	}
 }
 
