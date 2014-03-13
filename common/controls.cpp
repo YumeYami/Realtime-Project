@@ -93,11 +93,11 @@ void computeMatricesFromInputs(){
 	glm::vec3 up = glm::cross( right, direction );
 
 	// Move forward
-	if (glfwGetKey('W') == GLFW_PRESS){
+	if (glfwGetKey('E') == GLFW_PRESS){
 		position += direction * deltaTime * speed;
 	}
 	// Move backward
-	if (glfwGetKey('S') == GLFW_PRESS){
+	if (glfwGetKey('Q') == GLFW_PRESS){
 		position -= direction * deltaTime * speed;
 	}
 	// Strafe right
@@ -108,7 +108,12 @@ void computeMatricesFromInputs(){
 	if (glfwGetKey('A') == GLFW_PRESS){
 		position -= right * deltaTime * speed;
 	}
-	
+	if (glfwGetKey('W') == GLFW_PRESS){
+		position += up * deltaTime * speed;
+	}
+	if (glfwGetKey('S') == GLFW_PRESS){
+		position -= up * deltaTime * speed;
+	}
 	float FoV = initialFoV - 5 * glfwGetMouseWheel();
 
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
