@@ -218,11 +218,11 @@ public:
 
 		vec4 pos = r->position;
 		int a,b,c = 0;
-		findIndex(vec3(pos.x,pos.y,pos.z),a,b,c);
+		//findIndex(vec3(pos.x,pos.y,pos.z),a,b,c);
 		vector<int> x;
 		vector<int> y;
 		vector<int> z;
-		findGrid(vec3(pos.x,pos.y,pos.z),a,b,c,x,y,z);
+		findGrid(vec3(pos.x,pos.y,pos.z),x,y,z);
 		for(int i=0;i<x.size();i++){
 			if(x[i]>=0 && x[i]< gridSize && y[i]>=0 && y[i]< gridSize && z[i]>=0 && z[i]< gridSize)
 			gridcell[x[i]][y[i]][z[i]].addCubeToGridCell(r);
@@ -231,11 +231,11 @@ public:
 	void hashCylinder(Cylinder* r){
 		vec4 pos = r->position;
 		int a,b,c = 0;
-		findIndex(vec3(pos.x,pos.y,pos.z),a,b,c);
+		//findIndex(vec3(pos.x,pos.y,pos.z),a,b,c);
 		vector<int> x;
 		vector<int> y;
 		vector<int> z;
-		findGrid(vec3(pos.x,pos.y,pos.z),a,b,c,x,y,z);
+		findGrid(vec3(pos.x,pos.y,pos.z),x,y,z);
 		for(int i=0;i<x.size();i++){
 			if(x[i]>=0 && x[i]< gridSize && y[i]>=0 && y[i]< gridSize && z[i]>=0 && z[i]< gridSize)
 			gridcell[x[i]][y[i]][z[i]].addCylinderToGridCell(r);
@@ -244,15 +244,14 @@ public:
 	void hashSphere(Sphere* r){
 		vec4 pos = r->position;
 		int a,b,c = 0;
-		findIndex(vec3(pos.x,pos.y,pos.z),a,b,c);
+		//findIndex(vec3(pos.x,pos.y,pos.z),a,b,c);
 		vector<int> x;
 		vector<int> y;
 		vector<int> z;
-		findGrid(vec3(pos.x,pos.y,pos.z),a,b,c,x,y,z);
+		findGrid(vec3(pos.x,pos.y,pos.z),x,y,z);
 		for(int i=0;i<x.size();i++){
 			if(x[i]>=0 && x[i]< gridSize && y[i]>=0 && y[i]< gridSize && z[i]>=0 && z[i]< gridSize)
 				gridcell[x[i]][y[i]][z[i]].addSphereToGridCell(r);
-			//cout<<"grid x = "<<x[i]<<" y = "<<y[i]<<" z= "<<z[i]<<"\n";
 		}
 	}
 	void hashPlane(Plane* r){
@@ -260,8 +259,6 @@ public:
 		vec4 pos = r->position;
 		int a,b,c = 0;
 		findIndex(vec3(pos.x,pos.y,pos.z),a,b,c);
-		//cout<<"posPlane* x= "<< pos.x<<" y= "<<pos.y<<" z= "<<pos.z<<"\n";
-		//cout<<"index x= "<< a<<" y= "<<b<<" z= "<<c<<"\n";
 		for(int i=0;i<gridSize;i++){
 			for(int j=0;j<gridSize;j++){
 				for(int k=0;k<gridSize;k++){
@@ -306,77 +303,91 @@ public:
 				}
 	}
 
-	void findGrid(vec3 pos,int a, int b, int c, vector<int> &x, vector<int> &y, vector<int> &z){
-		x.push_back(a); y.push_back(b); z.push_back(c);
-		if(pos.x-floor(pos.x)==0.5 && pos.y-floor(pos.y)==0.5 && pos.z-floor(pos.z)==0.5) return;
-		
-		if(pos.x-floor(pos.x) < 0.5) {										//x<0.5 
-			x.push_back(a-1); y.push_back(b); z.push_back(c);
-			if(pos.y-floor(pos.y) < 0.5) {									//y<0.5
-				x.push_back(a-1); y.push_back(b-1); z.push_back(c);
-				if(pos.z-floor(pos.z) < 0.5) {								//z<0.5
-					x.push_back(a-1); y.push_back(b-1); z.push_back(c-1); 
-				} else {													//z>=0.5
-					x.push_back(a-1); y.push_back(b-1); z.push_back(c+1); 
-				}
-			} else {														//y>=0.5
-				x.push_back(a-1); y.push_back(b+1); z.push_back(c); 
-				if(pos.z-floor(pos.z) < 0.5) {								//z<0.5
-					x.push_back(a-1); y.push_back(b+1); z.push_back(c-1); 
-				} else {													//z>=0.5
-					x.push_back(a-1); y.push_back(b+1); z.push_back(c+1); 
-				}
-			}
-		} else {															//x>=0.5 
-			x.push_back(a+1); y.push_back(b); z.push_back(c); 
-			if(pos.y-floor(pos.y) < 0.5) {									//y<0.5 
-				x.push_back(a+1); y.push_back(b-1); z.push_back(c); 
-				if(pos.z-floor(pos.z) < 0.5) {								//z<0.5
-					x.push_back(a+1); y.push_back(b-1); z.push_back(c-1); 
-				} else {													//z>=0.5 
-					x.push_back(a+1); y.push_back(b-1); z.push_back(c+1); 
-				}
-			} else {														//y>=0.5
-				x.push_back(a+1); y.push_back(b+1); z.push_back(c); 
-				if(pos.z-floor(pos.z) < 0.5) {								//z<0.5
-					x.push_back(a+1); y.push_back(b+1); z.push_back(c-1); 
-				} else {													//z>=0.5 
-					x.push_back(a+1); y.push_back(b+1); z.push_back(c+1); 
+	void findGrid(vec3 pos,vector<int> &x, vector<int> &y, vector<int> &z){
+		//x.push_back(a); y.push_back(b); z.push_back(c);
+		//if(pos.x-floor(pos.x)==0.5 && pos.y-floor(pos.y)==0.5 && pos.z-floor(pos.z)==0.5) return;
+		vec3 minPos = vec3(pos.x-width/2.0,pos.y-width/2.0,pos.z-width/2.0);
+		vec3 maxPos = vec3(pos.x+width/2.0,pos.y+width/2.0,pos.z+width/2.0);
+		int minA,minB,minC;
+		int maxA,maxB,maxC;
+		findIndex(minPos,minA,minB,minC);
+		findIndex(maxPos,maxA,maxB,maxC);
+		for(int i=minA;i<=maxA;i++){
+			for(int j=minB;j<=maxB;j++){
+				for(int k=minC;k<=maxC;k++){
+					x.push_back(i); 
+					y.push_back(j); 
+					z.push_back(k);
 				}
 			}
 		}
-		
-		if(pos.y-floor(pos.y) < 0.5) {										//y<0.5
-			x.push_back(a); y.push_back(b-1); z.push_back(c); 
-			if(pos.z-floor(pos.z) < 0.5) {									//z<0.5
-				x.push_back(a); y.push_back(b-1); z.push_back(c-1); 
-			} else {														//z>=0.5
-				x.push_back(a); y.push_back(b-1); z.push_back(c+1); 
-			}
-		} else { 
-			x.push_back(a); y.push_back(b+1); z.push_back(c); 
-			if(pos.z-floor(pos.z) < 0.5) { 
-				x.push_back(a); y.push_back(b+1); z.push_back(c-1); 
-			} else { 
-				x.push_back(a); y.push_back(b+1); z.push_back(c+1); 
-			}
-		}
-		
-		if(pos.z-floor(pos.z) < 0.5) { 
-			x.push_back(a); y.push_back(b); z.push_back(c-1); 
-			if(pos.x-floor(pos.x) < 0.5) {
-				x.push_back(a-1); y.push_back(b); z.push_back(c-1);
-			} else {
-				x.push_back(a+1); y.push_back(b); z.push_back(c-1);
-			}
-		} else { 
-			x.push_back(a); y.push_back(b); z.push_back(c+1); 
-			if(pos.x-floor(pos.x) < 0.5) {
-				x.push_back(a-1); y.push_back(b); z.push_back(c+1);
-			} else {
-				x.push_back(a+1); y.push_back(b); z.push_back(c+1);
-			}
-		}
+		//if(pos.x-floor(pos.x) < 0.5) {										//x<0.5 
+		//	x.push_back(a-1); y.push_back(b); z.push_back(c);
+		//	if(pos.y-floor(pos.y) < 0.5) {									//y<0.5
+		//		x.push_back(a-1); y.push_back(b-1); z.push_back(c);
+		//		if(pos.z-floor(pos.z) < 0.5) {								//z<0.5
+		//			x.push_back(a-1); y.push_back(b-1); z.push_back(c-1); 
+		//		} else {													//z>=0.5
+		//			x.push_back(a-1); y.push_back(b-1); z.push_back(c+1); 
+		//		}
+		//	} else {														//y>=0.5
+		//		x.push_back(a-1); y.push_back(b+1); z.push_back(c); 
+		//		if(pos.z-floor(pos.z) < 0.5) {								//z<0.5
+		//			x.push_back(a-1); y.push_back(b+1); z.push_back(c-1); 
+		//		} else {													//z>=0.5
+		//			x.push_back(a-1); y.push_back(b+1); z.push_back(c+1); 
+		//		}
+		//	}
+		//} else {															//x>=0.5 
+		//	x.push_back(a+1); y.push_back(b); z.push_back(c); 
+		//	if(pos.y-floor(pos.y) < 0.5) {									//y<0.5 
+		//		x.push_back(a+1); y.push_back(b-1); z.push_back(c); 
+		//		if(pos.z-floor(pos.z) < 0.5) {								//z<0.5
+		//			x.push_back(a+1); y.push_back(b-1); z.push_back(c-1); 
+		//		} else {													//z>=0.5 
+		//			x.push_back(a+1); y.push_back(b-1); z.push_back(c+1); 
+		//		}
+		//	} else {														//y>=0.5
+		//		x.push_back(a+1); y.push_back(b+1); z.push_back(c); 
+		//		if(pos.z-floor(pos.z) < 0.5) {								//z<0.5
+		//			x.push_back(a+1); y.push_back(b+1); z.push_back(c-1); 
+		//		} else {													//z>=0.5 
+		//			x.push_back(a+1); y.push_back(b+1); z.push_back(c+1); 
+		//		}
+		//	}
+		//}
+		//
+		//if(pos.y-floor(pos.y) < 0.5) {										//y<0.5
+		//	x.push_back(a); y.push_back(b-1); z.push_back(c); 
+		//	if(pos.z-floor(pos.z) < 0.5) {									//z<0.5
+		//		x.push_back(a); y.push_back(b-1); z.push_back(c-1); 
+		//	} else {														//z>=0.5
+		//		x.push_back(a); y.push_back(b-1); z.push_back(c+1); 
+		//	}
+		//} else { 
+		//	x.push_back(a); y.push_back(b+1); z.push_back(c); 
+		//	if(pos.z-floor(pos.z) < 0.5) { 
+		//		x.push_back(a); y.push_back(b+1); z.push_back(c-1); 
+		//	} else { 
+		//		x.push_back(a); y.push_back(b+1); z.push_back(c+1); 
+		//	}
+		//}
+		//
+		//if(pos.z-floor(pos.z) < 0.5) { 
+		//	x.push_back(a); y.push_back(b); z.push_back(c-1); 
+		//	if(pos.x-floor(pos.x) < 0.5) {
+		//		x.push_back(a-1); y.push_back(b); z.push_back(c-1);
+		//	} else {
+		//		x.push_back(a+1); y.push_back(b); z.push_back(c-1);
+		//	}
+		//} else { 
+		//	x.push_back(a); y.push_back(b); z.push_back(c+1); 
+		//	if(pos.x-floor(pos.x) < 0.5) {
+		//		x.push_back(a-1); y.push_back(b); z.push_back(c+1);
+		//	} else {
+		//		x.push_back(a+1); y.push_back(b); z.push_back(c+1);
+		//	}
+		//}
 		
 	}
 };
