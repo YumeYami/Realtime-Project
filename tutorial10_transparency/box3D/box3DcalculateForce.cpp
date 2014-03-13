@@ -6,22 +6,26 @@
 
 #define PARALLEL_SIZE 0.01f
 #define SMALL_NUM 0.00000001f
-
+//return project vector = project vec to base
 vec4 inline projectVec(vec4 vec,vec4 base){
 	return normalize(base)*dot(vec,base)/length(base);
 }
+//return size of project vector = project vec to base
 float inline projectSize(vec4 vec,vec4 base){
 	return dot(vec,base)/length(base);
 }
+//return project opos project vec
 vec3 inline projectVecCross_vec3(vec3 vec,vec3 base){
 	vec3 temp = cross(vec,normalize(base));
 	return cross(normalize(base),temp);
 }
+//parallel test
 bool inline isParallel(vec4 normal1,vec4 normal2){
 	if(dot(normal1,normal2)-length(normal1)*length(normal2) <= PARALLEL_SIZE){
 
 	}
 }
+//
 float inline dist3D_Line_to_Line( vec4 l1p1, vec4 l1p0, vec4 l2p1, vec4 l2p0)
 {
 	vec4   u = l1p1 - l1p0;
@@ -131,6 +135,7 @@ vec4 inline dist3D_Line_to_point(vec4 line_start, vec4 line_end, vec4 point)
 	vec4 proj = projectVec(pointPos,lineVec);
 	return -pointPos + proj;
 }
+//minimum distance segment to line
 vec4 inline dist3D_Segment_to_point(vec4 line_start, vec4 line_end, vec4 point)
 {
 	vec4 lineVec = line_end - line_start;
@@ -155,19 +160,22 @@ void inline colSphere_Sphere(Sphere* sph1, Sphere* sph2){
 	sph2->addAngularMomentum_vec4( sph2->getInverseRatationMatrix()*vec4(-angularMomentum,0) );
 }
 //completed
-void inline colSphere_Plane(Sphere* sph1, Plane* plane2){
+void inline colSphere_Plane(Sphere* sph1, Plane* plane2,vec4 height){
 	vec4 planeNormal = plane2->getNormal();
 	vec4 newVelo = projectVec(-sph1->velocity,plane2->getNormal());
 	vec4 velo = sph1->velocity;
 	velo = sph1->velocity + newVelo*2;
 	sph1->setVelocity(velo);
+	sph1->updatePosition(height*(length(sph1->radius) - length(height) ) );
 }
-//not test
+//still bugging
 void inline colSphere_Cube(Sphere* sph1, Cube* cube2,vec4 colPoint_ModelSphere){
-	cout<<"col";
+	//cout<<"col";
 	vec4 relatevelo = cube2->velocity - sph1->velocity;//ref from sph1
 	vec4 moment1 = projectVec(-relatevelo,normalize(colPoint_ModelSphere));
-	
+	printVec4("\ncolpoint ",colPoint_ModelSphere);
+	printVec4("relatevelo ",relatevelo);
+	printVec4("moment ",moment1);
 	sph1->addMomentum(moment1);
 	sph1->addAngularMomentum_vec4(-relatevelo - moment1);
 	vec4 colPoint_ModelCube = sph1->position - cube2->position - colPoint_ModelSphere; 

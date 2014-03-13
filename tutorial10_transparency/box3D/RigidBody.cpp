@@ -55,57 +55,61 @@ public:
 		size = 1;
 		color = vec4(0,0,0,0);
 	}
-	vec4 getPosition(){
+	vec4 inline getPosition(){
 		return position;
 	}
-	vec4 getVelocity(){
+	vec4 inline getVelocity(){
 		return velocity;
 	}
-	void setVelocity(vec4 velo){
+	void inline setVelocity(vec4 velo){
 		velocity = velo;
 	}
-	vec3 getMin(){
+	vec3 inline getMin(){
 		return vec3(0,0,0);
 	}
-	vec3 getMax(){
+	vec3 inline getMax(){
 		return vec3(0,0,0);
 	}
-	vec3 getSkin(){
+	vec3 inline getSkin(){
 		return vec3();
 	}
-	void addForce(vec4 force,float size){
+	void inline addForce(vec4 force,float size){
 	}
-	void addMomentum(vec4 momentum){
+	void inline addMomentum(vec4 momentum){
 		velocity = velocity+momentum;
 	}
-	void addAngularMomentum_vec4(vec4 angularMomentum){
+	void inline addAngularMomentum_vec4(vec4 angularMomentum){
 		angularVelocity+=vec3(angularMomentum);
 	}
-	void addAngularMomentum(vec3 angularMomentum){
+	void inline addAngularMomentum(vec3 angularMomentum){
 		angularVelocity+=angularMomentum;
 	}
-	vec4 getNormal(){
+	vec4 inline getNormal(){
 		return normalize(getRotationMatrix()*vec4(0,1,0,0));
 	}
-	mat4 getRotationMatrix(){
+	mat4 inline getRotationMatrix(){
 		return eulerAngleYXZ(orientation.y,orientation.x,orientation.z);
 	}
-	mat4 getInverseRatationMatrix(){
+	mat4 inline getInverseRatationMatrix(){
 		return eulerAngleYXZ(-orientation.y,-orientation.x,-orientation.z);
 	}
-	mat4 getTranslationMatrix(){
+	//transpose
+	mat4 inline getTranslationMatrix(){
 		return mat4(1.0f,0.0f,0.0f,0.0f,
 			0.0f,1.0f,0.0f,0.0f,
 			0.0f,0.0f,1.0f,0.0f,
 			position.x,position.y,position.z,1.0f);
 	}
-	void updatePosition(float time){
+	void updatePosition(vec4 addPosision){
+		position+=addPosision;
+	}
+	void inline updatePosition(float time){
 		position+=(velocity)*time;
 		orientation+=angularVelocity*time;
 	}
 };
 void inline printVec4(string name,vec4 vec){
-	cout<<name<<"\t: [ "<<vec.x<<"\t"<<vec.y<<"\t"<<vec.z<<"\t"<<vec.w<<" ]\n";
+	cout<<name<<"\t: [ "<<vec.x<<"\t"<<vec.y<<"\t"<<vec.z<<"\t"<<length(vec)<<" ]\n";
 }
 //End guard at bottom of header file
 #endif 
