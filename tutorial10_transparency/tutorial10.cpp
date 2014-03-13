@@ -93,6 +93,8 @@ int lastKey1=GLFW_RELEASE;
 int lastKey2=GLFW_RELEASE;
 int lastKey3=GLFW_RELEASE;
 int lastKey4=GLFW_RELEASE;
+int lastKey5=GLFW_RELEASE;
+int lastKey6=GLFW_RELEASE;
 int lastMouse=GLFW_RELEASE;
 int fixX=0,fixY=0;
 int showX=0,showY=0;
@@ -102,7 +104,54 @@ int xposL,yposL;
 int pickObject = 0;
 int width=512;
 int height=384;
+int update=1;
 
+class PickingRay 
+{
+	vec3 clickPosInWorld;
+	vec3 direction;
+ 
+	/**
+	 * Computes the intersection of this ray with the X-Y Plane (where Z = 0)
+	 * and writes it back to the provided vector.
+	 */
+public:
+	void intersectionWithXyPlane(vec3 worldPos)
+	{
+		float s = -clickPosInWorld.z / direction.z;
+		worldPos[0] = clickPosInWorld.x+direction.x*s;
+		worldPos[1] = clickPosInWorld.y+direction.y*s;
+		worldPos[2] = 0;
+	}
+ 
+	vec3 getClickPosInWorld() {
+		return clickPosInWorld;
+	}
+	vec3 getDirection() {
+		return direction;
+	}	
+};
+/*
+void picking(float screenX, float screenY, PickingRay pickingRay)
+    {
+        pickingRay.getClickPosInWorld().set(position);
+        pickingRay.getClickPosInWorld().add(view);
+ 
+        screenX -= (float)viewportWidth/2f;
+        screenY -= (float)viewportHeight/2f;
+ 
+        // normalize to 1
+        screenX /= ((float)viewportWidth/2f);
+        screenY /= ((float)viewportHeight/2f);
+ 
+        pickingRay.getClickPosInWorld().x += screenHoritzontally.x*screenX + screenVertically.x*screenY;
+        pickingRay.getClickPosInWorld().y += screenHoritzontally.y*screenX + screenVertically.y*screenY;
+        pickingRay.getClickPosInWorld().z += screenHoritzontally.z*screenX + screenVertically.z*screenY;
+ 
+        pickingRay.getDirection().set(pickingRay.getClickPosInWorld());
+        pickingRay.getDirection().sub(position);
+    }
+	*/
 void pick (int mouse_x, int mouse_y){
 	float x = (2.0f * mouse_x) / width - 1.0f;
 	float y = 1.0f - (2.0f * mouse_y) / height;
@@ -149,16 +198,30 @@ void onPress(){
 
 	//plane
 	if (glfwGetKey('4') == GLFW_PRESS){
-		if(lastKey4 == GLFW_RELEASE) 
-			transparentPlane();
-			lastKey4 = GLFW_PRESS;
+		if(lastKey4 == GLFW_RELEASE) transparentPlane();
+		lastKey4 = GLFW_PRESS;
 	}
 	else if (glfwGetKey('4') == GLFW_RELEASE){
 		lastKey4 = GLFW_RELEASE;
 	}
 	if (glfwGetKey('0') == GLFW_PRESS){
-		if(pickObject) pickObject = 0;
-		else pickObject = 1;
+		if(lastKey5 == GLFW_RELEASE){
+			if(pickObject) pickObject = 0;
+			else pickObject = 1;
+		}
+		lastKey5 == GLFW_PRESS;
+	}
+	else if (glfwGetKey('0') == GLFW_RELEASE){
+		lastKey5 = GLFW_RELEASE;
+	}
+	if (glfwGetKey('Z') == GLFW_PRESS){
+		if(lastKey6 == GLFW_RELEASE) 
+			if(update) update = 0;
+			else update = 1;
+		lastKey6 = GLFW_PRESS;
+	}
+	else if (glfwGetKey('Z') == GLFW_RELEASE){
+		lastKey6 = GLFW_RELEASE;
 	}
 	//pickBox=========================================================================================
 	if( lastMouse==GLFW_RELEASE && glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS && !pickObject){
@@ -347,7 +410,9 @@ int main( void )
 
 		// Compute the MVP matrix from keyboard and mouse input
 		grid.hashGrid(c3,cylinder,sphere);
-		grid.checkCollisionGrid();
+		if(update){
+			grid.checkCollisionGrid();
+		}
 		computeMatricesFromInputs();
 		grid.clearGrid();
 		onPress();
@@ -361,7 +426,7 @@ int main( void )
 		glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
 		for (int i = 0; i < c3.size(); i++)
 		{
-			(*c3[i]).updatePosition(timeStep);
+			if(update)(*c3[i]).updatePosition(timeStep);
 			glm::mat4 ScaleMatrix = mat4();
 			glm::mat4 RotateMatrix = (*c3[i]).getRotationMatrix();
 			glm::mat4 TranslateMatrix = (*c3[i]).getTranslationMatrix();
@@ -374,7 +439,7 @@ int main( void )
 		}
 		for (int i = 0; i < sphere.size(); i++)
 		{
-			(*sphere[i]).updatePosition(timeStep);
+			if(update)(*sphere[i]).updatePosition(timeStep);
 			glm::mat4 ScaleMatrix = mat4();
 			glm::mat4 RotateMatrix = (*sphere[i]).getRotationMatrix();
 			glm::mat4 TranslateMatrix = (*sphere[i]).getTranslationMatrix();
@@ -387,7 +452,7 @@ int main( void )
 		}
 		for (int i = 0; i < cylinder.size(); i++)
 		{
-			(*cylinder[i]).updatePosition(0.01f);
+			if(update)(*cylinder[i]).updatePosition(0.01f);
 			glm::mat4 ScaleMatrix = mat4();
 			glm::mat4 RotateMatrix = (*cylinder[i]).getRotationMatrix();
 			glm::mat4 TranslateMatrix = (*cylinder[i]).getTranslationMatrix();
@@ -400,7 +465,7 @@ int main( void )
 		}
 		for (int i = 0; i < plane.size(); i++)
 		{
-			(*plane[i]).updatePosition(0.01f);
+			if(update)(*plane[i]).updatePosition(0.01f);
 			glm::mat4 ScaleMatrix = mat4();
 			glm::mat4 RotateMatrix = (*plane[i]).getRotationMatrix();
 			glm::mat4 TranslateMatrix = (*plane[i]).getTranslationMatrix();
