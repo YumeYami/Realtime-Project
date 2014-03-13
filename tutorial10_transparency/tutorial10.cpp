@@ -228,17 +228,13 @@ int main( void )
 	GLuint ScaleMatrixID = glGetUniformLocation(programID, "Scale");
 	GLuint TranslateMatrixID = glGetUniformLocation(programID, "Translate");
 	GLuint RotateMatrixID = glGetUniformLocation(programID, "Rotate");
+	GLuint TransparentID = glGetUniformLocation(programID, "Transparent");
 	// Get a handle for our buffers
 	GLuint vertexPosition_modelspaceID = glGetAttribLocation(programID, "vertexPosition_modelspace");
 	GLuint vertexRotation_modelspaceID = glGetAttribLocation(programID, "vertexRotation_modelspace");
 	GLuint vertexUVID = glGetAttribLocation(programID, "vertexUV");
 	GLuint vertexNormal_modelspaceID = glGetAttribLocation(programID, "vertexNormal_modelspace");
 
-	// Load the texture
-	GLuint Texture = loadDDS("uvmap.DDS");
-
-	// Get a handle for our "myTextureSampler" uniform
-	GLuint TextureID = glGetUniformLocation(programID, "myTextureSampler");
 
 	//---------------------------------------------------------------------------------------------------------------
 

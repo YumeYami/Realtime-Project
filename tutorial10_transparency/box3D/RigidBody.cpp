@@ -42,7 +42,8 @@ public:
 	vec3 angularVelocity;
 	float inertia;
 	float size;
-	vec3 color;
+	vec4 color;
+	float transparent;
 	Rigidbody(){
 		position = vec4(0,0,0,1);
 		mass = 1;
@@ -50,9 +51,9 @@ public:
 		orientation = vec3(0,0,0);
 		angularVelocity = vec3(0,0,0);
 		inertia = 1;
-
+		transparent = 0.8;
 		size = 1;
-		color = vec3(0,0,0);
+		color = vec4(0,0,0,0);
 	}
 	vec4 getPosition(){
 		return position;

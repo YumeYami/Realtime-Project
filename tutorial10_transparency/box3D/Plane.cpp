@@ -10,7 +10,7 @@ public:
 	Plane(vec3 planePosition,vec3 planeRotation,vec3 planeVelocity,float planeSize,float planeMass,vec3 planeColor){
 		size=planeSize;
 		mass=planeMass;
-		color=planeColor;
+		color=vec4(planeColor,0.8f);
 		angularVelocity=vec3(0,0,0);
 		p0[0] = planeVertex0.x*size/2; p0[1] = planeVertex0.y*size/2; p0[2] = planeVertex0.z*size/2;
 		p1[0] = planeVertex1.x*size/2; p1[1] = planeVertex1.y*size/2; p1[2] = planeVertex1.z*size/2;
@@ -23,7 +23,7 @@ public:
 	void inline render(){
 		glBegin(GL_QUADS);{
 			//back
-			glColor3f(color.r,color.g,color.b);
+			glColor4f(color.r,color.g,color.b,color.a);
 			glVertex3fv(p0);
 			glVertex3fv(p1);
 			glVertex3fv(p2);
