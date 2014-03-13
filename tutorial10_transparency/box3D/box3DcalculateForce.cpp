@@ -182,6 +182,10 @@ void inline colSphere_Cube(Sphere* sph1, Cube* cube2,vec4 colPoint_ModelSphere){
 	vec4 moment2 = projectVec(-relatevelo,colPoint_ModelCube);
 	cube2->addMomentum(0.1f*-moment1);
 	cube2->addAngularMomentum_vec4(relatevelo - moment2);
+	//sph1->velocity=vec4(0,0,0,0);
+	//cube2->velocity=vec4(0,0,0,0);
+	//sph1->angularVelocity=vec3(0,0,0);
+	//cube2->angularVelocity=vec3(0,0,0);
 }
 //not test
 void inline colSphere_Cylinder(Sphere* sph1, Cylinder* cy2){

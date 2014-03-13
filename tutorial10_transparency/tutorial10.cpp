@@ -355,7 +355,8 @@ int main( void )
 	GLuint ScaleMatrixID = glGetUniformLocation(programID, "Scale");
 	GLuint TranslateMatrixID = glGetUniformLocation(programID, "Translate");
 	GLuint RotateMatrixID = glGetUniformLocation(programID, "Rotate");
-	GLuint TransparentID = glGetUniformLocation(programID, "Transparent");
+	GLuint TranslateModelID = glGetUniformLocation(programID, "TranslateModel");
+	GLuint RotateModelID = glGetUniformLocation(programID, "RotateModel");
 	// Get a handle for our buffers
 	GLuint vertexPosition_modelspaceID = glGetAttribLocation(programID, "vertexPosition_modelspace");
 	GLuint vertexRotation_modelspaceID = glGetAttribLocation(programID, "vertexRotation_modelspace");
@@ -375,18 +376,21 @@ int main( void )
 	cyl->velocity = vec4(0,0,0,0);
 	cyl->position = vec4(0,-3.5,0,1);
 	cyl->orientation = vec3(0,0,0);
-
+	cyl->angularVelocity = vec3(1,0,0);
 	cyl->color = vec4(1,0,0,1);
+
 	Cylinder* cyl2 = cylinder[1];
 	cyl2->velocity = vec4(0,0,0,0);
-	cyl2->position = vec4(2,-3.0,0,1);
+	cyl2->position = vec4(2,-3.5,0,1);
 	cyl2->orientation = vec3(0,0,0);
+	cyl2->angularVelocity = vec3(0,1,0);
 	cyl2->color = vec4(0,1,0,1);
-	
+
 	Cylinder* cyl3 = cylinder[2];
 	cyl3->velocity = vec4(0,0,0,0);
 	cyl3->position = vec4(0,-3.5,2,1);
 	cyl3->orientation = vec3(0,0,0);
+	cyl3->angularVelocity = vec3(0,0,1);
 	cyl3->color = vec4(0,0,1,1);*/
 	grid = Grid(plane);
 
@@ -394,6 +398,7 @@ int main( void )
 	glGenBuffers(1, &vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	glBufferData(GL_ARRAY_BUFFER, indexed_vertices.size() * sizeof(glm::vec3), &indexed_vertices[0], GL_STATIC_DRAW);
+
 	GLuint rotatebuffer;
 	glGenBuffers(1, &rotatebuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, rotatebuffer);
@@ -467,11 +472,15 @@ int main( void )
 			glm::mat4 ScaleMatrix = mat4();
 			glm::mat4 RotateMatrix = (*c3[i]).getRotationMatrix();
 			glm::mat4 TranslateMatrix = (*c3[i]).getTranslationMatrix();
+			glm::mat4 RotateModel = mat4(1);
+			glm::mat4 TranslateModel = mat4(1);
 			glPushMatrix();
 			glUniformMatrix4fv(ScaleMatrixID, 1, GL_FALSE, &ScaleMatrix[0][0]);
 			glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);
 			glUniformMatrix4fv(TranslateMatrixID, 1, GL_FALSE, &TranslateMatrix[0][0]);
-			(*c3[i]).render();
+			glUniformMatrix4fv(TranslateModelID, 1, GL_FALSE, &TranslateModel[0][0]);
+			glUniformMatrix4fv(RotateModelID, 1, GL_FALSE, &RotateModel[0][0]);
+			c3[i]->render();
 			glPopMatrix();
 		}
 		for (int i = 0; i < sphere.size(); i++)
@@ -480,10 +489,14 @@ int main( void )
 			glm::mat4 ScaleMatrix = mat4();
 			glm::mat4 RotateMatrix = (*sphere[i]).getRotationMatrix();
 			glm::mat4 TranslateMatrix = (*sphere[i]).getTranslationMatrix();
+			glm::mat4 RotateModel = mat4(1);
+			glm::mat4 TranslateModel = mat4(1);
 			glPushMatrix();
 			glUniformMatrix4fv(ScaleMatrixID, 1, GL_FALSE, &ScaleMatrix[0][0]);
 			glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);
 			glUniformMatrix4fv(TranslateMatrixID, 1, GL_FALSE, &TranslateMatrix[0][0]);
+			glUniformMatrix4fv(TranslateModelID, 1, GL_FALSE, &TranslateModel[0][0]);
+			glUniformMatrix4fv(RotateModelID, 1, GL_FALSE, &RotateModel[0][0]);
 			(*sphere[i]).render();
 			glPopMatrix();
 		}
@@ -491,12 +504,16 @@ int main( void )
 		{
 			if(update || playOneFrame)(*cylinder[i]).updatePosition(0.01f);
 			glm::mat4 ScaleMatrix = mat4();
-			glm::mat4 RotateMatrix = (*cylinder[i]).getRotationMatrixRender();
-			glm::mat4 TranslateMatrix = (*cylinder[i]).getTranslationMatrixRender();
+			glm::mat4 RotateMatrix = cylinder[i]->getRotationMatrix();
+			glm::mat4 TranslateMatrix = cylinder[i]->getTranslationMatrix();
+			glm::mat4 RotateModel = cylinder[i]->getRotationMatrixRender();
+			glm::mat4 TranslateModel = cylinder[i]->getTranslationMatrixRender();
 			glPushMatrix();
 			glUniformMatrix4fv(ScaleMatrixID, 1, GL_FALSE, &ScaleMatrix[0][0]);
 			glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);
 			glUniformMatrix4fv(TranslateMatrixID, 1, GL_FALSE, &TranslateMatrix[0][0]);
+			glUniformMatrix4fv(TranslateModelID, 1, GL_FALSE, &TranslateModel[0][0]);
+			glUniformMatrix4fv(RotateModelID, 1, GL_FALSE, &RotateModel[0][0]);
 			(*cylinder[i]).render();
 			glPopMatrix();
 		}
@@ -506,10 +523,14 @@ int main( void )
 			glm::mat4 ScaleMatrix = mat4();
 			glm::mat4 RotateMatrix = (*plane[i]).getRotationMatrix();
 			glm::mat4 TranslateMatrix = (*plane[i]).getTranslationMatrix();
+			glm::mat4 RotateModel = mat4(1);
+			glm::mat4 TranslateModel = mat4(1);
 			glPushMatrix();
 			glUniformMatrix4fv(ScaleMatrixID, 1, GL_FALSE, &ScaleMatrix[0][0]);
 			glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);
 			glUniformMatrix4fv(TranslateMatrixID, 1, GL_FALSE, &TranslateMatrix[0][0]);
+			glUniformMatrix4fv(TranslateModelID, 1, GL_FALSE, &TranslateModel[0][0]);
+			glUniformMatrix4fv(RotateModelID, 1, GL_FALSE, &RotateModel[0][0]);
 			glPolygonMode(GL_FRONT_AND_BACK,GL_SMOOTH);
 			plane[i]->render();
 			glPopMatrix();
@@ -518,9 +539,13 @@ int main( void )
 		glm::mat4 ScaleMatrix = mat4();
 		glm::mat4 RotateMatrix = mat4();
 		glm::mat4 TranslateMatrix = mat4();
+		glm::mat4 RotateModel = mat4(1);
+		glm::mat4 TranslateModel = mat4(1);
 		glUniformMatrix4fv(ScaleMatrixID, 1, GL_FALSE, &ScaleMatrix[0][0]);
 		glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);
 		glUniformMatrix4fv(TranslateMatrixID, 1, GL_FALSE, &TranslateMatrix[0][0]);
+		glUniformMatrix4fv(TranslateModelID, 1, GL_FALSE, &TranslateModel[0][0]);
+		glUniformMatrix4fv(RotateModelID, 1, GL_FALSE, &RotateModel[0][0]);
 		// Send our transformation to the currently bound shader, 
 		// in the "MVP" uniform
 		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
