@@ -5,6 +5,7 @@
 #include <iostream>
 //Realtime-Project library
 #include "box3D/box3Dcollision.cpp"
+
 // Include GLEW
 #include <GL/glew.h>
 // Include GLFW
@@ -19,7 +20,6 @@ using namespace std;
 #include <common/shader.hpp>
 #include <common/texture.hpp>
 #include <common/controls.hpp>
-
 
 std::vector<unsigned short> indices;
 std::vector<glm::vec3> indexed_vertices;
@@ -99,7 +99,23 @@ int showX=0,showY=0;
 int clickX1,clickY1=0;
 int clickX2,clickY2=0;
 int xposL,yposL;
+int pickObject = 0;
+int width=512;
+int height=384;
 
+void pick (int mouse_x, int mouse_y){
+	float x = (2.0f * mouse_x) / width - 1.0f;
+	float y = 1.0f - (2.0f * mouse_y) / height;
+	float z = 1.0f;
+	vec3 ray_nds = vec3 (x, y, z);
+	vec4 ray_clip = vec4 (ray_nds.x,ray_nds.y, -1.0, 1.0);
+	vec4 ray_eye = inverse (getProjectionMatrix()) * ray_clip;
+	ray_eye = vec4 (ray_eye.x,ray_eye.y, -1.0, 0.0);
+	vec3 ray_wor = (vec3)(inverse (getViewMatrix()) * ray_eye);
+	// don't forget to normalise the vector at some point
+	ray_wor = normalize(ray_wor); 
+	//cout<<"ray x= "<<ray_wor.x<<" y = "<<ray_wor.y<<" z = "<<ray_wor.z<<"\n";
+}
 void onPress(){
 	//sphere
 	if (glfwGetKey('1') == GLFW_PRESS){
@@ -140,11 +156,16 @@ void onPress(){
 	else if (glfwGetKey('4') == GLFW_RELEASE){
 		lastKey4 = GLFW_RELEASE;
 	}
-
-	if( lastMouse==GLFW_RELEASE && glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS){
+	if (glfwGetKey('0') == GLFW_PRESS){
+		if(pickObject) pickObject = 0;
+		else pickObject = 1;
+	}
+	//pickBox=========================================================================================
+	if( lastMouse==GLFW_RELEASE && glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS && !pickObject){
 		glfwGetMousePos(&clickX1,&clickY1);
+		pick(clickX1,clickY1);
 		lastMouse=GLFW_PRESS;
-	} else if(lastMouse==GLFW_PRESS && glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS) {
+	} else if(lastMouse==GLFW_PRESS && glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS && !pickObject) {
 		glfwGetMousePos(&clickX2,&clickY2);
 		float dx = clickX2-clickX1;
 		float dy = clickY2-clickY1;
@@ -170,7 +191,17 @@ void onPress(){
 			grid.hashPlane(plane[i]);
 		}
 
-	} else if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT)==GLFW_RELEASE) {
+	} else if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT)==GLFW_RELEASE && !pickObject) {
+		lastMouse=GLFW_RELEASE;
+	}
+
+	//pickObject=========================================================================================
+	if(lastMouse==GLFW_RELEASE && glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS && pickObject){
+		glfwGetMousePos(&clickX1,&clickY1);
+		lastMouse=GLFW_PRESS;
+	} else if(lastMouse==GLFW_PRESS && glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS && pickObject) {
+
+	} else if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT)==GLFW_RELEASE && pickObject) {
 		lastMouse=GLFW_RELEASE;
 	}
 
@@ -485,3 +516,4 @@ int main( void )
 
 	return 0;
 }
+

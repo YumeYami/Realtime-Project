@@ -17,6 +17,10 @@ glm::mat4 getViewMatrix(){
 glm::mat4 getProjectionMatrix(){
 	return ProjectionMatrix;
 }
+
+vec3 getPosView(){
+	return vec3();
+}
 using namespace std;
 
 // Initial position : on +Z
