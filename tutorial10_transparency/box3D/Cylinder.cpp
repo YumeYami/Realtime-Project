@@ -7,20 +7,23 @@ public:
 	Cylinder(vec3 cylinderPosition,vec3 cylinderRotation,vec3 cylinderVelocity,float cylinderRadius,float cylinderLength,float cylinderMass,vec3 cylinderColor){
 		mass=cylinderMass;
 		position=vec4(cylinderPosition,1);
-		setVelocity(vec4(cylinderVelocity,0));
+		velocity=(vec4(cylinderVelocity,0));
 		orientation=cylinderRotation;
 		radius=cylinderRadius;
 		length=cylinderLength;
 		color = vec4(cylinderColor,0.8f);
 
 	}
-	vec4 getEndPoint1(){
+	vec4 inline getPositionCylinder(){
 		return position + (getNormal()*length/2);
 	}
-	vec4 getEndPoint2(){
-		return position - (getNormal()*length/2);
+	vec4 inline getBasePoint(){
+		return position;
 	}
-	void render(){
+	vec4 inline getTopPoint(){
+		return position + (getNormal()*length);
+	}
+	void inline render(){
 		glColor4f(color.r,color.g,color.b,color.a);
 		GLUquadric* cyl;
 		cyl=gluNewQuadric();

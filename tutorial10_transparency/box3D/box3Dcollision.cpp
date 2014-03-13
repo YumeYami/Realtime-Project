@@ -10,7 +10,7 @@
 float inline minn(float x, float y){
 	return (x < y ?  x : y) ;
 }
-//not test
+//some bug
 void inline checkCollision_SphereCube(Sphere* sph1,Cube* cube2){
 	if(projectSize(cube2->velocity - sph1->velocity,cube2->position - sph1->position) >= 0) return;
 	//cout<<"check cube\n";
@@ -19,7 +19,7 @@ void inline checkCollision_SphereCube(Sphere* sph1,Cube* cube2){
 		vec4 start = (cube2->edgeSta[i]);
 		vec4 end = (cube2->edgeEnd[i]);
 		vec4 colPoint =  dist3D_Segment_to_point(start,end,sph1->position);
-		if (length(colPoint)<=sph1->radius){
+		if (length(colPoint) <= sph1->radius){
 			cout<<"collision Cube";
 			colSphere_Cube(sph1,cube2,colPoint);
 			return;
@@ -28,8 +28,8 @@ void inline checkCollision_SphereCube(Sphere* sph1,Cube* cube2){
 }
 //not test
 void inline checkCollision_SphereCylinder(Sphere* sph1,Cylinder* cylinder2){
-	if(projectSize(cylinder2->getVelocity() - sph1->getVelocity(),cylinder2->getPosition() - sph1->getPosition()) >= 0) return;
-	vec4 spherePos = cylinder2->getInverseRatationMatrix()*(sph1->getPosition()-cylinder2->getPosition());
+	if(projectSize(cylinder2->velocity - sph1->velocity,cylinder2->getPositionCylinder() - sph1->position) >= 0) return;
+	vec4 spherePos = cylinder2->getInverseRatationMatrix()*(sph1->position-cylinder2->getPositionCylinder());
 	vec4 cylNormal = vec4(0,1,0,0);
 	float projectDist = projectSize(spherePos,cylNormal);
 	vec4 minDist = projectDist*cylNormal-spherePos;
@@ -45,23 +45,21 @@ void inline checkCollision_SphereCylinder(Sphere* sph1,Cylinder* cylinder2){
 //completed
 void inline checkCollision_SpherePlane(Sphere* sph1,Plane* plane2){
 	if(projectSize(sph1->velocity,plane2->getNormal()) >= 0) return;
-	//cout<<"check1\n";
-	//cout<<"check\n";
-	vec4 spPos = sph1->getPosition();
+	vec4 spPos = sph1->position;
 	float radius = sph1->radius;
-	vec4 centerVec = spPos-plane2->getPosition();
-	float distance = projectSize(centerVec,plane2->getNormal());
-	if(distance<=radius) {
-		colSphere_Plane(sph1,plane2);
+	vec4 centerVec = spPos - plane2->position;
+	vec4 height = projectVec(centerVec,plane2->getNormal());
+	if(length(height)<=radius) {
+		colSphere_Plane(sph1,plane2,height);
 	}
 
 }
 //completed
 void inline checkCollision_SphereSphere(Sphere* sph1, Sphere* sph2){
-	if(projectSize(sph2->getVelocity() - sph1->getVelocity(),sph2->getPosition() - sph1->getPosition()) >= 0) return;
-	vec4 sphPos = sph1->getPosition();
+	if(projectSize(sph2->velocity - sph1->velocity,sph2->position - sph1->position) >= 0) return;
+	vec4 sphPos = sph1->position;
 	float radius = sph1->radius;
-	vec4 d = sphPos - sph2->getPosition();
+	vec4 d = sphPos - sph2->position;
 	float distance = length(d);
 	float sumR = radius + sph2->radius;
 	if(distance<=sumR) {
@@ -69,35 +67,52 @@ void inline checkCollision_SphereSphere(Sphere* sph1, Sphere* sph2){
 		colSphere_Sphere(sph1,sph2);
 	}
 }
-//not test
+//completed dummy code
 void inline checkCollision_PlaneCube(Plane* plane1,Cube* cube2){
-	if(projectSize(cube2->getVelocity() - plane1->getVelocity(),cube2->getPosition() - plane1->getPosition()) >= 0) return;
-	//vec4 cubeHeight_ModelPlane* = projectVec(cube2->getPosition() - plane1->getPosition(),plane1->getNormal());
-	float cubeHeight_ModelPlane = projectSize(cube2->getPosition()-plane1->getPosition(),plane1->getNormal());
-	if(cubeHeight_ModelPlane >= cube2->maxRadius) return;
-	else colCube_Plane(cube2,plane1);
+
+	if(projectSize(cube2->velocity,plane1->getNormal()) >= 0) return;
+	
+	for (int i = 0; i < 12; i++)
+	{
+		vec4 start = (cube2->edgeSta[i]);
+		vec4 end = (cube2->edgeEnd[i]);
+		if (dot(start - plane1->position , plane1->getNormal()) <= 0 ) {
+			colCube_Plane(cube2,plane1,start - cube2->position);
+			return;
+		}
+		else if (dot(end - plane1->position , plane1->getNormal()) <= 0 ) {
+			colCube_Plane(cube2,plane1,end - cube2->position);
+			return;
+		}
+	}
 }
-//not test
+//dummy
 void inline checkCollision_PlaneCylinder(Plane* plane1,Cylinder* cylinder2){
-	if(projectSize(cylinder2->getVelocity() - plane1->getVelocity(),cylinder2->getPosition() - plane1->getPosition()) >= 0) return;
-	vec4 dist = cylinder2->getPosition()-plane1->getPosition();
-	vec4 cylinderPosition_PlaneModel = plane1->getInverseRatationMatrix()*dist;
-	vec4 cylinderNormal_PlaneModel = plane1->getInverseRatationMatrix()*cylinder2->getRotationMatrix()*vec4(0,1,0,0);
-	float height = projectSize(cylinderNormal_PlaneModel,vec4(0,1,0,0)) + length(cross(vec3(0,1,0),vec3(cylinderNormal_PlaneModel))*cylinder2->radius);
-	if(height<=cylinder2->getPosition().y){
-		//Collision
+	if(projectSize(cylinder2->velocity , plane1->getNormal()) >= 0) return;
+	vec4 dist = cylinder2->getPositionCylinder() - plane1->position;
+	//cout << "check plane cylinder \t";
+	//printvec4();
+	vec4 height = projectVec(cylinder2->getPositionCylinder() - plane1->position , plane1->getNormal());
+	printVec4("base pos ",cylinder2->getBasePoint());
+	printVec4("cyl pos ",cylinder2->getPositionCylinder());
+	printVec4("top pos ",cylinder2->getTopPoint());
+	printVec4("plane pos ",plane1->position);
+	if(length(height)<=cylinder2->getPositionCylinder().y){
+		cout<<"col plane cylinder\n";
 		colPlane_Cylinder(plane1,cylinder2);
 	}
 }
 
 void inline checkCollision_CubeCube(Cube* cube1,Cube* cube2){
-	if(projectSize(cube2->getVelocity() - cube1->getVelocity(),cube2->getPosition() - cube1->getPosition()) >= 0) return;
-}
-void inline checkCollision_CubeCylinder(Cube* cube1,Cylinder* cyl2){
-	if(projectSize(cyl2->getVelocity() - cube1->getVelocity(),cyl2->getPosition() - cube1->getPosition()) >= 0) return;
+	if(projectSize(cube2->velocity - cube1->velocity,cube2->position - cube1->position) >= 0) return;
 
 }
-float f(float t,float r0,float r1,float h1b1Div2, float c1sqr,float a2,float b2){
+void inline checkCollision_CubeCylinder(Cube* cube1,Cylinder* cyl2){
+	if(projectSize(cyl2->velocity - cube1->velocity,cyl2->getPositionCylinder() - cube1->position) >= 0) return;
+
+}
+
+float f1(float t,float r0,float r1,float h1b1Div2, float c1sqr,float a2,float b2){
 	float omt = 1-t;
 	float tsqr =t*t;
 	float omtsqr = omt*omt;
@@ -107,7 +122,7 @@ float f(float t,float r0,float r1,float h1b1Div2, float c1sqr,float a2,float b2)
 	float term3 = abs(omt*a2+t*b2);
 	return term0+term1+term2-term3;
 }
-float fDer(float t,float r0,float r1,float h1b1Div2, float c1sqr,float a2,float b2){
+float fDer1(float t,float r0,float r1,float h1b1Div2, float c1sqr,float a2,float b2){
 	float omt = 1-t;
 	float tsqr =t*t;
 	float omtsqr = omt*omt;
@@ -118,7 +133,7 @@ float fDer(float t,float r0,float r1,float h1b1Div2, float c1sqr,float a2,float 
 	return term0+term1+term2-term3;
 }
 
-int separatedByCylinderPerpendiculars1(vec3 p0,vec3 w0, float r0, float h0, vec3 p1,vec3 w1,float r1,float h1){
+int separatedByCylinderPerpendiculars2(vec3 p0,vec3 w0, float r0, float h0, vec3 p1,vec3 w1,float r1,float h1){
 	vec3 delta = p1-p0;
 	float c1 = dot(w0,w1);
 	float b1 = sqrt(1-c1*c1);
@@ -127,25 +142,25 @@ int separatedByCylinderPerpendiculars1(vec3 p0,vec3 w0, float r0, float h0, vec3
 	float a2 = dot(delta,u0);
 	float b2 = dot(delta,v0);
 //	(float t,float r0,float r1,float h1b1Div2, float c1sqr,float a2,float b2)
-	if(f(0,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0||f(1,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0) return 1;
-	if(fDer(0,r0,r1,h1*b1/2,c1*c1,a2,b2)>=0||fDer(1,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0) return 0;
+	if(f1(0,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0||f1(1,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0) return 1;
+	if(fDer1(0,r0,r1,h1*b1/2,c1*c1,a2,b2)>=0||fDer1(1,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0) return 0;
 
 	float t0,t1,fd0,fd1,tmid,fdmid;
 	int i;
 	t0=0;
 	t1=1;
 	tmid = 0.5*(t0+t1);
-	if(f(tmid,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0) return 1;
+	if(f1(tmid,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0) return 1;
 	
 	a2=-a2;
-	if(f(0,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0 || f(1,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0) return 1;
-	if(fDer(0,r0,r1,h1*b1/2,c1*c1,a2,b2)>=0 || fDer(1,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0) return 0;
+	if(f1(0,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0 || f1(1,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0) return 1;
+	if(fDer1(0,r0,r1,h1*b1/2,c1*c1,a2,b2)>=0 || fDer1(1,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0) return 0;
 	
-	if(f(tmid,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0) return 1;
+	if(f1(tmid,r0,r1,h1*b1/2,c1*c1,a2,b2)<=0) return 1;
 	return 1;
 }
 
-float g(float s, float t, float r0, float h0Div2, float r1,float h1Div2,
+float g1(float s, float t, float r0, float h0Div2, float r1,float h1Div2,
 		float a0,float b0,float c0,float a1,float b1,float c1,float lenDelta){
 			float omsmt = 1-s-t;
 			float ssqr =s*s;
@@ -158,7 +173,7 @@ float g(float s, float t, float r0, float h0Div2, float r1,float h1Div2,
 			float Q1=temp-L1*L1;
 			return r0*sqrt(Q0)+r1*sqrt(Q1)+h0Div2*abs(L0)+h1Div2*abs(L1)-omsmt*lenDelta;
 }
-vec2 gDer(float s, float t, float r0, float h0Div2, float r1,float h1Div2,
+vec2 gDer1(float s, float t, float r0, float h0Div2, float r1,float h1Div2,
 		float a0,float b0,float c0,float a1,float b1,float c1,float lenDelta){
 			float omsmt = 1-s-t;
 			float ssqr =s*s;
@@ -188,12 +203,18 @@ vec2 gDer(float s, float t, float r0, float h0Div2, float r1,float h1Div2,
 			gradient[1]+=lenDelta;
 			return gradient;
 }
-int separatedByOtherDirections(vec3 w0,float r0,float h0,vec3 w1,float r1,float h1,vec3 delta){
+int separatedByOtherDirections1(vec3 w0,float r0,float h0,vec3 w1,float r1,float h1,vec3 delta){
 	return 1;
 }
 void inline checkCollision_CylinderCylinder(Cylinder* cy1,Cylinder* cy2){
 	/*if(projectSize(cylinder2->getVelocity() - cylinder1->getVelocity(),cylinder2->getPosition() - cylinder1->getPosition()) >= 0) return;
 	vec4 minimumDist = dist3D_Segment_to_Segment(cylinder1->getEndPoint1(),cylinder1->getEndPoint2(),cylinder2->getEndPoint1(),cylinder2->getEndPoint2());
+=======
+//dummy
+void inline checkCollision_CylinderCylinder(Cylinder* cylinder1,Cylinder* cylinder2){
+	if(projectSize(cylinder2->velocity - cylinder1->velocity,cylinder2->getPositionCylinder() - cylinder1->getPositionCylinder()) >= 0) return;
+	vec4 minimumDist = dist3D_Segment_to_Segment(cylinder1->getBasePoint(),cylinder1->getTopPoint(),cylinder2->getBasePoint(),cylinder2->getTopPoint());
+>>>>>>> 1dd066ed64ec3d07b9ac4864f37aa39a0ef52491
 	if(length(minimumDist)>= cylinder1->radius + cylinder2->radius) return;
 	else if(length(minimumDist) <= cylinder1->radius) colCylinder_Cylinder(cylinder1,cylinder2);
 	else{
@@ -220,9 +241,9 @@ void inline checkCollision_CylinderCylinder(Cylinder* cy1,Cylinder* cy2){
 		if(r0*lenW0xW1+h0Div2*abs(dot(w0,w1))+h1Div2-abs(dot(w0,delta))) return;
 		//by w0xw1
 		if(rSum*lenW0xW1-abs(dot(W0xW1,delta))<0) return;
-		if(separatedByCylinderPerpendiculars1(c0,w0,r0,h0,c1,w1,r1,h1)) return;
-		if(separatedByCylinderPerpendiculars1(c1,w1,r1,h1,c0,w0,r0,h0)) return;
-		if(separatedByOtherDirections(w0,r0,h0,w1,r1,h1,delta)) return;
+		if(separatedByCylinderPerpendiculars2(c0,w0,r0,h0,c1,w1,r1,h1)) return;
+		if(separatedByCylinderPerpendiculars2(c1,w1,r1,h1,c0,w0,r0,h0)) return;
+		if(separatedByOtherDirections1(w0,r0,h0,w1,r1,h1,delta)) return;
 	} else {
 		//by height
 		if(h0Div2+h1Div2-abs(dot(w0,delta))<0) return;
@@ -355,7 +376,7 @@ public:
 		}
 	}
 	void hashCylinder(Cylinder* r){
-		vec4 pos = r->position;
+		vec4 pos = r->getPositionCylinder();
 		int a,b,c = 0;
 		//findIndex(vec3(pos.x,pos.y,pos.z),a,b,c);
 		vector<int> x;
@@ -514,6 +535,6 @@ public:
 		//		x.push_back(a+1); y.push_back(b); z.push_back(c+1);
 		//	}
 		//}
-	
+
 	}
 };
