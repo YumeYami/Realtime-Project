@@ -120,8 +120,6 @@ float inline dist3D_Segment_to_Segment( vec4 s1p1, vec4 s1p0, vec4 s2p1, vec4 s2
 
 	return length(dP);   // return the closest distance
 }
-//minimum distance point to disk
-
 //minimum distance point to line
 vec4 inline dist3D_Line_to_point(vec4 line_start, vec4 line_end, vec4 point)
 {
@@ -139,8 +137,6 @@ vec4 inline dist3D_Segment_to_point(vec4 line_start, vec4 line_end, vec4 point)
 	if(length(proj)>=length(lineVec)) return -pointPos + lineVec;
 	return -pointPos + proj;
 }
-
-
 //Sphere
 //completed
 void inline colSphere_Sphere(Sphere* sph1, Sphere* sph2){
@@ -164,7 +160,7 @@ void inline colSphere_Plane(Sphere* sph1, Plane* plane2){
 	sph1->setVelocity(velo);
 }
 //not test
-void inline colSphere_Cube(Sphere* sph1, Cube* cube2){
+void inline colSphere_Cube(Sphere* sph1, Cube* cube2,vec4 colPoint){
 	vec4 dist = cube2->getPosition()-sph1->getPosition();
 	vec4 velo1 = sph1->getVelocity();
 	vec4 velo2 = cube2->getVelocity();
@@ -212,9 +208,3 @@ void inline colPlane_Cylinder(Plane* plane1, Cylinder* cy2){
 void inline colCylinder_Cylinder(Cylinder* cy1, Cylinder* cy2){
 
 }
-//void inline colCylinder_Cone(Cylinder* cy1,Cone cone2){
-//}
-// dist3D_Line_to_Line(): get the 3D minimum distance between 2 lines
-//    Input:  two 3D lines L1 and L2
-//    Return: the shortest distance between L1 and L2
-

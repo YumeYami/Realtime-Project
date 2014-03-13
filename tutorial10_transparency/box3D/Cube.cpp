@@ -4,7 +4,7 @@ class Cube : public Rigidbody{
 public:
 	float maxRadius;
 	float vertex[8][3];
-	vec4 edgeStart[12];
+	vec4 edgeSta[12];
 	vec4 edgeEnd[12];
 	Cube(vec3 cubePosition,vec3 cubeRotation,vec3 cubeVelocity,float cubeSize,float cubeMass,vec3 cubeColor) {
 		orientation=cubeRotation;
@@ -16,8 +16,6 @@ public:
 		color=vec4(cubeColor,0.8f);
 		inertia=1;
 		maxRadius = size*sqrt(3.0f)*0.5;
-		//อนุรักษ์พลังงานกล ศักย์
-		//อนุรักษ์โมเมนตัมเชิงมุม เส้น
 		
 		vertex[0][0] = cubeVertex0.x*size/2; vertex[0][1] = cubeVertex0.y*size/2; vertex[0][2] = cubeVertex0.z*size/2;
 		vertex[1][0] = cubeVertex1.x*size/2; vertex[1][1] = cubeVertex1.y*size/2; vertex[1][2] = cubeVertex1.z*size/2;
@@ -28,6 +26,35 @@ public:
 		vertex[6][0] = cubeVertex6.x*size/2; vertex[6][1] = cubeVertex6.y*size/2; vertex[6][2] = cubeVertex6.z*size/2;
 		vertex[7][0] = cubeVertex7.x*size/2; vertex[7][1] = cubeVertex7.y*size/2; vertex[7][2] = cubeVertex7.z*size/2;
 		//setEdge(&edgeStart,&edgeEnd,vertex);
+		setEdge();
+	}
+	void inline setEdge(){
+		edgeSta[0] = toPosition(0);
+		edgeEnd[0] = toPosition(1);
+		edgeSta[1] = toPosition(0);
+		edgeEnd[1] = toPosition(2);
+		edgeSta[2] = toPosition(1);
+		edgeEnd[2] = toPosition(3);
+		edgeSta[3] = toPosition(2);
+		edgeEnd[3] = toPosition(3);
+
+		edgeSta[4] = toPosition(4);
+		edgeEnd[4] = toPosition(5);
+		edgeSta[5] = toPosition(4);
+		edgeEnd[5] = toPosition(6);
+		edgeSta[6] = toPosition(5);
+		edgeEnd[6] = toPosition(7);
+		edgeSta[7] = toPosition(6);
+		edgeEnd[7] = toPosition(7);
+
+		edgeSta[8] = toPosition(0);
+		edgeEnd[8] = toPosition(4);
+		edgeSta[9] = toPosition(1);
+		edgeEnd[9] = toPosition(5);
+		edgeSta[10] = toPosition(2);
+		edgeEnd[10] = toPosition(6);
+		edgeSta[11] = toPosition(3);
+		edgeEnd[11] = toPosition(7);
 	}
 	vec4 inline toPosition(int i){
 		return vec4(vertex[i][0],vertex[i][1],vertex[i][2],1);

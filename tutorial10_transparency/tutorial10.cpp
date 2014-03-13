@@ -135,7 +135,7 @@ void onPress(){
 	if (glfwGetKey('4') == GLFW_PRESS){
 		if(lastKey4 == GLFW_RELEASE) 
 			if(plane.size()==0)addPlane();
-			else tranparentPlane();
+			else transparentPlane();
 			lastKey4 = GLFW_PRESS;
 	}
 	else if (glfwGetKey('4') == GLFW_RELEASE){
@@ -396,9 +396,6 @@ int main( void )
 		glm::vec3 lightPos = glm::vec3(4,4,4);
 		glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
 
-		// Bind our texture in Texture Unit 0
-		glActiveTexture(GL_TEXTURE0);
-		// Set our "myTextureSampler" sampler to user Texture Unit 0
 
 		//1rst attribute buffer : vertices
 		glEnableVertexAttribArray(vertexPosition_modelspaceID);
