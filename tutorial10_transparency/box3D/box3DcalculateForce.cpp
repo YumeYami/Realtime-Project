@@ -163,16 +163,21 @@ void inline colSphere_Sphere(Sphere* sph1, Sphere* sph2){
 void inline colSphere_Plane(Sphere* sph1, Plane* plane2,vec4 height){
 	vec4 planeNormal = plane2->getNormal();
 	vec4 newVelo = projectVec(-sph1->velocity,plane2->getNormal());
+	//printVec4("nor " ,plane2->getNormal());
+	//printVec4("nor " ,plane2->getNormal());
 	vec4 velo = sph1->velocity;
 	velo = sph1->velocity + newVelo*2;
-	sph1->setVelocity(velo);
-	sph1->updatePosition(height*(length(sph1->radius) - length(height) ) );
+	printVec4("velo " ,sph1->velocity);
+	printVec4("nor " ,plane2->getNormal());
+	printVec4("newvelo ",newVelo);
+	sph1->addMomentum(newVelo*2);
+	//sph1->updatePosition(height*(length(sph1->radius) - length(height) ) );
 }
 //still bugging
 void inline colSphere_Cube(Sphere* sph1, Cube* cube2,vec4 colPoint_ModelSphere){
 	//cout<<"col";
 	vec4 relatevelo = cube2->velocity - sph1->velocity;//ref from sph1
-	vec4 moment1 = projectVec(-relatevelo,normalize(colPoint_ModelSphere));
+	vec4 moment1 = -projectVec(relatevelo,normalize(colPoint_ModelSphere));
 	printVec4("\ncolpoint ",colPoint_ModelSphere);
 	printVec4("relatevelo ",relatevelo);
 	printVec4("moment ",moment1);

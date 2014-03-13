@@ -44,7 +44,7 @@ void inline checkCollision_SphereCylinder(Sphere* sph1,Cylinder* cylinder2){
 }
 //completed
 void inline checkCollision_SpherePlane(Sphere* sph1,Plane* plane2){
-	//if(projectSize(sph1->velocity,plane2->getNormal()) >= 0) return;
+	if(projectSize(sph1->velocity,plane2->getNormal()) >= 0) return;
 	vec4 spPos = sph1->position;
 	float radius = sph1->radius;
 	vec4 centerVec = spPos - plane2->position;
