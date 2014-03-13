@@ -17,11 +17,21 @@ public:
 	vec4 inline getPositionCylinder(){
 		return position + (getNormal()*length/2);
 	}
+	vec4 inline getNormal() override{
+		return getRotationMatrix()*vec4(0,0,1,0);
+	}
 	vec4 inline getBasePoint(){
 		return position;
 	}
 	vec4 inline getTopPoint(){
 		return position + (getNormal()*length);
+	}
+	mat4 inline getTranslationMatrix() override {
+		vec4 pos = getPositionCylinder();
+		return mat4(1.0f,0.0f,0.0f,0.0f,
+			0.0f,1.0f,0.0f,0.0f,
+			0.0f,0.0f,1.0f,0.0f,
+			pos.x,pos.y,pos.z,1.0f);
 	}
 	void inline render(){
 		glColor4f(color.r,color.g,color.b,color.a);

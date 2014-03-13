@@ -367,14 +367,14 @@ int main( void )
 
 	//addCube();
 	//addSphere();
-	addPlane();
+	addPlane();/*
 	addCylinder();
 	addCylinder();
 	addCylinder();
 	Cylinder* cyl = cylinder[0];
 	cyl->velocity = vec4(0,0,0,0);
 	cyl->position = vec4(0,-3.5,0,1);
-	cyl->orientation = vec3(0,0,0);
+	cyl->orientation = vec3(PI/2,0,0);
 	cyl->color = vec4(1,0,0,1);
 	Cylinder* cyl2 = cylinder[1];
 	cyl2->velocity = vec4(0,0,0,0);
@@ -384,8 +384,8 @@ int main( void )
 	Cylinder* cyl3 = cylinder[2];
 	cyl3->velocity = vec4(0,0,0,0);
 	cyl3->position = vec4(0,-3.5,2,1);
-	cyl3->orientation = vec3(0,0,0);
-	cyl3->color = vec4(0,0,1,1);
+	cyl3->orientation = vec3(0,0,PI/2);
+	cyl3->color = vec4(0,0,1,1);*/
 	grid = Grid(plane);
 
 	GLuint vertexbuffer;

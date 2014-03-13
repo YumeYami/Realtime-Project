@@ -55,46 +55,46 @@ public:
 		size = 1;
 		color = vec4(0,0,0,0);
 	}
-	vec3 inline getMin(){
+	virtual vec3 inline getMin(){
 		return vec3(0,0,0);
 	}
-	vec3 inline getMax(){
+	virtual vec3 inline getMax(){
 		return vec3(0,0,0);
 	}
-	vec3 inline getSkin(){
+	virtual vec3 inline getSkin(){
 		return vec3();
 	}
-	void inline addForce(vec4 force,float size){
+	virtual void inline addForce(vec4 force,float size){
 	}
-	void inline addMomentum(vec4 momentum){
+	virtual void inline addMomentum(vec4 momentum){
 		velocity = velocity+momentum;
 	}
-	void inline addAngularMomentum_vec4(vec4 angularMomentum){
+	virtual void inline addAngularMomentum_vec4(vec4 angularMomentum){
 		angularVelocity+=vec3(angularMomentum);
 	}
-	void inline addAngularMomentum(vec3 angularMomentum){
+	virtual void inline addAngularMomentum(vec3 angularMomentum){
 		angularVelocity+=angularMomentum;
 	}
-	vec4 inline getNormal(){
+	virtual vec4 inline getNormal(){
 		return normalize(getRotationMatrix()*vec4(0,1,0,0));
 	}
-	mat4 inline getRotationMatrix(){
+	virtual mat4 inline getRotationMatrix(){
 		return eulerAngleYXZ(orientation.y,orientation.x,orientation.z);
 	}
-	mat4 inline getInverseRatationMatrix(){
+	virtual mat4 inline getInverseRatationMatrix(){
 		return eulerAngleYXZ(-orientation.y,-orientation.x,-orientation.z);
 	}
 	//transpose
-	mat4 inline getTranslationMatrix(){
+	virtual mat4 inline getTranslationMatrix(){
 		return mat4(1.0f,0.0f,0.0f,0.0f,
 			0.0f,1.0f,0.0f,0.0f,
 			0.0f,0.0f,1.0f,0.0f,
 			position.x,position.y,position.z,1.0f);
 	}
-	void updatePosition(vec4 addPosision){
+	virtual void updatePosition(vec4 addPosision){
 		position+=addPosision;
 	}
-	void inline updatePosition(float time){
+	virtual void inline updatePosition(float time){
 		position+=(velocity)*time;
 		orientation+=angularVelocity*time;
 	}

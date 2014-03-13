@@ -209,7 +209,6 @@ void inline colCube_Cylinder(Cube* cube1, Cylinder* cy2){
 
 //dummy code
 void inline colPlane_Cylinder(Plane* plane1, Cylinder* cylinder2){
-	cout<<"col cube plane";
 	vec4 moment1 = projectVec(-cylinder2->velocity , plane1->getNormal());
 	cylinder2->addMomentum(moment1*2);
 }

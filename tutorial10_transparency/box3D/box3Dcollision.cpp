@@ -92,10 +92,10 @@ void inline checkCollision_PlaneCylinder(Plane* plane1,Cylinder* cylinder2){
 	//cout << "check plane cylinder \t";
 	//printvec4();
 	vec4 height = projectVec(cylinder2->getPositionCylinder() - plane1->position , plane1->getNormal());
-	printVec4("base pos ",cylinder2->getBasePoint());
+	/*printVec4("base pos ",cylinder2->getBasePoint());
 	printVec4("cyl pos ",cylinder2->getPositionCylinder());
 	printVec4("top pos ",cylinder2->getTopPoint());
-	printVec4("plane pos ",plane1->position);
+	printVec4("plane pos ",plane1->position);*/
 	if(length(height)<=cylinder2->getPositionCylinder().y){
 		cout<<"col plane cylinder\n";
 		colPlane_Cylinder(plane1,cylinder2);
