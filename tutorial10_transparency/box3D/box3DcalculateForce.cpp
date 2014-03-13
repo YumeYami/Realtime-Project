@@ -9,17 +9,17 @@ vec4 inline projectVec(vec4 vec,vec4 base){
 	return normalize(base)*dot(vec,base)/length(base);
 }
 float inline projectSize(vec4 vec,vec4 base){
-	
+
 	return dot(vec,base)/length(base);
 }
 bool inline isParallel(vec4 normal1,vec4 normal2){
 	if(dot(normal1,normal2)-length(normal1)*length(normal2) <= PARALLEL_SIZE){
-	
+
 	}
 }
 
 //Sphere
-//not test
+//completed
 void inline colSphere_Sphere(Sphere* sph1, Sphere* sph2){
 	vec4 dist = sph2->getPosition()-sph1->getPosition();
 	vec4 velo1 = sph1->getVelocity();
@@ -32,24 +32,13 @@ void inline colSphere_Sphere(Sphere* sph1, Sphere* sph2){
 	sph1->addAngularMomentum_vec4( sph1->getInverseRatationMatrix()*vec4(angularMomentum,0) );
 	sph2->addAngularMomentum_vec4( sph2->getInverseRatationMatrix()*vec4(-angularMomentum,0) );
 }
-//not test
+//completed
 void inline colSphere_Plane(Sphere* sph1, Plane* plane2){
 	vec4 planeNormal = plane2->getNormal();
-
-	//cout<<length(sph1->velocity)<<"\n";
-	//float newVelo = projectSize(-sph1->velocity,plane2->getNormal());
-	//sph1->addMomentum(newVelo*2*plane2->getNormal());
-	////cout<<"col\n";
-
 	vec4 newVelo = projectVec(-sph1->getVelocity(),plane2->getNormal());
-	//cout<<sph1->getVelocity()->x<<" "<<sph1->getVelocity()->y<<" "<<sph1->getVelocity()->z<<" "<<sph1->getVelocity()->w<<"\n";
-	//cout<<newVelo->x<<" "<<newVelo->y<<" "<<newVelo->z<<" "<<newVelo->w<<"\n";
 	vec4 velo = sph1->getVelocity();
 	velo = sph1->getVelocity() + newVelo*2;
 	sph1->setVelocity(velo);
-	cout<<"ref update sphere = "<<&sph1<<"\n";
-	cout<<"col\n";
-
 }
 //not test
 void inline colSphere_Cube(Sphere* sph1, Cube* cube2){
@@ -65,6 +54,7 @@ void inline colSphere_Cube(Sphere* sph1, Cube* cube2){
 	vec3 angularMomentum = cross(vec3(relatevelo),normalize(vec3(dist)));
 	sph1->addAngularMomentum(angularMomentum);
 	cube2->addAngularMomentum(-angularMomentum);
+	cout<< "colSphereCube\n";
 }
 //not test
 void inline colSphere_Cylinder(Sphere* sph1, Cylinder* cy2){
@@ -84,6 +74,7 @@ void inline colSphere_Cylinder(Sphere* sph1, Cylinder* cy2){
 
 //Cube
 void inline colCube_Plane(Cube* cube1, Plane* plane2){
+	cube1->velocity=vec4(0,0,0,0);
 }
 void inline colCube_Cube(Cube* cube1, Cube* cube2){
 }
@@ -232,5 +223,14 @@ vec4 inline dist3D_Line_to_point(vec4 line_start, vec4 line_end, vec4 point)
 	vec4 lineVec = line_end - line_start;
 	vec4 pointPos = point - line_start;
 	vec4 proj = projectVec(pointPos,lineVec);
+	return -pointPos + proj;
+}
+vec4 inline dist3D_Segment_to_point(vec4 line_start, vec4 line_end, vec4 point)
+{
+	vec4 lineVec = line_end - line_start;
+	vec4 pointPos = point - line_start;
+	vec4 proj = projectVec(pointPos,lineVec);
+	if(dot(proj,lineVec)<=0)return -pointPos;
+	if(length(proj)>=length(lineVec)) return -pointPos + lineVec;
 	return -pointPos + proj;
 }
