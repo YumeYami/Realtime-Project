@@ -6,6 +6,7 @@
 
 #define PARALLEL_SIZE 0.01f
 #define SMALL_NUM 0.00000001f
+
 vec4 inline projectVec(vec4 vec,vec4 base){
 	return normalize(base)*dot(vec,base)/length(base);
 }
@@ -16,6 +17,11 @@ float inline projectSize(vec4 vec,vec4 base){
 vec3 inline projectVecCross_vec3(vec3 vec,vec3 base){
 	vec3 temp = cross(vec,normalize(base));
 	return cross(normalize(base),temp);
+}
+bool inline isParallel(vec4 normal1,vec4 normal2){
+	if(dot(normal1,normal2)-length(normal1)*length(normal2) <= PARALLEL_SIZE){
+
+	}
 }
 float inline dist3D_Line_to_Line( vec4 l1p1, vec4 l1p0, vec4 l2p1, vec4 l2p0)
 {
@@ -136,12 +142,6 @@ vec4 inline dist3D_Segment_to_point(vec4 line_start, vec4 line_end, vec4 point)
 	return -pointPos + proj;
 }
 
-bool inline isParallel(vec4 normal1,vec4 normal2){
-	if(dot(normal1,normal2)-length(normal1)*length(normal2) <= PARALLEL_SIZE){
-
-	}
-}
-
 //completed
 void inline colSphere_Sphere(Sphere* sph1, Sphere* sph2){
 	vec4 dist = sph2->position-sph1->position;
@@ -169,7 +169,6 @@ void inline colSphere_Cube(Sphere* sph1, Cube* cube2,vec4 colPoint_ModelSphere){
 	vec4 moment1 = projectVec(-relatevelo,colPoint_ModelSphere);
 	sph1->addMomentum(moment1);
 	sph1->addAngularMomentum_vec4(-relatevelo - moment1);
-	//sph1->addAngularMomentum(projectVecCross_vec3(-vec3(relatevelo),-vec3(colPoint_ModelSphere)));
 	vec4 colPoint_ModelCube = sph1->position - cube2->position - colPoint_ModelSphere; 
 	vec4 moment2 = projectVec(-relatevelo,colPoint_ModelCube);
 	cube2->addMomentum(moment2);
@@ -193,7 +192,7 @@ void inline colSphere_Cylinder(Sphere* sph1, Cylinder* cy2){
 
 //Cube
 void inline colCube_Plane(Cube* cube1, Plane* plane2){
-	cube1->velocity=vec4(0,0,0,0);
+	//cube1->velocity=vec4(0,0,0,0);
 }
 void inline colCube_Cube(Cube* cube1, Cube* cube2){
 }

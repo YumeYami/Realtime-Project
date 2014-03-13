@@ -12,11 +12,22 @@ float inline minn(float x, float y){
 }
 //not test
 void inline checkCollision_SphereCube(Sphere* sph1,Cube* cube2){
-	if(projectSize(cube2->getVelocity() - sph1->getVelocity(),cube2->getPosition() - sph1->getPosition()) >= 0) return;
+	if(projectSize(cube2->velocity - sph1->velocity,cube2->position - sph1->position) >= 0) return;
+	//cout<<"check cube\n";
 	for (int i = 0; i < 12; i++)
 	{
-		vec4 colPoint =  dist3D_Segment_to_point(cube2->edgeSta[i],cube2->edgeEnd[i],sph1->position);
+		////cube2.getcube2->edgeSta[i];
+		vec4 start = (cube2->edgeSta[i]);
+		vec4 end = (cube2->edgeEnd[i]);
+		vec4 colPoint =  dist3D_Segment_to_point(start,end,sph1->position);
+		//cout<<"start edge\t"<<start->x<<" "<<start->y<<" "<<start->z<<" "<<"\n";
+		//cout<<"end edge\t"<<end->x<<" "<<end->y<<" "<<end->z<<" "<<"\n";
+		//cout<<"sphere pos\t"<<sph1->position.x<<" "<<sph1->position.y<<" "<<sph1->position.z<<" "<<"\n";
+		//cout<<"cube pos\t"<<cube2->position.x<<" "<<cube2->position.y<<" "<<cube2->position.z<<" "<<"\n";
+		////cout<<"cube "<<cube2->position.x<<" "<<cube2->position.y<<" "<<cube2->position.z<<" "<<"\n";
+		//cout<< length(colPoint)<<endl;
 		if (length(colPoint)<=sph1->radius){
+			cout<<"collision Cube";
 			colSphere_Cube(sph1,cube2,colPoint);
 			return;
 		}
@@ -92,7 +103,7 @@ void inline checkCollision_CubeCube(Cube* cube1,Cube* cube2){
 }
 void inline checkCollision_CubeCylinder(Cube* cube1,Cylinder* cyl2){
 	if(projectSize(cyl2->getVelocity() - cube1->getVelocity(),cyl2->getPosition() - cube1->getPosition()) >= 0) return;
-	
+
 }
 void inline checkCollision_CylinderCylinder(Cylinder* cylinder1,Cylinder* cylinder2){
 	if(projectSize(cylinder2->getVelocity() - cylinder1->getVelocity(),cylinder2->getPosition() - cylinder1->getPosition()) >= 0) return;
@@ -105,7 +116,7 @@ void inline checkCollision_CylinderCylinder(Cylinder* cylinder1,Cylinder* cylind
 }
 
 bool inline testPlane(Rigidbody* obj1,Plane* plane){
-	
+
 }
 bool inline testDirection(Rigidbody* obj1, Rigidbody* obj2){
 	vec4 relateVelo = obj2->velocity-obj1->velocity;
@@ -121,7 +132,7 @@ void inline checkCollision(vector<Cube*> cu, vector<Cylinder*> cy, vector<Plane*
 	//cout <<"size "<<cu.size()<<" "<<cy.size()<<" "<<pl.size()<<" "<<sp.size()<<"\n";
 	for(int i=0;i<sp.size();i++){
 		Sphere* sp1 = sp.at(i);
-		
+
 		for(int j=0;j<cu.size();j++) checkCollision_SphereCube(sp1,cu.at(j));
 		for(int j=0;j<cy.size();j++) checkCollision_SphereCylinder(sp1,cy.at(j));
 		for(int j=0;j<pl.size();j++) {
@@ -224,7 +235,7 @@ public:
 		findGrid(vec3(pos.x,pos.y,pos.z),a,b,c,x,y,z);
 		for(int i=0;i<x.size();i++){
 			if(x[i]>=0 && x[i]< gridSize && y[i]>=0 && y[i]< gridSize && z[i]>=0 && z[i]< gridSize)
-			gridcell[x[i]][y[i]][z[i]].addCubeToGridCell(r);
+				gridcell[x[i]][y[i]][z[i]].addCubeToGridCell(r);
 		}
 	}
 	void hashCylinder(Cylinder* r){
@@ -237,7 +248,7 @@ public:
 		findGrid(vec3(pos.x,pos.y,pos.z),a,b,c,x,y,z);
 		for(int i=0;i<x.size();i++){
 			if(x[i]>=0 && x[i]< gridSize && y[i]>=0 && y[i]< gridSize && z[i]>=0 && z[i]< gridSize)
-			gridcell[x[i]][y[i]][z[i]].addCylinderToGridCell(r);
+				gridcell[x[i]][y[i]][z[i]].addCylinderToGridCell(r);
 		}
 	}
 	void hashSphere(Sphere* r){
@@ -308,7 +319,7 @@ public:
 	void findGrid(vec3 pos,int a, int b, int c, vector<int> &x, vector<int> &y, vector<int> &z){
 		x.push_back(a); y.push_back(b); z.push_back(c);
 		if(pos.x-floor(pos.x)==0.5 && pos.y-floor(pos.y)==0.5 && pos.z-floor(pos.z)==0.5) return;
-		
+
 		if(pos.x-floor(pos.x) < 0.5) {										//x<0.5 
 			x.push_back(a-1); y.push_back(b); z.push_back(c);
 			if(pos.y-floor(pos.y) < 0.5) {									//y<0.5
@@ -344,7 +355,7 @@ public:
 				}
 			}
 		}
-		
+
 		if(pos.y-floor(pos.y) < 0.5) {										//y<0.5
 			x.push_back(a); y.push_back(b-1); z.push_back(c); 
 			if(pos.z-floor(pos.z) < 0.5) {									//z<0.5
@@ -360,7 +371,7 @@ public:
 				x.push_back(a); y.push_back(b+1); z.push_back(c+1); 
 			}
 		}
-		
+
 		if(pos.z-floor(pos.z) < 0.5) { 
 			x.push_back(a); y.push_back(b); z.push_back(c-1); 
 			if(pos.x-floor(pos.x) < 0.5) {
@@ -376,6 +387,6 @@ public:
 				x.push_back(a+1); y.push_back(b); z.push_back(c+1);
 			}
 		}
-		
+
 	}
 };

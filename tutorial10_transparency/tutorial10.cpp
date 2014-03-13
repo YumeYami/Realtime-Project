@@ -35,7 +35,9 @@ vector<Plane*> plane;
 Grid grid;
 
 void addSphere(){
-	vec3 position = vec3(rand()%(gridSize-4)-4,begin_x+gridSize-4,rand()%(gridSize-4)-4);
+	//0->8
+	//-2->6
+	vec3 position = vec3(rand()%(gridSize-5)-2,begin_x+gridSize-4,rand()%(gridSize-5)-2);
 	vec3 rotation = vec3(0,0,1);
 	vec3 velocity = vec3(rand()%2/10.0,-rand()%2/10.0,rand()%2/10.0);
 	float size = rand()%6/10.0+0.5;
@@ -45,7 +47,7 @@ void addSphere(){
 	sphere.push_back(sp);
 }
 void addCube(){
-	vec3 position = vec3(rand()%(gridSize-4)-4,begin_x+gridSize-4,rand()%(gridSize-4)-4);
+	vec3 position = vec3(rand()%(gridSize-5)-2,begin_x+gridSize-4,rand()%(gridSize-5)-2);
 	vec3 rotation = vec3(0,0,1);
 	vec3 velocity = vec3(rand()%2/10.0,-rand()%2/10.0,rand()%2/10.0);
 	float size = 1;
@@ -55,7 +57,7 @@ void addCube(){
 	c3.push_back(cube);
 }
 void addCylinder(){
-	vec3 position = vec3(rand()%(gridSize-4)-4,begin_x+gridSize-4,rand()%(gridSize-4)-4);
+	vec3 position = vec3(rand()%(gridSize-5)-2,begin_x+gridSize-4,rand()%(gridSize-5)-2);
 	vec3 rotation = vec3(0,0,1);
 	vec3 velocity = vec3(rand()%2/10.0,-rand()%2/10.0,rand()%2/10.0);
 	float radius = 0.5;
@@ -66,9 +68,9 @@ void addCylinder(){
 	cylinder.push_back(cy);
 }
 void addPlane(){
-	//top,bottom,left,right,back,front
+	//top,bottom,left,right,front,back
 	vec3 pos[6] = {vec3(1.5,begin_y+gridSize-1.5,1.5), vec3(1.5,begin_y+1.5,1.5),vec3(begin_x+1.5,1.5,1.5),
-		vec3(begin_x+gridSize-1.5,1.5,1.5),vec3(1.5,1.5,begin_z+gridSize-1.5),vec3(1.5,1.5,begin_z+1.5)};
+	vec3(begin_x+gridSize-1.5,1.5,1.5),vec3(1.5,1.5,begin_z+gridSize-1.5),vec3(1.5,1.5,begin_z+1.5)};
 	vec3 rot[6] = {vec3(PI,0,0), vec3(0,0,0),vec3(0,0,-PI/2),vec3(0,0,PI/2),vec3(-PI/2,0,0),vec3(PI/2,0,0)};
 	for(int i=0;i<6;i++){
 		vec3 position = pos[i];
@@ -81,10 +83,10 @@ void addPlane(){
 		plane.push_back(pl);
 	}
 }
-void tranparentPlane(){
-	for(int i=0;i<5;i++){
-		//plane.pop_back();
-	}
+void transparentPlane(){
+		//top,bottom,left,right,front, back
+	if(plane[4]->color.a==0.0f) plane[4]->color.a=0.8f;
+	else plane[4]->color.a=0.0f;
 }
 
 int lastKey1=GLFW_RELEASE;
@@ -103,6 +105,11 @@ void onPress(){
 	if (glfwGetKey('1') == GLFW_PRESS){
 		if(lastKey1 == GLFW_RELEASE) {
 			addSphere();
+			/*vec4 start = vec4(0,0,0,1);
+			vec4 end = vec4(0,2,0,1);
+			vec4 point = vec4(-1,-2,0,1);
+			vec4 proj = dist3D_Segment_to_point(start,end,point); 
+			cout<<proj.x<<" "<<proj.y<<" "<<proj.z<<" "<<length(proj)<<"\n";*/
 		}
 		lastKey1 = GLFW_PRESS;
 
@@ -132,8 +139,7 @@ void onPress(){
 	//plane
 	if (glfwGetKey('4') == GLFW_PRESS){
 		if(lastKey4 == GLFW_RELEASE) 
-			if(plane.size()==0)addPlane();
-			else tranparentPlane();
+			transparentPlane();
 			lastKey4 = GLFW_PRESS;
 	}
 	else if (glfwGetKey('4') == GLFW_RELEASE){
@@ -151,8 +157,8 @@ void onPress(){
 		//cout<<"y = "<<dy<<"\n";
 		clickX1=clickX2;
 		clickY1=clickY2;
-		dx/=100.0f;
-		dy/=-100.0f;
+		dx/=200.0f;
+		dy/=-200.0f;
 		//top,bottom,left,right,back,front
 		float topPos = plane[0]->position.y;
 		float btmPos = plane[1]->position.y;
@@ -334,6 +340,7 @@ int main( void )
 		for (int i = 0; i < c3.size(); i++)
 		{
 			(*c3[i]).updatePosition(timeStep);
+			c3[i]->setEdge();
 			glm::mat4 ScaleMatrix = mat4();
 			glm::mat4 RotateMatrix = (*c3[i]).getRotationMatrix();
 			glm::mat4 TranslateMatrix = (*c3[i]).getTranslationMatrix();
@@ -461,13 +468,13 @@ int main( void )
 		glDisableVertexAttribArray(vertexNormal_modelspaceID);
 
 		//glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-		glColor3f(0.0f,0.5f,0.0f);
+		/*glColor3f(0.0f,0.5f,0.0f);
 		gluCylinder(gluNewQuadric(),0.1,0.1,1,20,2);
 		GLUquadric* sphere;
 		sphere=gluNewQuadric();
 		gluQuadricNormals(sphere, GL_SMOOTH);
 		glColor3f(1,0,0);
-		gluSphere(sphere,0.2,10,10);
+		gluSphere(sphere,0.2,10,10);*/
 		// Swap buffers
 		glfwSwapBuffers();
 
