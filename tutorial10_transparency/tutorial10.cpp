@@ -95,6 +95,7 @@ int lastKey3=GLFW_RELEASE;
 int lastKey4=GLFW_RELEASE;
 int lastKey5=GLFW_RELEASE;
 int lastKey6=GLFW_RELEASE;
+int lastKey7=GLFW_RELEASE;
 int lastMouse=GLFW_RELEASE;
 int fixX=0,fixY=0;
 int showX=0,showY=0;
@@ -105,6 +106,8 @@ int pickObject = 0;
 int width=512;
 int height=384;
 int update=1;
+int playFrame=1;
+int playOneFrame=0;
 
 class PickingRay 
 {
@@ -221,13 +224,33 @@ void onPress(){
 	}
 	if (glfwGetKey('Z') == GLFW_PRESS){
 		if(lastKey6 == GLFW_RELEASE) 
-			if(update) update = 0;
-			else update = 1;
+			if(update) {
+				update = 0;
+
+			}
+			else {
+				update = 1;
+				playFrame = 1;
+			}
 			lastKey6 = GLFW_PRESS;
+
 	}
 	else if (glfwGetKey('Z') == GLFW_RELEASE){
 		lastKey6 = GLFW_RELEASE;
+
 	}
+	if (glfwGetKey('X') == GLFW_PRESS && !update){
+		if(lastKey7 == GLFW_RELEASE){
+			playFrame = 0;
+			playOneFrame = 1;
+			//cout<<" 1fram ="<<playOneFrame<<" plframe = "<<playFrame<<"\n";
+		}
+		lastKey7 = GLFW_PRESS;
+	}
+	else if (glfwGetKey('X') == GLFW_RELEASE){
+		lastKey7 = GLFW_RELEASE;
+	}
+
 	//pickBox=========================================================================================
 	if( lastMouse==GLFW_RELEASE && glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS && !pickObject){
 		glfwGetMousePos(&clickX1,&clickY1);
@@ -342,21 +365,6 @@ int main( void )
 
 	//---------------------------------------------------------------------------------------------------------------
 
-
-	/*Cube cube1= Cube(vec3(1,1,1),vec3(0,0,1),vec3(1,0,0),1,1,vec3(0.5f,0.2f,0.3f));
-	Cube cube2= Cube(vec3(0,1,0),vec3(0,2.5f,1),vec3(0,1,0),0.5f,1,vec3(0.5f,0.2f,0.3f));
-	Cube cube3= Cube(vec3(1,0,0),vec3(1,0,1),vec3(0,0,1),0.2f,1,vec3(0.5f,0.2f,0.3f));
-	c3.push_back(&cube1);
-	c3.push_back(&cube2);
-	c3.push_back(&cube3);
-
-	Sphere sphere1= Sphere(vec3(1,1,1),vec3(0,0,1),vec3(0,0,0),1,1,vec3(0.5f,0.2f,0.3f));
-	Sphere sphere2= Sphere(vec3(0,1,0),vec3(0,2.5f,1),vec3(0,0,0),0.5f,1,vec3(0.0f,0.4f,0.3f));
-	Sphere sphere3= Sphere(vec3(1,0,0),vec3(1,0,1),vec3(0,0,0),0.2f,1,vec3(0.1f,0.2f,0.8f));
-	sphere.push_back(&sphere1);
-	sphere.push_back(&sphere2);
-	sphere.push_back(&sphere3);
-	*/
 	addCube();
 	addSphere();
 	addPlane();
@@ -400,7 +408,6 @@ int main( void )
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	do{
-
 		// Measure speed
 		double currentTime = glfwGetTime();
 		nbFrames++;
@@ -425,7 +432,6 @@ int main( void )
 		computeMatricesFromInputs();
 		grid.clearGrid();
 		onPress();
-
 		glm::mat4 ModelMatrix = mat4(1.0f);
 		glm::mat4 ProjectionMatrix = getProjectionMatrix();
 		glm::mat4 ViewMatrix = getViewMatrix();
@@ -435,7 +441,7 @@ int main( void )
 		glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
 		for (int i = 0; i < c3.size(); i++)
 		{
-			if(update){
+			if(update || playOneFrame){
 				c3[i]->updatePosition(timeStep);
 				c3[i]->setEdge();
 			}
@@ -451,7 +457,7 @@ int main( void )
 		}
 		for (int i = 0; i < sphere.size(); i++)
 		{
-			if(update)(*sphere[i]).updatePosition(timeStep);
+			if(update || playOneFrame)(*sphere[i]).updatePosition(timeStep);
 			glm::mat4 ScaleMatrix = mat4();
 			glm::mat4 RotateMatrix = (*sphere[i]).getRotationMatrix();
 			glm::mat4 TranslateMatrix = (*sphere[i]).getTranslationMatrix();
@@ -464,7 +470,7 @@ int main( void )
 		}
 		for (int i = 0; i < cylinder.size(); i++)
 		{
-			if(update)(*cylinder[i]).updatePosition(0.01f);
+			if(update || playOneFrame)(*cylinder[i]).updatePosition(0.01f);
 			glm::mat4 ScaleMatrix = mat4();
 			glm::mat4 RotateMatrix = (*cylinder[i]).getRotationMatrix();
 			glm::mat4 TranslateMatrix = (*cylinder[i]).getTranslationMatrix();
@@ -477,7 +483,7 @@ int main( void )
 		}
 		for (int i = 0; i < plane.size(); i++)
 		{
-			if(update)(*plane[i]).updatePosition(0.01f);
+			if(update || playOneFrame)(*plane[i]).updatePosition(0.01f);
 			glm::mat4 ScaleMatrix = mat4();
 			glm::mat4 RotateMatrix = (*plane[i]).getRotationMatrix();
 			glm::mat4 TranslateMatrix = (*plane[i]).getTranslationMatrix();
@@ -488,6 +494,7 @@ int main( void )
 			(*plane[i]).render();
 			glPopMatrix();
 		}
+		playOneFrame=0;
 		glm::mat4 ScaleMatrix = mat4();
 		glm::mat4 RotateMatrix = mat4();
 		glm::mat4 TranslateMatrix = mat4();
@@ -575,7 +582,7 @@ int main( void )
 		gluSphere(sphere,0.2,10,10);*/
 		// Swap buffers
 		glfwSwapBuffers();
-
+		playOneFrame=0;
 	} // Check if the ESC key was pressed or the window was closed
 	while( glfwGetKey( GLFW_KEY_ESC ) != GLFW_PRESS &&
 		glfwGetWindowParam( GLFW_OPENED ) );
