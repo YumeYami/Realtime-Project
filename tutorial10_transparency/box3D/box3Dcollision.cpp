@@ -10,7 +10,6 @@
 float inline minn(float x, float y){
 	return (x < y ?  x : y) ;
 }
-//some intersection
 //not test
 void inline checkCollision_SphereCube(Sphere* sph1,Cube* cube2){
 	if(projectSize(cube2->getVelocity() - sph1->getVelocity(),cube2->getPosition() - sph1->getPosition()) >= 0) return;
@@ -66,7 +65,6 @@ void inline checkCollision_SphereSphere(Sphere* sph1, Sphere* sph2){
 		colSphere_Sphere(sph1,sph2);
 	}
 }
-//dummy collision
 //not test
 void inline checkCollision_PlaneCube(Plane* plane1,Cube* cube2){
 	if(projectSize(cube2->getVelocity() - plane1->getVelocity(),cube2->getPosition() - plane1->getPosition()) >= 0) return;
@@ -98,13 +96,14 @@ void inline checkCollision_CubeCylinder(Cube* cube1,Cylinder* cyl2){
 }
 void inline checkCollision_CylinderCylinder(Cylinder* cylinder1,Cylinder* cylinder2){
 	if(projectSize(cylinder2->getVelocity() - cylinder1->getVelocity(),cylinder2->getPosition() - cylinder1->getPosition()) >= 0) return;
-	float minimumDist = dist3D_Segment_to_Segment(cylinder1->getEndPoint1(),cylinder1->getEndPoint2(),cylinder2->getEndPoint1(),cylinder2->getEndPoint2());
-	if(minimumDist >= cylinder1->radius + cylinder2->radius) return;
-	else if(minimumDist <= cylinder1->radius) colCylinder_Cylinder(cylinder1,cylinder2);
+	vec4 minimumDist = dist3D_Segment_to_Segment(cylinder1->getEndPoint1(),cylinder1->getEndPoint2(),cylinder2->getEndPoint1(),cylinder2->getEndPoint2());
+	if(length(minimumDist)>= cylinder1->radius + cylinder2->radius) return;
+	else if(length(minimumDist) <= cylinder1->radius) colCylinder_Cylinder(cylinder1,cylinder2);
 	else{
 
 	}
 }
+
 bool inline testPlane(Rigidbody* obj1,Plane* plane){
 	
 }

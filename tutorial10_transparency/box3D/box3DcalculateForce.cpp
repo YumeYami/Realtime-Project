@@ -13,6 +13,10 @@ float inline projectSize(vec4 vec,vec4 base){
 
 	return dot(vec,base)/length(base);
 }
+vec3 inline projectVecCross_vec3(vec3 vec,vec3 base){
+	vec3 temp = cross(vec,normalize(base));
+	return cross(normalize(base),temp);
+}
 float inline dist3D_Line_to_Line( vec4 l1p1, vec4 l1p0, vec4 l2p1, vec4 l2p0)
 {
 	vec4   u = l1p1 - l1p0;
@@ -45,7 +49,7 @@ float inline dist3D_Line_to_Line( vec4 l1p1, vec4 l1p0, vec4 l2p1, vec4 l2p0)
 // dist3D_Segment_to_Segment(): get the 3D minimum distance between 2 segments
 //    Input:  two 3D line segments S1 and S2
 //    Return: the shortest distance between S1 and S2
-float inline dist3D_Segment_to_Segment( vec4 s1p1, vec4 s1p0, vec4 s2p1, vec4 s2p0)
+vec4 inline dist3D_Segment_to_Segment( vec4 s1p1, vec4 s1p0, vec4 s2p1, vec4 s2p0)
 {
 	vec4   u = s1p1 - s1p0;
 	vec4   v = s2p1 - s2p0;
@@ -112,7 +116,7 @@ float inline dist3D_Segment_to_Segment( vec4 s1p1, vec4 s1p0, vec4 s2p1, vec4 s2
 	// get the difference of the two closest points
 	vec4   dP = w + (sc * u) - (tc * v);  // =  S1(sc) - S2(tc)
 
-	return length(dP);   // return the closest distance
+	return dP;   // return the closest distance
 }
 //minimum distance point to line
 vec4 inline dist3D_Line_to_point(vec4 line_start, vec4 line_end, vec4 point)
@@ -138,55 +142,50 @@ bool inline isParallel(vec4 normal1,vec4 normal2){
 	}
 }
 
-//Sphere
 //completed
 void inline colSphere_Sphere(Sphere* sph1, Sphere* sph2){
-	vec4 dist = sph2->getPosition()-sph1->getPosition();
-	vec4 velo1 = sph1->getVelocity();
-	vec4 velo2 = sph2->getVelocity();
+	vec4 dist = sph2->position-sph1->position;
+	vec4 velo1 = sph1->velocity;
+	vec4 velo2 = sph2->velocity;
 	vec4 relatevelo = velo2-velo1;//ref from sph1
 	float lineMomentum = projectSize(relatevelo,normalize(dist));
 	sph1->addMomentum(normalize(dist)*lineMomentum);
 	sph2->addMomentum(normalize(dist)*-lineMomentum);
-	vec3 angularMomentum = cross(vec3(relatevelo),normalize(vec3(dist)));
+	vec3 angularMomentum = cross(vec3(relatevelo),normalize(vec3(dist)) );
 	sph1->addAngularMomentum_vec4( sph1->getInverseRatationMatrix()*vec4(angularMomentum,0) );
 	sph2->addAngularMomentum_vec4( sph2->getInverseRatationMatrix()*vec4(-angularMomentum,0) );
 }
 //completed
 void inline colSphere_Plane(Sphere* sph1, Plane* plane2){
 	vec4 planeNormal = plane2->getNormal();
-	vec4 newVelo = projectVec(-sph1->getVelocity(),plane2->getNormal());
-	vec4 velo = sph1->getVelocity();
-	velo = sph1->getVelocity() + newVelo*2;
+	vec4 newVelo = projectVec(-sph1->velocity,plane2->getNormal());
+	vec4 velo = sph1->velocity;
+	velo = sph1->velocity + newVelo*2;
 	sph1->setVelocity(velo);
 }
 //not test
-void inline colSphere_Cube(Sphere* sph1, Cube* cube2,vec4 colPoint){
-	vec4 dist = cube2->getPosition()-sph1->getPosition();
-	vec4 velo1 = sph1->getVelocity();
-	vec4 velo2 = cube2->getVelocity();
-	vec4 relatevelo = velo2-velo1;//ref from sph1
-	float exchangeMomentum = projectSize(relatevelo,normalize(dist));
-	sph1->addMomentum(normalize(dist)*exchangeMomentum);
-	cube2->addMomentum(normalize(dist)*-exchangeMomentum);
-	float newLineEngergy1 = pow(length(sph1->getVelocity()),2);
-	float newLineEngergy2 = pow(length(cube2->getVelocity()),2);
-	vec3 angularMomentum = cross(vec3(relatevelo),normalize(vec3(dist)));
-	sph1->addAngularMomentum(angularMomentum);
-	cube2->addAngularMomentum(-angularMomentum);
-	cout<< "colSphereCube\n";
+void inline colSphere_Cube(Sphere* sph1, Cube* cube2,vec4 colPoint_ModelSphere){
+	vec4 relatevelo = cube2->velocity - sph1->velocity;//ref from sph1
+	vec4 moment1 = projectVec(-relatevelo,colPoint_ModelSphere);
+	sph1->addMomentum(moment1);
+	sph1->addAngularMomentum_vec4(-relatevelo - moment1);
+	//sph1->addAngularMomentum(projectVecCross_vec3(-vec3(relatevelo),-vec3(colPoint_ModelSphere)));
+	vec4 colPoint_ModelCube = sph1->position - cube2->position - colPoint_ModelSphere; 
+	vec4 moment2 = projectVec(-relatevelo,colPoint_ModelCube);
+	cube2->addMomentum(moment2);
+	cube2->addAngularMomentum_vec4(relatevelo - moment2);
 }
 //not test
 void inline colSphere_Cylinder(Sphere* sph1, Cylinder* cy2){
-	vec4 dist = cy2->getPosition()-sph1->getPosition();
-	vec4 velo1 = sph1->getVelocity();
-	vec4 velo2 = cy2->getVelocity();
+	vec4 dist = cy2->position-sph1->position;
+	vec4 velo1 = sph1->velocity;
+	vec4 velo2 = cy2->velocity;
 	vec4 relatevelo = velo2-velo1;//ref from sph1
 	float exchangeMomentum = projectSize(relatevelo,normalize(dist));
 	sph1->addMomentum(normalize(dist)*exchangeMomentum);
 	cy2->addMomentum(normalize(dist)*-exchangeMomentum);
-	float newLineEngergy1 = pow(length(sph1->getVelocity()),2);
-	float newLineEngergy2 = pow(length(cy2->getVelocity()),2);
+	float newLineEngergy1 = pow(length(sph1->velocity),2);
+	float newLineEngergy2 = pow(length(cy2->velocity),2);
 	vec3 angularMomentum = cross(vec3(relatevelo),normalize(vec3(dist)));
 	sph1->addAngularMomentum(angularMomentum);
 	cy2->addAngularMomentum(-angularMomentum);

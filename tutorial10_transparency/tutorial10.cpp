@@ -195,7 +195,11 @@ int main( void )
 		return -1;
 	}
 
-
+	cout << length(dist3D_Segment_to_Segment(
+		vec4(0,0,0,1),
+		vec4(1,1.5f,0,1),
+		vec4(2,2,0,1),
+		vec4(2,3,0,1) ) )<<" = test\n";
 	// Initialize GLEW
 	if (glewInit() != GLEW_OK) {
 		fprintf(stderr, "Failed to initialize GLEW\n");
