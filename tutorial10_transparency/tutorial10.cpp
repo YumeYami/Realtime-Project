@@ -68,7 +68,7 @@ void addCylinder(){
 	cylinder.push_back(cy);
 }
 void addPlane(){
-	//top,bottom,left,right,back,front
+	//top,bottom,left,right,front,back
 	vec3 pos[6] = {vec3(1.5,begin_y+gridSize-1.5,1.5), vec3(1.5,begin_y+1.5,1.5),vec3(begin_x+1.5,1.5,1.5),
 	vec3(begin_x+gridSize-1.5,1.5,1.5),vec3(1.5,1.5,begin_z+gridSize-1.5),vec3(1.5,1.5,begin_z+1.5)};
 	vec3 rot[6] = {vec3(PI,0,0), vec3(0,0,0),vec3(0,0,-PI/2),vec3(0,0,PI/2),vec3(-PI/2,0,0),vec3(PI/2,0,0)};
@@ -84,9 +84,9 @@ void addPlane(){
 	}
 }
 void transparentPlane(){
-	for(int i=0;i<plane.size();i++){
-		//plane.pop_back();
-	}
+		//top,bottom,left,right,front, back
+	if(plane[4]->color.a==0.0f) plane[4]->color.a=0.8f;
+	else plane[4]->color.a=0.0f;
 }
 
 int lastKey1=GLFW_RELEASE;
@@ -134,8 +134,7 @@ void onPress(){
 	//plane
 	if (glfwGetKey('4') == GLFW_PRESS){
 		if(lastKey4 == GLFW_RELEASE) 
-			if(plane.size()==0)addPlane();
-			else transparentPlane();
+			transparentPlane();
 			lastKey4 = GLFW_PRESS;
 	}
 	else if (glfwGetKey('4') == GLFW_RELEASE){
@@ -153,8 +152,8 @@ void onPress(){
 		//cout<<"y = "<<dy<<"\n";
 		clickX1=clickX2;
 		clickY1=clickY2;
-		dx/=100.0f;
-		dy/=-100.0f;
+		dx/=200.0f;
+		dy/=-200.0f;
 		//top,bottom,left,right,back,front
 		float topPos = plane[0]->position.y;
 		float btmPos = plane[1]->position.y;
@@ -459,13 +458,13 @@ int main( void )
 		glDisableVertexAttribArray(vertexNormal_modelspaceID);
 
 		//glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-		glColor3f(0.0f,0.5f,0.0f);
+		/*glColor3f(0.0f,0.5f,0.0f);
 		gluCylinder(gluNewQuadric(),0.1,0.1,1,20,2);
 		GLUquadric* sphere;
 		sphere=gluNewQuadric();
 		gluQuadricNormals(sphere, GL_SMOOTH);
 		glColor3f(1,0,0);
-		gluSphere(sphere,0.2,10,10);
+		gluSphere(sphere,0.2,10,10);*/
 		// Swap buffers
 		glfwSwapBuffers();
 
