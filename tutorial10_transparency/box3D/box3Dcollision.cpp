@@ -16,16 +16,9 @@ void inline checkCollision_SphereCube(Sphere* sph1,Cube* cube2){
 	//cout<<"check cube\n";
 	for (int i = 0; i < 12; i++)
 	{
-		////cube2.getcube2->edgeSta[i];
 		vec4 start = (cube2->edgeSta[i]);
 		vec4 end = (cube2->edgeEnd[i]);
 		vec4 colPoint =  dist3D_Segment_to_point(start,end,sph1->position);
-		//cout<<"start edge\t"<<start->x<<" "<<start->y<<" "<<start->z<<" "<<"\n";
-		//cout<<"end edge\t"<<end->x<<" "<<end->y<<" "<<end->z<<" "<<"\n";
-		//cout<<"sphere pos\t"<<sph1->position.x<<" "<<sph1->position.y<<" "<<sph1->position.z<<" "<<"\n";
-		//cout<<"cube pos\t"<<cube2->position.x<<" "<<cube2->position.y<<" "<<cube2->position.z<<" "<<"\n";
-		////cout<<"cube "<<cube2->position.x<<" "<<cube2->position.y<<" "<<cube2->position.z<<" "<<"\n";
-		//cout<< length(colPoint)<<endl;
 		if (length(colPoint)<=sph1->radius){
 			cout<<"collision Cube";
 			colSphere_Cube(sph1,cube2,colPoint);

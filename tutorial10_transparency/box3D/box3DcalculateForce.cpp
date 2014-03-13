@@ -11,7 +11,6 @@ vec4 inline projectVec(vec4 vec,vec4 base){
 	return normalize(base)*dot(vec,base)/length(base);
 }
 float inline projectSize(vec4 vec,vec4 base){
-
 	return dot(vec,base)/length(base);
 }
 vec3 inline projectVecCross_vec3(vec3 vec,vec3 base){
@@ -165,13 +164,15 @@ void inline colSphere_Plane(Sphere* sph1, Plane* plane2){
 }
 //not test
 void inline colSphere_Cube(Sphere* sph1, Cube* cube2,vec4 colPoint_ModelSphere){
+	cout<<"col";
 	vec4 relatevelo = cube2->velocity - sph1->velocity;//ref from sph1
-	vec4 moment1 = projectVec(-relatevelo,colPoint_ModelSphere);
+	vec4 moment1 = projectVec(-relatevelo,normalize(colPoint_ModelSphere));
+	
 	sph1->addMomentum(moment1);
 	sph1->addAngularMomentum_vec4(-relatevelo - moment1);
 	vec4 colPoint_ModelCube = sph1->position - cube2->position - colPoint_ModelSphere; 
 	vec4 moment2 = projectVec(-relatevelo,colPoint_ModelCube);
-	cube2->addMomentum(moment2);
+	cube2->addMomentum(-moment1);
 	cube2->addAngularMomentum_vec4(relatevelo - moment2);
 }
 //not test
@@ -192,7 +193,7 @@ void inline colSphere_Cylinder(Sphere* sph1, Cylinder* cy2){
 
 //Cube
 void inline colCube_Plane(Cube* cube1, Plane* plane2){
-	//cube1->velocity=vec4(0,0,0,0);
+	cube1->velocity=-cube1->velocity;
 }
 void inline colCube_Cube(Cube* cube1, Cube* cube2){
 }
