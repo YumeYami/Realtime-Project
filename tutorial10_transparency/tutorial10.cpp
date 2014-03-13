@@ -43,13 +43,7 @@ void addSphere(){
 	float mass = 1;
 	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
 	Sphere* sp = new Sphere(position,rotation,velocity,size,mass,color);
-	//cout<<"ref new sphere = "<<&sp<<endl;
-	//Sphere *temp = sp;
-	//(*temp).velocity.y=0.5f;
 	sphere.push_back(sp);
-	//sphere.end();//test //cannot change
-	//cout<<"ref temp sphere = "<<&temp<<endl;
-
 }
 void addCube(){
 	vec3 position = vec3(1,1,1);
@@ -147,18 +141,22 @@ void onPress(){
 
 	if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS && lastMouse==GLFW_RELEASE){
 		glfwGetMousePos(&clickX1,&clickY1);
-		/*cout<<"x = "<<clickX1;
-		cout<<"\ny = "<<clickY1;*/
 		lastMouse=GLFW_PRESS;
 	} else if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT)==GLFW_RELEASE && lastMouse==GLFW_PRESS) {
 		glfwGetMousePos(&clickX2,&clickY2);
 		lastMouse=GLFW_RELEASE;
 		int dx = clickX2-clickX1;
 		int dy = clickY2-clickY1;
+		cout<<"x = "<<dx;
+		cout<<"y = "<<dy<<"\n";
 		clickX1=clickX2;
 		clickY1=clickY2;
-		for(int i=0;i<plane.size();i++) {}
-	//		if(plane[i]->position+=vec4(dx,dy,0,0)>=vec4(-5,-5,-5,0));
+		for(int i=0;i<plane.size();i++) {
+			vec4 pos = plane[i]->position;
+			if(pos.x+dx>=-5 && pos.x+dx<=-5+gridSize) pos.x+=dx;
+			if(pos.y+dy>=-5 && pos.y+dy<=-5+gridSize) pos.y+=dy;
+			plane[i]->position=pos;
+		}
 	} else if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT)==GLFW_RELEASE && lastMouse==GLFW_PRESS) {
 		lastMouse=GLFW_RELEASE;
 	}
