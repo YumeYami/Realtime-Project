@@ -38,7 +38,7 @@ void addSphere(){
 	vec3 position = vec3(rand()%(gridSize-4)-4,begin_x+gridSize-4,rand()%(gridSize-4)-4);
 	vec3 rotation = vec3(0,0,1);
 	vec3 velocity = vec3(rand()%2/10.0,-rand()%2/10.0,rand()%2/10.0);
-	float size = 0.5f;
+	float size = rand()%6/10.0+0.5;
 	float mass = 1;
 	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
 	Sphere* sp = new Sphere(position,rotation,velocity,size,mass,color);
@@ -66,7 +66,9 @@ void addCylinder(){
 	cylinder.push_back(cy);
 }
 void addPlane(){
-	vec3 pos[6] = {vec3(0,begin_y+gridSize-3,0), vec3(0,begin_y,0),vec3(begin_x,0,0),vec3(begin_x+gridSize-3,0,0),vec3(0,0,begin_z+gridSize-3),vec3(0,0,begin_z)};
+	//top,bottom,left,right,back,front
+	vec3 pos[6] = {vec3(1.5,begin_y+gridSize-1.5,1.5), vec3(1.5,begin_y+1.5,1.5),vec3(begin_x+1.5,1.5,1.5),
+		vec3(begin_x+gridSize-1.5,1.5,1.5),vec3(1.5,1.5,begin_z+gridSize-1.5),vec3(1.5,1.5,begin_z+1.5)};
 	vec3 rot[6] = {vec3(PI,0,0), vec3(0,0,0),vec3(0,0,-PI/2),vec3(0,0,PI/2),vec3(-PI/2,0,0),vec3(PI/2,0,0)};
 	for(int i=0;i<6;i++){
 		vec3 position = pos[i];
@@ -138,12 +140,11 @@ void onPress(){
 		lastKey4 = GLFW_RELEASE;
 	}
 
-	if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS && lastMouse==GLFW_RELEASE){
+	if( lastMouse==GLFW_RELEASE && glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS){
 		glfwGetMousePos(&clickX1,&clickY1);
 		lastMouse=GLFW_PRESS;
-	} else if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT)==GLFW_RELEASE && lastMouse==GLFW_PRESS) {
+	} else if(lastMouse==GLFW_PRESS && glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS) {
 		glfwGetMousePos(&clickX2,&clickY2);
-		lastMouse=GLFW_RELEASE;
 		float dx = clickX2-clickX1;
 		float dy = clickY2-clickY1;
 		//cout<<"x = "<<dx;
@@ -151,17 +152,24 @@ void onPress(){
 		clickX1=clickX2;
 		clickY1=clickY2;
 		dx/=100.0f;
-		dy/=100.0f;
+		dy/=-100.0f;
+		//top,bottom,left,right,back,front
+		float topPos = plane[0]->position.y;
+		float btmPos = plane[1]->position.y;
+		float lftPos = plane[2]->position.x;
+		float rhtPos = plane[3]->position.x;
+		//float bckPos = plane[4]->position.z;
+		//float fntPos = plane[5]->position.z;
+		vec4 pos = vec4(0,0,0,0);
+		if(topPos+dy<=begin_y+gridSize && btmPos+dy>begin_y) pos.y=dy;
+		if(lftPos+dx>=begin_x && rhtPos+dx<begin_x+gridSize) pos.x=dx;
+		grid.clearGridPlane();
 		for(int i=0;i<plane.size();i++) {
-			vec4 pos = plane[i]->position;
-			if(pos.x+dx>=-5 && pos.x+dx<=-5+gridSize) pos.x+=dx;
-			if(pos.y+dy>=-5 && pos.y+dy<=-5+gridSize) pos.y+=dy;
-			plane[i]->position=pos;
-			grid.clearGridPlane();
+			plane[i]->position+=pos;
 			grid.hashPlane(plane[i]);
 		}
 
-	} else if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT)==GLFW_RELEASE && lastMouse==GLFW_PRESS) {
+	} else if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT)==GLFW_RELEASE) {
 		lastMouse=GLFW_RELEASE;
 	}
 
@@ -231,7 +239,7 @@ int main( void )
 	//---------------------------------------------------------------------------------------------------------------
 
 
-	Cube cube1= Cube(vec3(1,1,1),vec3(0,0,1),vec3(1,0,0),1,1,vec3(0.5f,0.2f,0.3f));
+	/*Cube cube1= Cube(vec3(1,1,1),vec3(0,0,1),vec3(1,0,0),1,1,vec3(0.5f,0.2f,0.3f));
 	Cube cube2= Cube(vec3(0,1,0),vec3(0,2.5f,1),vec3(0,1,0),0.5f,1,vec3(0.5f,0.2f,0.3f));
 	Cube cube3= Cube(vec3(1,0,0),vec3(1,0,1),vec3(0,0,1),0.2f,1,vec3(0.5f,0.2f,0.3f));
 	c3.push_back(&cube1);
@@ -244,6 +252,9 @@ int main( void )
 	sphere.push_back(&sphere1);
 	sphere.push_back(&sphere2);
 	sphere.push_back(&sphere3);
+	*/
+	addCube();
+	addSphere();
 	addPlane();
 	addCylinder();
 	grid = Grid(plane);
