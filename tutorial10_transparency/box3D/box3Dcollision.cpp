@@ -14,15 +14,14 @@ float inline minn(float x, float y){
 //not test
 void inline checkCollision_SphereCube(Sphere* sph1,Cube* cube2){
 	if(projectSize(cube2->getVelocity() - sph1->getVelocity(),cube2->getPosition() - sph1->getPosition()) >= 0) return;
-	vec4 dist = sph1->getPosition()-cube2->getPosition();
-	vec4 surfaceSp1 = dist*( length(dist) - sph1->radius) / length(dist) ;
-	vec4 point = cube2->getInverseRatationMatrix()*surfaceSp1;
-	vec3 cubeSkin = cube2->getSkin();
-	if(abs(point.x)<=cubeSkin.x && abs(point.y)<=cubeSkin.y && abs(point.z)<=cubeSkin.z) {
-		//onCollision
-		colSphere_Cube(sph1,cube2);
+	for (int i = 0; i < 12; i++)
+	{
+		vec4 colPoint =  dist3D_Segment_to_point(cube2->edgeSta[i],cube2->edgeEnd[i],sph1->position);
+		if (length(colPoint)<=sph1->radius){
+			colSphere_Cube(sph1,cube2,colPoint);
+			return;
+		}
 	}
-
 }
 //not test
 void inline checkCollision_SphereCylinder(Sphere* sph1,Cylinder* cylinder2){

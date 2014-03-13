@@ -162,7 +162,7 @@ void inline colSphere_Plane(Sphere* sph1, Plane* plane2){
 	sph1->setVelocity(velo);
 }
 //not test
-void inline colSphere_Cube(Sphere* sph1, Cube* cube2){
+void inline colSphere_Cube(Sphere* sph1, Cube* cube2,vec4 colPoint){
 	vec4 dist = cube2->getPosition()-sph1->getPosition();
 	vec4 velo1 = sph1->getVelocity();
 	vec4 velo2 = cube2->getVelocity();
