@@ -394,10 +394,6 @@ int main( void )
 		glm::vec3 lightPos = glm::vec3(4,4,4);
 		glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
 
-		// Bind our texture in Texture Unit 0
-		glActiveTexture(GL_TEXTURE0);
-		// Set our "myTextureSampler" sampler to user Texture Unit 0
-		glUniform1i(TextureID, 0);
 
 		//1rst attribute buffer : vertices
 		glEnableVertexAttribArray(vertexPosition_modelspaceID);
@@ -482,7 +478,6 @@ int main( void )
 	glDeleteBuffers(1, &normalbuffer);
 	glDeleteBuffers(1, &elementbuffer);
 	glDeleteProgram(programID);
-	glDeleteTextures(1, &Texture);
 
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();
