@@ -61,7 +61,7 @@ void addCylinder(){
 	vec3 rotation = vec3(rand()%(gridSize-5)-2,begin_x+gridSize-4,rand()%(gridSize-5)-2);
 	vec3 velocity = vec3(rand()%6/10.0,-rand()%6/10.0,rand()%6/10.0);
 	float radius = 0.25;
-	float length = 0.5;
+	float length = 0.99f;
 	float mass = 1;
 	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
 	Cylinder *cy = new Cylinder(position,rotation,velocity,radius,length,mass,color);
@@ -374,17 +374,19 @@ int main( void )
 	Cylinder* cyl = cylinder[0];
 	cyl->velocity = vec4(0,0,0,0);
 	cyl->position = vec4(0,-3.5,0,1);
-	cyl->orientation = vec3(PI/2,0,0);
+	cyl->orientation = vec3(0,0,0);
+
 	cyl->color = vec4(1,0,0,1);
 	Cylinder* cyl2 = cylinder[1];
 	cyl2->velocity = vec4(0,0,0,0);
 	cyl2->position = vec4(2,-3.0,0,1);
 	cyl2->orientation = vec3(0,0,0);
 	cyl2->color = vec4(0,1,0,1);
+	
 	Cylinder* cyl3 = cylinder[2];
 	cyl3->velocity = vec4(0,0,0,0);
 	cyl3->position = vec4(0,-3.5,2,1);
-	cyl3->orientation = vec3(0,0,PI/2);
+	cyl3->orientation = vec3(0,0,0);
 	cyl3->color = vec4(0,0,1,1);*/
 	grid = Grid(plane);
 
@@ -489,8 +491,8 @@ int main( void )
 		{
 			if(update || playOneFrame)(*cylinder[i]).updatePosition(0.01f);
 			glm::mat4 ScaleMatrix = mat4();
-			glm::mat4 RotateMatrix = (*cylinder[i]).getRotationMatrix();
-			glm::mat4 TranslateMatrix = (*cylinder[i]).getTranslationMatrix();
+			glm::mat4 RotateMatrix = (*cylinder[i]).getRotationMatrixRender();
+			glm::mat4 TranslateMatrix = (*cylinder[i]).getTranslationMatrixRender();
 			glPushMatrix();
 			glUniformMatrix4fv(ScaleMatrixID, 1, GL_FALSE, &ScaleMatrix[0][0]);
 			glUniformMatrix4fv(RotateMatrixID, 1, GL_FALSE, &RotateMatrix[0][0]);

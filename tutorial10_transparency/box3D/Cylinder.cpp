@@ -13,21 +13,24 @@ public:
 		length=cylinderLength;
 		color = vec4(cylinderColor,0.8f);
 
-	}
-	vec4 inline getPositionCylinder(){
-		return position + (getNormal()*length/2);
-	}
+	}/*
 	vec4 inline getNormal() override{
 		return getRotationMatrix()*vec4(0,0,1,0);
-	}
+	}*/
 	vec4 inline getBasePoint(){
 		return position;
 	}
 	vec4 inline getTopPoint(){
 		return position + (getNormal()*length);
 	}
-	mat4 inline getTranslationMatrix() override {
-		vec4 pos = getPositionCylinder();
+	mat4 inline getRotationMatrixRender(){
+		return eulerAngleYXZ(orientation.y,orientation.x-PI/2,orientation.z);
+	}
+	mat4 inline getInverseRatationMatrixRender(){
+		return eulerAngleYXZ(-orientation.y,-orientation.x+PI/2,-orientation.z);
+	}
+	mat4 inline getTranslationMatrixRender() {
+		vec4 pos = position - getNormal()*length/2;
 		return mat4(1.0f,0.0f,0.0f,0.0f,
 			0.0f,1.0f,0.0f,0.0f,
 			0.0f,0.0f,1.0f,0.0f,
