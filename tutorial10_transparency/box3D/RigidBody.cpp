@@ -95,7 +95,7 @@ public:
 	virtual void updatePosition(vec4 addPosision){
 		position+=addPosision;
 	}
-	virtual void inline updatePosition(float time){
+	virtual void inline updatePosition(float time,float gravity){
 		position+=(velocity)*time;
 		orientation+=angularVelocity*time;
 		velocity*=0.9;
