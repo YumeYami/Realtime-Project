@@ -49,11 +49,12 @@ void addSphere(){
 void addCube(){
 	vec3 position = vec3(rand()%(gridSize-5)-2,begin_x+gridSize-4,rand()%(gridSize-5)-2);
 	vec3 rotation = vec3(0,0,1);
-	vec3 velocity = vec3(rand()%2/10.0,-rand()%2/10.0,rand()%2/10.0);
+	vec3 velocity = vec3(rand()%6/10.0,-rand()%6/10.0,rand()%6/10.0);
 	float size = 1;
 	float mass = 1;
 	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
 	Cube *cube=new Cube(position,rotation,velocity,size,mass,color);
+	cube->angularVelocity =  vec3(rand()%4/10.0,-rand()%4/10.0,rand()%4/10.0);
 	c3.push_back(cube);
 }
 void addCylinder(){
@@ -174,11 +175,6 @@ void onPress(){
 	if (glfwGetKey('1') == GLFW_PRESS){
 		if(lastKey1 == GLFW_RELEASE) {
 			addSphere();
-			/*vec4 start = vec4(0,0,0,1);
-			vec4 end = vec4(0,2,0,1);
-			vec4 point = vec4(-1,-2,0,1);
-			vec4 proj = dist3D_Segment_to_point(start,end,point); 
-			cout<<proj.x<<" "<<proj.y<<" "<<proj.z<<" "<<length(proj)<<"\n";*/
 		}
 		lastKey1 = GLFW_PRESS;
 
@@ -244,7 +240,6 @@ void onPress(){
 		if(lastKey7 == GLFW_RELEASE){
 			playFrame = 0;
 			playOneFrame = 1;
-			//cout<<" 1fram ="<<playOneFrame<<" plframe = "<<playFrame<<"\n";
 		}
 		lastKey7 = GLFW_PRESS;
 	}
@@ -271,8 +266,6 @@ void onPress(){
 		glfwGetMousePos(&clickX2,&clickY2);
 		float dx = clickX2-clickX1;
 		float dy = clickY2-clickY1;
-		//cout<<"x = "<<dx;
-		//cout<<"y = "<<dy<<"\n";
 		clickX1=clickX2;
 		clickY1=clickY2;
 		dx/=200.0f;
@@ -328,12 +321,6 @@ int main( void )
 		glfwTerminate();
 		return -1;
 	}
-
-	cout << length(dist3D_Segment_to_Segment(
-		vec4(0,0,0,1),
-		vec4(1,1.5f,0,1),
-		vec4(2,2,0,1),
-		vec4(2,3,0,1) ) )<<" = test\n";
 	// Initialize GLEW
 	if (glewInit() != GLEW_OK) {
 		fprintf(stderr, "Failed to initialize GLEW\n");
