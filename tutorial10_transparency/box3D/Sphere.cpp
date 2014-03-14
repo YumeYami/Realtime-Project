@@ -11,7 +11,11 @@ public:
 		orientation=sphereRotation;
 		position=vec4(spherePosition,1);
 		velocity=(vec4(sphereVelocity,0));
-		cout<<"newSphere";
+		//cout<<"newSphere";
+	}
+	vec3 getSkin() override {
+	float skin = 4*radius*radius;
+		return vec3(skin,skin,skin);
 	}
 	void inline render(){
 		GLUquadric* sphere;

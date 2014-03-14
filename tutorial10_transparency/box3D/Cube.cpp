@@ -66,6 +66,9 @@ public:
 		edgeSta[11] = temp3;
 		edgeEnd[11] = temp7;
 	}
+	vec3 getSkin() override {
+		return vec3(size,size,size)*sqrt(2.0f);
+	}
 	vec4 inline toPosition(int i){
 		return vec4(vertex[i][0],vertex[i][1],vertex[i][2],1);
 	}
