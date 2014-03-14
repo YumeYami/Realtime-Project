@@ -64,7 +64,8 @@ public:
 	virtual vec3 inline getSkin(){
 		return vec3(1,1,1);
 	}
-	virtual void inline addForce(vec4 force,float size){
+	virtual void inline addForce(float gravity){
+		velocity+=vec4(0,-gravity,0,0);
 	}
 	virtual void inline addMomentum(vec4 momentum){
 		velocity = velocity+momentum;
@@ -98,8 +99,9 @@ public:
 	virtual void inline updatePosition(float time,float gravity){
 		position+=(velocity)*time;
 		orientation+=angularVelocity*time;
-		velocity*=0.9;
-		velocity+=vec4(0,-0.03,0,0);
+		addForce(gravity);
+		//velocity*=0.99;
+		
 	}
 	virtual vec4 getColPoint(){
 		return vec4(0,0,0,0);
