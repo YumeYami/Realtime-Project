@@ -108,7 +108,7 @@ void inline checkCollision_PlaneCylinder(Plane* plane1,Cylinder* cylinder2){
 	//printVec4("base ",baseheight);
 	if( length(bodyheight) + length(baseheight) >= length(posheight)){
 		//cout<<"col plane cylinder\n";
-		vec4 colPoint(0,0,0,0);
+	
 		colPlane_Cylinder(cylinder2,plane1,lowestPos);
 	}
 }
