@@ -74,6 +74,7 @@ public:
 	}
 	virtual void inline addAngularMomentum(vec3 angularMomentum){
 		angularVelocity+=angularMomentum;
+		if(length(angularVelocity)>=2)angularMomentum *= 2/length(angularVelocity);
 	}
 	virtual vec4 inline getNormal(){
 		return normalize(getRotationMatrix()*vec4(0,1,0,0));
@@ -97,6 +98,11 @@ public:
 	virtual void inline updatePosition(float time){
 		position+=(velocity)*time;
 		orientation+=angularVelocity*time;
+		velocity*=0.9;
+		velocity+=vec4(0,-0.03,0,0);
+	}
+	virtual vec4 getColPoint(){
+		return vec4(0,0,0,0);
 	}
 };
 void inline printVec4(string name,vec4 vec){
