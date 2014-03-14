@@ -33,18 +33,17 @@ void inline checkCollision_SphereCylinder(Sphere* sph1,Cylinder* cylinder2){
 	vec4 cylNormal = vec4(0,1,0,0);
 	float projectDist = projectSize(spherePos,cylNormal);
 	vec4 minDist = projectDist*cylNormal-spherePos;
-	vec4 colSphere=vec4(0,0,0,0);
 	if(length(minDist) >= cylinder2->radius + sph1->radius) return;
 	if(length(minDist) < cylinder2->radius){
 		if(projectDist <= cylinder2->length + sph1->radius) return;
 		else {
-			
-			colSphere_Cylinder(sph1,cylinder2,colSphere);
+
+			colSphere_Cylinder(sph1,cylinder2,dist3D_Segment_to_point(cylinder2->getBasePoint(),cylinder2->getTopPoint(),sph1->position));
 		}
 	} else {
 		if(length(projectDist*cylNormal + vec4(cylinder2->radius,0,0,0) - spherePos) >= sph1->radius) return;
 		else {
-			colSphere_Cylinder(sph1,cylinder2,colSphere);
+			colSphere_Cylinder(sph1,cylinder2,dist3D_Segment_to_point(cylinder2->getBasePoint(),cylinder2->getTopPoint(),sph1->position));
 		}
 	}
 }
@@ -108,7 +107,7 @@ void inline checkCollision_PlaneCylinder(Plane* plane1,Cylinder* cylinder2){
 	//printVec4("base ",baseheight);
 	if( length(bodyheight) + length(baseheight) >= length(posheight)){
 		//cout<<"col plane cylinder\n";
-	
+
 		colPlane_Cylinder(cylinder2,plane1,lowestPos);
 	}
 }
@@ -122,21 +121,133 @@ void inline checkCollision_CubeCube(Cube* cube1,Cube* cube2){
 	//base is cube1
 	for (int i = 0; i < 12; i++)
 	{
-		//point_ModelCube1
 		vec4 point0 = inverseRotateCube1*(cube2->edgeSta[i] - cube1->position);
 		vec4 point1 = inverseRotateCube1*(cube2->edgeEnd[i] - cube1->position);
-		//left
-		vec4 line = point1-point0;
-//		vec4 proj = line * (k / line.x)
-		//right
+		//point_ModelCube1
+		vec4 line;
+		vec4 startline;
+		vec4 endline;
+		vec4 proj;
 
+		//left
+		if(point1.x > point0.x){
+			line = point1 - point0;
+			startline = point0;
+			endline = point1;
+		}
+		else
+		{
+			line = point0 - point1;
+			startline = point1;
+			endline = point0;
+		}
+		if(startline.x<=size && endline.x>=size){
+			proj = line * abs( (size - abs(startline.x)) / line.x);
+			if(abs(startline.y + proj.y)<=size && abs(startline.z + proj.z)<=size) {
+				colCube_Cube(cube1,cube2,startline+proj);
+				return;
+			}
+		}
+
+		//right
+		if(point1.x < point0.x){
+			line = point1 - point0;
+			startline = point0;
+			endline = point1;
+		}
+		else
+		{
+			line = point0 - point1;
+			startline = point1;
+			endline = point0;
+		}
+		if(startline.x>=-size && endline.x<=-size){
+			proj = line * abs( (size - abs(startline.x)) / line.x);
+			if(abs(startline.y + proj.y) <= size && abs(startline.z + proj.z)<=size) {
+				colCube_Cube(cube1,cube2,startline+proj);
+				return;
+			}
+		}
+		
 		//front
+		if(point1.z > point0.z){
+			line = point1 - point0;
+			startline = point0;
+			endline = point1;
+		}
+		else
+		{
+			line = point0 - point1;
+			startline = point1;
+			endline = point0;
+		}
+		if(startline.z<=size && endline.z>=size){
+			proj = line * abs( (size - abs(startline.z)) / line.z);
+			if(abs(startline.y + proj.y)<=size && abs(startline.x + proj.x)<=size) {
+				colCube_Cube(cube1,cube2,startline+proj);
+				return;
+			}
+		}
 
 		//back
+		if(point1.z < point0.z){
+			line = point1 - point0;
+			startline = point0;
+			endline = point1;
+		}
+		else
+		{
+			line = point0 - point1;
+			startline = point1;
+			endline = point0;
+		}
+		if(startline.z>=-size && endline.z<=-size){
+			proj = line * abs( (size - abs(startline.z)) / line.z);
+			if(abs(startline.y + proj.y) <= size && abs(startline.x + proj.x)<=size) {
+				colCube_Cube(cube1,cube2,startline+proj);
+				return;
+			}
+		}
 
 		//top
+		if(point1.y > point0.y){
+			line = point1 - point0;
+			startline = point0;
+			endline = point1;
+		}
+		else
+		{
+			line = point0 - point1;
+			startline = point1;
+			endline = point0;
+		}
+		if(startline.y<=size && endline.y>=size){
+			proj = line * abs( (size - abs(startline.y)) / line.y);
+			if(abs(startline.x + proj.x)<=size && abs(startline.z + proj.z)<=size) {
+				colCube_Cube(cube1,cube2,startline+proj);
+				return;
+			}
+		}
 
-		//down
+		//right
+		if(point1.y < point0.y){
+			line = point1 - point0;
+			startline = point0;
+			endline = point1;
+		}
+		else
+		{
+			line = point0 - point1;
+			startline = point1;
+			endline = point0;
+		}
+		if(startline.y>=-size && endline.y<=-size){
+			proj = line * abs( (size - abs(startline.z)) / line.z);
+			if(abs(startline.x + proj.x) <= size && abs(startline.z + proj.z)<=size) {
+				colCube_Cube(cube1,cube2,startline+proj);
+				return;
+			}
+		}
 	}
 }
 void inline checkCollision_CubeCylinder(Cube* cube1,Cylinder* cyl2){

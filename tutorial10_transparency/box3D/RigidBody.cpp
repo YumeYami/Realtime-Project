@@ -64,7 +64,8 @@ public:
 	virtual vec3 inline getSkin(){
 		return vec3(1,1,1);
 	}
-	virtual void inline addForce(vec4 force,float size){
+	virtual void inline addForce(float gravity){
+		velocity+=vec4(0,-gravity,0,0);
 	}
 	virtual void inline addMomentum(vec4 momentum){
 		velocity = velocity+momentum;
@@ -74,6 +75,8 @@ public:
 	}
 	virtual void inline addAngularMomentum(vec3 angularMomentum){
 		angularVelocity+=angularMomentum;
+		printVec4("anguvelo ",vec4(angularVelocity,0));
+		if(length(angularVelocity)>=1)angularMomentum *= 1/length(angularVelocity);
 	}
 	virtual vec4 inline getNormal(){
 		return normalize(getRotationMatrix()*vec4(0,1,0,0));
@@ -97,13 +100,17 @@ public:
 	virtual void inline updatePosition(float time,float gravity){
 		position+=(velocity)*time;
 		orientation+=angularVelocity*time;
+		//addForce(gravity);
+		//velocity*=0.99;
+		
 	}
 	virtual vec4 getColPoint(){
 		return vec4(0,0,0,0);
 	}
-};
 void inline printVec4(string name,vec4 vec){
 	cout<<name<<"\t: [ "<<vec.x<<"\t"<<vec.y<<"\t"<<vec.z<<"\t"<<vec.z<<"\t"<<length(vec)<<" ]\n";
 }
+};
+
 //End guard at bottom of header file
 #endif 

@@ -63,7 +63,7 @@ void addCylinder(){
 	vec3 rotation = vec3(rand()%(gridSize-5)-2,begin_x+gridSize-4,rand()%(gridSize-5)-2);
 	vec3 velocity = vec3(rand()%6/10.0,-rand()%6/10.0,rand()%6/10.0);
 	float radius = 0.25;
-	float length = 0.99f;
+	float length = 0.5f;
 	float mass = 1;
 	vec3 color = vec3(rand()%11/10.0,rand()%11/10.0,rand()%11/10.0);
 	Cylinder *cy = new Cylinder(position,rotation,velocity,radius,length,mass,color);
