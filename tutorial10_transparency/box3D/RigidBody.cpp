@@ -100,7 +100,7 @@ public:
 	}
 };
 void inline printVec4(string name,vec4 vec){
-	cout<<name<<"\t: [ "<<vec.x<<"\t"<<vec.y<<"\t"<<vec.z<<"\t"<<length(vec)<<" ]\n";
+	cout<<name<<"\t: [ "<<vec.x<<"\t"<<vec.y<<"\t"<<vec.z<<"\t"<<vec.z<<"\t"<<length(vec)<<" ]\n";
 }
 //End guard at bottom of header file
 #endif 

@@ -20,7 +20,7 @@ void inline checkCollision_SphereCube(Sphere* sph1,Cube* cube2){
 		vec4 end = (cube2->edgeEnd[i]);
 		vec4 colPoint =  dist3D_Segment_to_point(start,end,sph1->position);
 		if (length(colPoint) <= sph1->radius){
-			cout<<"collision Cube";
+			//cout<<"collision Cube";
 			colSphere_Cube(sph1,cube2,colPoint);
 			return;
 		}
@@ -101,7 +101,7 @@ void inline checkCollision_PlaneCylinder(Plane* plane1,Cylinder* cylinder2){
 	vec4 baseheight = projectVec(lowestPos,planeNormal);
 	//printVec4("base ",baseheight);
 	if( length(bodyheight) + length(baseheight) >= length(posheight)){
-		cout<<"col plane cylinder\n";
+		//cout<<"col plane cylinder\n";
 		colPlane_Cylinder(plane1,cylinder2,lowestPos);
 	}
 }
