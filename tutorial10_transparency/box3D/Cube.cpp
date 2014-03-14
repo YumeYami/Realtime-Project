@@ -69,6 +69,56 @@ public:
 	vec3 getSkin() override {
 		return vec3(size,size,size)*sqrt(2.0f);
 	}
+	
+        void ProjectOntoAxis (vec3 & Axis, float& Min, float& Max) // Project all four vertex of the OBB onto the given axis and return the dotproducts of the two outermost vertex
+        {
+            Min = (vertex[0][0]*Axis.x+vertex[0][1]*Axis.y+vertex[0][2]*Axis.z);
+            Max = Min;
+            for (int i = 1; i<8; i++)
+				for(int j=0;j<3;j++){
+            {
+                float Projection = (vertex[i][j]*Axis.x+vertex[i][j]*Axis.y+vertex[i][j]*Axis.z);
+
+                if (Projection<Min)
+                    Min=Projection;
+                if (Projection>Max)
+                    Max=Projection;
+            }	
+				}
+        }
+		bool BoundingBoxTest(Cube* OBB1, Cube* OBB2) {
+        
+        // Create the four distinct axes that are perpendicular to the edges of the two rectangles
+        vec3 Axes[8] = {
+            /*vec3 (OBB1->vertex[1]-OBB1->vertex[0].x,
+            OBB1->vertex[1].y-OBB1->vertex[0].y,
+			OBB1->vertex[1].z-OBB1->vertex[0].z),
+            vec3 (OBB1->vertex[1].x-OBB1->vertex[2].x,
+            OBB1->vertex[1].y-OBB1->vertex[2].y,
+			OBB1->vertex[1].z-OBB1->vertex[2].z),
+            vec3 (OBB2->vertex[0].x-OBB2->vertex[3].x,
+            OBB2->vertex[0].y-OBB2->vertex[3].y,
+			OBB1->vertex[0].z-OBB1->vertex[3].z),
+            vec3 (OBB2->vertex[0].x-OBB2->vertex[1].x,
+            OBB2->vertex[0].y-OBB2->vertex[1].y,
+			OBB1->vertex[0].z-OBB1->vertex[1].z)*/
+        };
+
+        for (int i = 0; i<4; i++) // For each axis...
+        {
+            float MinOBB1, MaxOBB1, MinOBB2, MaxOBB2;
+
+            // ... project the vertex of both OBBs onto the axis ...
+            OBB1->ProjectOntoAxis(Axes[i], MinOBB1, MaxOBB1);
+            OBB2->ProjectOntoAxis(Axes[i], MinOBB2, MaxOBB2);
+
+            // ... and check whether the outermost projected vertex of both OBBs overlap.
+            // If this is not the case, the Seperating Axis Theorem states that there can be no collision between the rectangles
+            if (!((MinOBB2<=MaxOBB1)&&(MaxOBB2>=MinOBB1)))
+                return false;
+        }
+        return true;
+    }
 	vec4 inline toPosition(int i){
 		return vec4(vertex[i][0],vertex[i][1],vertex[i][2],1);
 	}
