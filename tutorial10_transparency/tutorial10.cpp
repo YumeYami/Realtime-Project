@@ -20,6 +20,7 @@ using namespace std;
 #include <common/shader.hpp>
 #include <common/texture.hpp>
 #include <common/controls.hpp>
+#define GRAVITY 0.05f
 
 std::vector<unsigned short> indices;
 std::vector<glm::vec3> indexed_vertices;
@@ -98,6 +99,7 @@ int lastKey5=GLFW_RELEASE;
 int lastKey6=GLFW_RELEASE;
 int lastKey7=GLFW_RELEASE;
 int lastKey8=GLFW_RELEASE;
+int lastKey9=GLFW_RELEASE;
 int lastMouse=GLFW_RELEASE;
 int fixX=0,fixY=0;
 int showX=0,showY=0;
@@ -110,7 +112,7 @@ int height=384;
 int update=1;
 int playFrame=1;
 int playOneFrame=0;
-
+int enGravity=0;
 class PickingRay 
 {
 	vec3 clickPosInWorld;
@@ -256,6 +258,16 @@ void onPress(){
 	}
 	else if (glfwGetKey('C') == GLFW_RELEASE){
 		lastKey8 = GLFW_RELEASE;
+	}
+	if (glfwGetKey('G') == GLFW_PRESS){
+		if(lastKey9 == GLFW_RELEASE){
+			if(enGravity) enGravity=0;
+			else enGravity=1;
+		}
+		lastKey9 = GLFW_PRESS;
+	}
+	else if (glfwGetKey('G') == GLFW_RELEASE){
+		lastKey9 = GLFW_RELEASE;
 	}
 	//pickBox=========================================================================================
 	if( lastMouse==GLFW_RELEASE && glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS && !pickObject){
@@ -464,7 +476,7 @@ int main( void )
 		for (int i = 0; i < c3.size(); i++)
 		{
 			if(update || playOneFrame){
-				c3[i]->updatePosition(timeStep);
+				c3[i]->updatePosition(timeStep,GRAVITY*enGravity);
 				c3[i]->setEdge();
 			}
 			glm::mat4 ScaleMatrix = mat4();
@@ -483,7 +495,7 @@ int main( void )
 		}
 		for (int i = 0; i < sphere.size(); i++)
 		{
-			if(update || playOneFrame)(*sphere[i]).updatePosition(timeStep);
+			if(update || playOneFrame)(*sphere[i]).updatePosition(timeStep,GRAVITY*enGravity);
 			glm::mat4 ScaleMatrix = mat4();
 			glm::mat4 RotateMatrix = (*sphere[i]).getRotationMatrix();
 			glm::mat4 TranslateMatrix = (*sphere[i]).getTranslationMatrix();
@@ -500,7 +512,7 @@ int main( void )
 		}
 		for (int i = 0; i < cylinder.size(); i++)
 		{
-			if(update || playOneFrame)(*cylinder[i]).updatePosition(0.01f);
+			if(update || playOneFrame)(*cylinder[i]).updatePosition(0.01f,GRAVITY*enGravity);
 			glm::mat4 ScaleMatrix = mat4();
 			glm::mat4 RotateMatrix = cylinder[i]->getRotationMatrix();
 			glm::mat4 TranslateMatrix = cylinder[i]->getTranslationMatrix();
@@ -517,7 +529,7 @@ int main( void )
 		}
 		for (int i = 0; i < plane.size(); i++)
 		{
-			if(update || playOneFrame)(*plane[i]).updatePosition(0.01f);
+			if(update || playOneFrame)(*plane[i]).updatePosition(0.01f,0);
 			glm::mat4 ScaleMatrix = mat4();
 			glm::mat4 RotateMatrix = (*plane[i]).getRotationMatrix();
 			glm::mat4 TranslateMatrix = (*plane[i]).getTranslationMatrix();
