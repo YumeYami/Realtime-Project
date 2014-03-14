@@ -33,18 +33,17 @@ void inline checkCollision_SphereCylinder(Sphere* sph1,Cylinder* cylinder2){
 	vec4 cylNormal = vec4(0,1,0,0);
 	float projectDist = projectSize(spherePos,cylNormal);
 	vec4 minDist = projectDist*cylNormal-spherePos;
-	vec4 colSphere=vec4(0,0,0,0);
 	if(length(minDist) >= cylinder2->radius + sph1->radius) return;
 	if(length(minDist) < cylinder2->radius){
 		if(projectDist <= cylinder2->length + sph1->radius) return;
 		else {
 
-			colSphere_Cylinder(sph1,cylinder2,colSphere);
+			colSphere_Cylinder(sph1,cylinder2,dist3D_Segment_to_point(cylinder2->getBasePoint(),cylinder2->getTopPoint(),sph1->position));
 		}
 	} else {
 		if(length(projectDist*cylNormal + vec4(cylinder2->radius,0,0,0) - spherePos) >= sph1->radius) return;
 		else {
-			colSphere_Cylinder(sph1,cylinder2,colSphere);
+			colSphere_Cylinder(sph1,cylinder2,dist3D_Segment_to_point(cylinder2->getBasePoint(),cylinder2->getTopPoint(),sph1->position));
 		}
 	}
 }
@@ -109,6 +108,7 @@ void inline checkCollision_PlaneCylinder(Plane* plane1,Cylinder* cylinder2){
 	if( length(bodyheight) + length(baseheight) >= length(posheight)){
 		//cout<<"col plane cylinder\n";
 		vec4 colPoint(0,0,0,0);
+
 		colPlane_Cylinder(cylinder2,plane1,lowestPos);
 	}
 }
