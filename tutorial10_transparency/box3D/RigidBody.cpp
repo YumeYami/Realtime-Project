@@ -98,6 +98,9 @@ public:
 		position+=(velocity)*time;
 		orientation+=angularVelocity*time;
 	}
+	virtual vec4 getColPoint(){
+		return vec4(0,0,0,0);
+	}
 };
 void inline printVec4(string name,vec4 vec){
 	cout<<name<<"\t: [ "<<vec.x<<"\t"<<vec.y<<"\t"<<vec.z<<"\t"<<vec.z<<"\t"<<length(vec)<<" ]\n";

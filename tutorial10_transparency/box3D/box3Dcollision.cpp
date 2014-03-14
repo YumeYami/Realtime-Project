@@ -33,13 +33,19 @@ void inline checkCollision_SphereCylinder(Sphere* sph1,Cylinder* cylinder2){
 	vec4 cylNormal = vec4(0,1,0,0);
 	float projectDist = projectSize(spherePos,cylNormal);
 	vec4 minDist = projectDist*cylNormal-spherePos;
+	vec4 colSphere=vec4(0,0,0,0);
 	if(length(minDist) >= cylinder2->radius + sph1->radius) return;
 	if(length(minDist) < cylinder2->radius){
 		if(projectDist <= cylinder2->length + sph1->radius) return;
-		else colSphere_Cylinder(sph1,cylinder2);
+		else {
+			
+			colSphere_Cylinder(sph1,cylinder2,colSphere);
+		}
 	} else {
 		if(length(projectDist*cylNormal + vec4(cylinder2->radius,0,0,0) - spherePos) >= sph1->radius) return;
-		else colSphere_Cylinder(sph1,cylinder2);
+		else {
+			colSphere_Cylinder(sph1,cylinder2,colSphere);
+		}
 	}
 }
 //completed
@@ -102,7 +108,8 @@ void inline checkCollision_PlaneCylinder(Plane* plane1,Cylinder* cylinder2){
 	//printVec4("base ",baseheight);
 	if( length(bodyheight) + length(baseheight) >= length(posheight)){
 		//cout<<"col plane cylinder\n";
-		colPlane_Cylinder(plane1,cylinder2,lowestPos);
+		vec4 colPoint(0,0,0,0);
+		colPlane_Cylinder(cylinder2,plane1,lowestPos);
 	}
 }
 //on code
@@ -120,7 +127,7 @@ void inline checkCollision_CubeCube(Cube* cube1,Cube* cube2){
 		vec4 point1 = inverseRotateCube1*(cube2->edgeEnd[i] - cube1->position);
 		//left
 		vec4 line = point1-point0;
-		vec4 proj = line * (k / line.x)
+//		vec4 proj = line * (k / line.x)
 		//right
 
 		//front
