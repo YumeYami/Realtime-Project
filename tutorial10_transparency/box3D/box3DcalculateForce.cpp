@@ -171,7 +171,7 @@ void inline colSphere_Plane(Sphere* sph1, Plane* plane2,vec4 height){
 	sph1->addMomentum(newVelo*2);
 	sph1->updatePosition(height*(length(sph1->radius) - length(height) ) );
 }
-//bugging
+//completed
 void inline colSphere_Cube(Sphere* sph1, Cube* cube2,vec4 colPoint_ModelSphere){
 	//cout<<"col";
 	vec4 relatevelo = cube2->velocity - sph1->velocity;//ref from sph1
@@ -191,7 +191,7 @@ void inline colSphere_Cube(Sphere* sph1, Cube* cube2,vec4 colPoint_ModelSphere){
 	//cube2->angularVelocity=vec3(0,0,0);
 }
 //not test
-void inline colSphere_Cylinder(Sphere* sph1, Cylinder* cy2){
+void inline colSphere_Cylinder(Sphere* sph1, Cylinder* cy2, vec4 colPoint_ModelSphere){
 	//cout<<"col sphere cylinder\n";
 	vec4 dist = cy2->position-sph1->position;
 	vec4 velo1 = sph1->velocity;
@@ -243,6 +243,6 @@ void inline colPlane_Cylinder(Plane* plane1, Cylinder* cylinder2,vec4 colPoint){
 }
 
 //Cylinder
-void inline colCylinder_Cylinder(Cylinder* cy1, Cylinder* cy2){
+void inline colCylinder_Cylinder(Cylinder* cy1, Cylinder* cy2, vec4 colPoint_ModelCy2){
 
 }
