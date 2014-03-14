@@ -115,22 +115,44 @@ void inline checkCollision_CubeCube(Cube* cube1,Cube* cube2){
 	//base is cube1
 	for (int i = 0; i < 12; i++)
 	{
-		//point_ModelCube1
 		vec4 point0 = inverseRotateCube1*(cube2->edgeSta[i] - cube1->position);
 		vec4 point1 = inverseRotateCube1*(cube2->edgeEnd[i] - cube1->position);
+		//point_ModelCube1
+		vec4 line;
+		vec4 startline;
+		vec4 endline;
+		vec4 proj;
+		if(point1.x > point0.x){
+			line = point1 - point0;
+			startline = point0;
+			endline = point1;
+		}
+		else
+		{
+			line = point0 - point1;
+			startline = point1;
+			endline = point0;
+		}
+		proj = line * abs( (size - abs(startline.x)) / line.x);
 		//left
-		vec4 line = point1-point0;
-		vec4 proj = line * (k / line.x)
+		if(abs(startline.y + proj.y)<=size && abs(startline.z + proj.z)<=size) {
+			colCube_Cube(cube1,cube2,startline+proj);
+			return;
+		}
+
 		//right
-
-		//front
-
-		//back
-
-		//top
-
-		//down
+		proj = -line * abs((size - abs(endline.x)) / line.x);
+		if(abs(proj.y)<=size && abs(proj.z)<=size) {
+			colCube_Cube(cube1,cube2,endline+proj);
+			return;
+		}
 	}
+
+	//front
+	//back
+	//top
+	//down
+}
 }
 void inline checkCollision_CubeCylinder(Cube* cube1,Cylinder* cyl2){
 	if(projectSize(cyl2->velocity - cube1->velocity,cyl2->position - cube1->position) >= 0) return;
