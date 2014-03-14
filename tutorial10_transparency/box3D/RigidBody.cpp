@@ -62,7 +62,7 @@ public:
 		return vec3(0,0,0);
 	}
 	virtual vec3 inline getSkin(){
-		return vec3();
+		return vec3(1,1,1);
 	}
 	virtual void inline addForce(vec4 force,float size){
 	}

@@ -97,6 +97,7 @@ int lastKey4=GLFW_RELEASE;
 int lastKey5=GLFW_RELEASE;
 int lastKey6=GLFW_RELEASE;
 int lastKey7=GLFW_RELEASE;
+int lastKey8=GLFW_RELEASE;
 int lastMouse=GLFW_RELEASE;
 int fixX=0,fixY=0;
 int showX=0,showY=0;
@@ -245,7 +246,17 @@ void onPress(){
 	else if (glfwGetKey('X') == GLFW_RELEASE){
 		lastKey7 = GLFW_RELEASE;
 	}
-
+	if (glfwGetKey('C') == GLFW_PRESS){
+		if(lastKey8 == GLFW_RELEASE){
+			sphere.clear();
+			c3.clear();
+			cylinder.clear();
+		}
+		lastKey8 = GLFW_PRESS;
+	}
+	else if (glfwGetKey('C') == GLFW_RELEASE){
+		lastKey8 = GLFW_RELEASE;
+	}
 	//pickBox=========================================================================================
 	if( lastMouse==GLFW_RELEASE && glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS && !pickObject){
 		glfwGetMousePos(&clickX1,&clickY1);

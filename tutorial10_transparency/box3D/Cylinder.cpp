@@ -14,6 +14,10 @@ public:
 		color = vec4(cylinderColor,0.8f);
 
 	}
+	vec3 getSkin() override {
+		float skin = sqrt(4*radius*radius + length*length);
+		return vec3(skin,skin,skin);
+	}
 	vec4 inline getBasePoint(){
 		return position;
 	}

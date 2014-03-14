@@ -380,7 +380,7 @@ public:
 		vector<int> x;
 		vector<int> y;
 		vector<int> z;
-		findGrid(vec3(pos.x,pos.y,pos.z),x,y,z);
+		findGrid(vec3(pos.x,pos.y,pos.z),r->getSkin(),x,y,z);
 		for(int i=0;i<x.size();i++){
 			if(x[i]>=0 && x[i]< gridSize && y[i]>=0 && y[i]< gridSize && z[i]>=0 && z[i]< gridSize)
 				gridcell[x[i]][y[i]][z[i]].addCubeToGridCell(r);
@@ -393,7 +393,7 @@ public:
 		vector<int> x;
 		vector<int> y;
 		vector<int> z;
-		findGrid(vec3(pos.x,pos.y,pos.z),x,y,z);
+		findGrid(vec3(pos.x,pos.y,pos.z),r->getSkin(),x,y,z);
 		for(int i=0;i<x.size();i++){
 			if(x[i]>=0 && x[i]< gridSize && y[i]>=0 && y[i]< gridSize && z[i]>=0 && z[i]< gridSize)
 				gridcell[x[i]][y[i]][z[i]].addCylinderToGridCell(r);
@@ -406,7 +406,7 @@ public:
 		vector<int> x;
 		vector<int> y;
 		vector<int> z;
-		findGrid(vec3(pos.x,pos.y,pos.z),x,y,z);
+		findGrid(vec3(pos.x,pos.y,pos.z),r->getSkin(),x,y,z);
 		for(int i=0;i<x.size();i++){
 			if(x[i]>=0 && x[i]< gridSize && y[i]>=0 && y[i]< gridSize && z[i]>=0 && z[i]< gridSize)
 				gridcell[x[i]][y[i]][z[i]].addSphereToGridCell(r);
@@ -461,11 +461,11 @@ public:
 				}
 	}
 
-	void findGrid(vec3 pos,vector<int> &x, vector<int> &y, vector<int> &z){
+	void findGrid(vec3 pos,vec3 skin, vector<int> &x, vector<int> &y, vector<int> &z){
 		//x.push_back(a); y.push_back(b); z.push_back(c);
 		//if(pos.x-floor(pos.x)==0.5 && pos.y-floor(pos.y)==0.5 && pos.z-floor(pos.z)==0.5) return;
-		vec3 minPos = vec3(pos.x-width/2.0,pos.y-width/2.0,pos.z-width/2.0);
-		vec3 maxPos = vec3(pos.x+width/2.0,pos.y+width/2.0,pos.z+width/2.0);
+		vec3 minPos = vec3(pos.x-skin.x/2.0,pos.y-skin.y/2.0,pos.z-skin.z/2.0);
+		vec3 maxPos = vec3(pos.x+skin.x/2.0,pos.y+skin.y/2.0,pos.z+skin.z/2.0);
 		int minA,minB,minC;
 		int maxA,maxB,maxC;
 		findIndex(minPos,minA,minB,minC);
